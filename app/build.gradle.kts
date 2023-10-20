@@ -58,6 +58,7 @@ dependencies {
 
     // Dependency injection
     implementation("com.google.dagger:hilt-android:2.44")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-rc01")
     kapt("com.google.dagger:hilt-compiler:2.44")
 
     // Navigation
@@ -72,6 +73,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.0")
 
     // Room
+    implementation("androidx.room:room-ktx:2.5.2")
     implementation("androidx.room:room-runtime:2.5.2")
     implementation("androidx.room:room-paging:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
@@ -82,6 +84,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
