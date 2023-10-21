@@ -8,4 +8,5 @@
 
     <string name="home_screen_welcome_message">Welcome %s!</string>
     <string name="home_screen_no_expenses_yet">There are no expenses yet.\n Please add them.</string>
+    <string name="home_screen_add_expense">Add</string>
 </resources>

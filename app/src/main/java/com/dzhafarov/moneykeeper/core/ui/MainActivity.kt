@@ -77,7 +77,7 @@ private fun BottomNavContainer(navController: NavHostController) {
                         ?.any { it.route == screen.route } == true,
                     screen = screen,
                     onClick = {
-                        navController.navigateTo(screen.route)
+                        navController.navigateTo(screen)
                     }
                 )
             }
