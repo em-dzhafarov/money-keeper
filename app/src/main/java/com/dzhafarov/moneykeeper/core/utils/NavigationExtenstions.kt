@@ -2,10 +2,10 @@ package com.dzhafarov.moneykeeper.core.utils
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.dzhafarov.moneykeeper.core.ui.Screen
+import com.dzhafarov.moneykeeper.core.ui.Destination
 
-fun NavController.navigateTo(screen: Screen) {
-    navigate(screen.route) {
+fun NavController.navigateTo(destination: Destination) {
+    navigate(destination.route) {
         popUpTo(graph.findStartDestination().id) {
             saveState = true
         }

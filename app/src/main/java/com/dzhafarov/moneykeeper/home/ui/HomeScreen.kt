@@ -35,9 +35,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.dzhafarov.moneykeeper.core.ui.Screen
+import com.dzhafarov.moneykeeper.core.ui.Destination
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.isScrollingUp
+import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import com.dzhafarov.moneykeeper.home.presentation.HomeAction
 import com.dzhafarov.moneykeeper.home.presentation.HomeUiState
@@ -68,7 +69,7 @@ private fun HomeActions(
     actions.collectAsEffect { action ->
         when (action) {
             is HomeAction.AddExpense -> {
-                // TODO go to expense details screen
+                navController.navigateTo(Destination.Screen.AddExpense)
             }
         }
     }
