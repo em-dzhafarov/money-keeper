@@ -17,12 +17,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.core.ui.Destination
+import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.isScrollingUp
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
@@ -46,8 +50,10 @@ import com.dzhafarov.moneykeeper.home.presentation.HomeViewModel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    val viewModel = hiltViewModel<HomeViewModel>()
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
 
     HomeActions(
@@ -57,7 +63,9 @@ fun HomeScreen(navController: NavController) {
 
     HomeUiContent(
         uiState = uiState,
-        onAddExpenseClick = viewModel::onAddExpenseClick
+        onAddExpenseClick = viewModel::onAddExpenseClick,
+        onHomeClick = viewModel::onHomeClick,
+        onNotificationsClick = viewModel::onNotificationsClick
     )
 }
 
@@ -71,6 +79,12 @@ private fun HomeActions(
             is HomeAction.AddExpense -> {
                 navController.navigateTo(Destination.Screen.AddExpense)
             }
+            is HomeAction.OpenNotifications -> {
+                navController.navigateTo(Destination.Screen.Notifications)
+            }
+            is HomeAction.OpenAboutAppInfo -> {
+                navController.navigateTo(Destination.Dialog.AboutApp)
+            }
         }
     }
 }
@@ -79,7 +93,9 @@ private fun HomeActions(
 @Composable
 private fun HomeUiContent(
     uiState: HomeUiState,
-    onAddExpenseClick: () -> Unit
+    onAddExpenseClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onNotificationsClick: () -> Unit
 ) {
     val scrollState = rememberLazyListState()
 
@@ -91,6 +107,22 @@ private fun HomeUiContent(
                 state = scrollState,
                 onClick = onAddExpenseClick,
                 title = uiState.addExpenseMessage
+            )
+        },
+        topBar = {
+            BaseTopBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = uiState.title,
+                navigationIcon = Icons.Default.Home,
+                onNavigationIconPressed = onHomeClick,
+                actions = {
+                    IconButton(onClick = onNotificationsClick) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         }
     ) { padding ->
@@ -235,7 +267,7 @@ private fun ExpensesContent(
             item {
                 Text(
                     text = emptyExpensesMessage,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center
                 )
             }

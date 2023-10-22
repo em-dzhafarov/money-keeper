@@ -7,19 +7,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,80 +65,11 @@ fun MainContent() {
         modifier = Modifier.blur(if (shouldBlur) 1.dp else 0.dp),
         bottomBar = {
             BottomNavContainer(navController)
-        },
-        topBar = {
-            TopAppBarContent(navController)
         }
     ) { padding ->
         ContentNavContainer(
             navController,
             Modifier.padding(padding)
-        )
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-private fun TopAppBarContent(navController: NavHostController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val destination = Destination.of(currentRoute)
-    var title by remember { mutableStateOf("") }
-    var canNavigateBackWithArrow by remember { mutableStateOf(false) }
-    var isNotificationsVisible by remember { mutableStateOf(false) }
-
-    when (destination) {
-        is Destination.Screen -> {
-            title = stringResource(id = destination.resourceId)
-            canNavigateBackWithArrow = navController.previousBackStackEntry != null
-            isNotificationsVisible = destination::class == Destination.initial::class
-        }
-        is Destination.Dialog -> {
-            canNavigateBackWithArrow = false
-        }
-        null -> Unit
-    }
-
-    Surface(shadowElevation = 4.dp) {
-        TopAppBar(
-            title = { Text(text = title) },
-            actions = {
-                if (isNotificationsVisible) {
-                    IconButton(
-                        onClick = {
-                            navController.navigateTo(Destination.Screen.Notifications)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = null
-                        )
-                    }
-                }
-            },
-            navigationIcon = {
-                if (canNavigateBackWithArrow) {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null
-                        )
-                    }
-                } else {
-                    IconButton(
-                        onClick = {
-                            navController.navigateTo(Destination.Dialog.AboutApp)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
         )
     }
 }
@@ -160,7 +84,7 @@ private fun BottomNavContainer(navController: NavHostController) {
         Destination.isRootScreen(route) -> {
             shouldShowBottomNavigation = true
         }
-        Destination.isScreen(route) -> {
+        Destination.isDialog(route).not() -> {
             shouldShowBottomNavigation = false
         }
     }
@@ -175,7 +99,7 @@ private fun BottomNavContainer(navController: NavHostController) {
                         ?.any { it.route == screen.route } == true,
                     screen = screen,
                     onClick = {
-                        navController.navigateTo(screen)
+                        navController.navigateTo(screen, isRoot = true)
                     }
                 )
             }

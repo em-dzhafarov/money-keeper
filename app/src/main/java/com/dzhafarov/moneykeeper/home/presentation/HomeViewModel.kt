@@ -41,6 +41,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onNotificationsClick() {
+        viewModelScope.launch {
+            _uiAction.emit(HomeAction.OpenNotifications)
+        }
+    }
+
+    fun onHomeClick() {
+        viewModelScope.launch {
+            _uiAction.emit(HomeAction.OpenAboutAppInfo)
+        }
+    }
+
     private fun loadWelcomeMessage() {
         viewModelScope.launch {
             val fullName = getCurrentUserProfileUseCase.execute()
@@ -58,6 +70,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
+                    title = stringProvider.title(),
                     emptyExpensesMessage = stringProvider.noExpensesYet(),
                     addExpenseMessage = stringProvider.addExpense()
                 )

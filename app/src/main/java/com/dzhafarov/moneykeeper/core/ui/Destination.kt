@@ -39,10 +39,6 @@ sealed class Destination(val route: String) {
             return of(route) is Dialog
         }
 
-        fun isScreen(route: String?): Boolean {
-            return of(route) is Screen
-        }
-
         fun isRootScreen(route: String?): Boolean {
             return of(route) is Screen.Root
         }

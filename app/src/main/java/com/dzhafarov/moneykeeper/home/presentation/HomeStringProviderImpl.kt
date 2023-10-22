@@ -9,6 +9,10 @@ class HomeStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : HomeStringProvider {
 
+    override suspend fun title(): String {
+        return context.getString(R.string.home_screen)
+    }
+
     override suspend fun welcome(userName: String): String {
         return context.getString(R.string.home_screen_welcome_message).format(userName)
     }
