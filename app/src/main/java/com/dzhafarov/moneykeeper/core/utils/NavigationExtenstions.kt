@@ -1,6 +1,5 @@
 package com.dzhafarov.moneykeeper.core.utils
 
-import androidx.compose.animation.slideIn
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.dzhafarov.moneykeeper.core.ui.Destination

@@ -12,12 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            BaseTopBar(
+                title = "Settings",
+                onNavigationIconPressed = { navController.popBackStack() }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier

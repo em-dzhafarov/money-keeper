@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -84,6 +87,7 @@ private fun BottomNavContainer(navController: NavHostController) {
         Destination.isRootScreen(route) -> {
             shouldShowBottomNavigation = true
         }
+
         Destination.isDialog(route).not() -> {
             shouldShowBottomNavigation = false
         }
@@ -115,19 +119,71 @@ private fun ContentNavContainer(
     NavHost(
         navController = navController,
         startDestination = Destination.initial.route,
-        modifier = modifier,
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() }
+        modifier = modifier
     ) {
-        composable(Destination.Screen.Root.Home.route) { HomeScreen(navController) }
-        composable(Destination.Screen.Root.Dashboard.route) { DashboardScreen(navController) }
-        composable(Destination.Screen.Root.Profile.route) { ProfileScreen(navController) }
-        composable(Destination.Screen.Root.Settings.route) { SettingsScreen(navController) }
-        composable(Destination.Screen.AddExpense.route) { AddExpenseScreen(navController) }
-        composable(Destination.Screen.Notifications.route) { NotificationsScreen(navController) }
-        dialog(Destination.Dialog.AboutApp.route) { AboutAppDialog(navController) }
+        composable(
+            route = Destination.Screen.Root.Home.route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            content = { HomeScreen(navController) }
+        )
+        composable(
+            route = Destination.Screen.Root.Dashboard.route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            content = { DashboardScreen(navController) }
+        )
+        composable(
+            route = Destination.Screen.Root.Profile.route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            content = { ProfileScreen(navController) }
+        )
+        composable(
+            route = Destination.Screen.Root.Settings.route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            content = { SettingsScreen(navController) }
+        )
+
+        composable(
+            route = Destination.Screen.AddExpense.route,
+            enterTransition = {
+                scaleIn(
+                    transformOrigin = TransformOrigin(1f, 1f)
+                )
+            },
+            exitTransition = {
+                scaleOut(
+                    transformOrigin = TransformOrigin(1f, 1f)
+                )
+            },
+            content = {
+                AddExpenseScreen(navController)
+            }
+        )
+
+        composable(
+            route = Destination.Screen.Notifications.route,
+            enterTransition = {
+                scaleIn(
+                    transformOrigin = TransformOrigin(1f, 0f)
+                )
+            },
+            exitTransition = {
+                scaleOut(
+                    transformOrigin = TransformOrigin(1f, 0f)
+                )
+            },
+            content = {
+                NotificationsScreen(navController)
+            }
+        )
+
+        dialog(
+            route = Destination.Dialog.AboutApp.route,
+            content = { AboutAppDialog(navController) }
+        )
     }
 }
 
