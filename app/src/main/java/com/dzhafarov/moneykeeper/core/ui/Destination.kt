@@ -32,7 +32,9 @@ sealed class Destination(val route: String) {
             Screen.Root.Settings,
             Screen.AddExpense,
             Screen.Notifications,
-            Dialog.AboutApp
+            Dialog.AboutApp,
+            Dialog.DateSelector,
+            Dialog.TimeSelector
         )
 
         fun isDialog(route: String?): Boolean {
@@ -44,17 +46,21 @@ sealed class Destination(val route: String) {
         }
 
         fun of(route: String?): Destination? {
-            return allDestinations.find { it.route == route }
+            return allDestinations.find { route?.startsWith(it.route) ?: false }
         }
     }
 
     sealed class Dialog(route: String) : Destination(route) {
         object AboutApp : Dialog("about_app")
+
+        object DateSelector : Dialog("date_selector")
+
+        object TimeSelector : Dialog("time_selector")
     }
 
     sealed class Screen(
-       route: String,
-       @StringRes val resourceId: Int,
+        route: String,
+        @StringRes val resourceId: Int,
     ) : Destination(route) {
 
         sealed class Root(

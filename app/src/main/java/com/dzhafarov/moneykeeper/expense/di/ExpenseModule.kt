@@ -4,8 +4,16 @@ import android.content.Context
 import androidx.room.Room
 import com.dzhafarov.moneykeeper.expense.db.MoneyKeeperDatabase
 import com.dzhafarov.moneykeeper.expense.db.dao.ExpenseDao
+import com.dzhafarov.moneykeeper.expense.domain.repository.CurrencyRepository
+import com.dzhafarov.moneykeeper.expense.domain.repository.CurrencyRepositoryImpl
 import com.dzhafarov.moneykeeper.expense.domain.repository.ExpensesRepository
 import com.dzhafarov.moneykeeper.expense.domain.repository.ExpensesRepositoryImpl
+import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentMethodRepository
+import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentMethodRepositoryImpl
+import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentReasonRepository
+import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentReasonRepositoryImpl
+import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseStringProvider
+import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseStringProviderImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -19,7 +27,19 @@ import javax.inject.Singleton
 interface ExpenseModule {
 
     @Binds
+    fun bindAddExpenseStringProvider(actual: AddExpenseStringProviderImpl): AddExpenseStringProvider
+
+    @Binds
     fun bindExpensesRepository(actual: ExpensesRepositoryImpl): ExpensesRepository
+
+    @Binds
+    fun bindPaymentReasonRepository(actual: PaymentReasonRepositoryImpl): PaymentReasonRepository
+
+    @Binds
+    fun bindPaymentMethodRepository(actual: PaymentMethodRepositoryImpl): PaymentMethodRepository
+
+    @Binds
+    fun bindCurrencyRepository(actual: CurrencyRepositoryImpl): CurrencyRepository
 
     companion object {
         @Provides

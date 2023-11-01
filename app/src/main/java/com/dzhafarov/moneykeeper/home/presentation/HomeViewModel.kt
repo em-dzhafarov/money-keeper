@@ -3,7 +3,7 @@ package com.dzhafarov.moneykeeper.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.core.domain.use_case.execute
-import com.dzhafarov.moneykeeper.expense.domain.use_case.GetExpensesUseCase
+import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +22,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val stringProvider: HomeStringProvider,
     private val getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase,
-    private val getExpensesUseCase: GetExpensesUseCase
+    private val observeExpensesUseCase: ObserveExpensesUseCase
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -32,7 +34,7 @@ class HomeViewModel @Inject constructor(
     init {
         loadWelcomeMessage()
         loadStrings()
-        loadExpenses()
+        observeExpenses()
     }
 
     fun onAddExpenseClick() {
@@ -78,13 +80,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadExpenses() {
+    private fun observeExpenses() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    expenses = getExpensesUseCase.execute()
-                )
-            }
+            observeExpensesUseCase.execute()
+                .onEach { items ->
+                    _uiState.update {
+                        it.copy(
+                            expenses = items
+                        )
+                    }
+                }
+                .launchIn(this)
         }
     }
 }

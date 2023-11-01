@@ -12,7 +12,6 @@ data class ExpenseDTO(
     val method: PaymentMethodDTO,
     val reason: PaymentReasonDTO,
     val currency: CurrencyDTO,
-    val title: String,
     val description: String,
     val time: Long
 )

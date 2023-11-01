@@ -3,6 +3,8 @@ package com.dzhafarov.moneykeeper.expense.domain.repository
 import com.dzhafarov.moneykeeper.expense.db.dao.ExpenseDao
 import com.dzhafarov.moneykeeper.expense.domain.mapper.ExpenseMapper
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ExpensesRepositoryImpl @Inject constructor(
@@ -14,6 +16,15 @@ class ExpensesRepositoryImpl @Inject constructor(
         return expensesDao.getAll().map { dto ->
             expenseMapper.to(dto)
         }
+    }
+
+    override fun observeAll(): Flow<List<Expense>> {
+        return expensesDao.observeAll()
+            .map { dtoItems ->
+                dtoItems.map { dto ->
+                    expenseMapper.to(dto)
+                }
+            }
     }
 
     override suspend fun insert(expense: Expense) {

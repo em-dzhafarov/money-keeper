@@ -20,10 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -79,9 +79,11 @@ private fun HomeActions(
             is HomeAction.AddExpense -> {
                 navController.navigateTo(Destination.Screen.AddExpense)
             }
+
             is HomeAction.OpenNotifications -> {
                 navController.navigateTo(Destination.Screen.Notifications)
             }
+
             is HomeAction.OpenAboutAppInfo -> {
                 navController.navigateTo(Destination.Dialog.AboutApp)
             }
@@ -89,7 +91,6 @@ private fun HomeActions(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeUiContent(
     uiState: HomeUiState,
@@ -198,6 +199,12 @@ private fun SmallAddFab(
     FloatingActionButton(
         modifier = modifier,
         onClick = onClick,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            focusedElevation = 0.dp,
+            hoveredElevation = 0.dp
+        ),
         content = { AddIcon() }
     )
 }
@@ -211,6 +218,12 @@ private fun ExtendedAddFab(
     ExtendedFloatingActionButton(
         modifier = modifier,
         onClick = onClick,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            focusedElevation = 0.dp,
+            hoveredElevation = 0.dp
+        ),
         content = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -259,9 +272,17 @@ private fun ExpensesContent(
     LazyColumn(
         modifier = modifier,
         state = scrollState,
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = if (expenses.isEmpty()) {
+            Arrangement.Center
+        } else {
+            Arrangement.Top
+        },
+        horizontalAlignment = if (expenses.isEmpty()) {
+            Alignment.CenterHorizontally
+        } else {
+            Alignment.Start
+        },
+        contentPadding = PaddingValues(16.dp)
     ) {
         if (expenses.isEmpty()) {
             item {
@@ -273,14 +294,11 @@ private fun ExpensesContent(
             }
         } else {
             items(expenses) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = it.title,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                ) {
                     Text(
                         text = it.description,
                         style = MaterialTheme.typography.bodyMedium

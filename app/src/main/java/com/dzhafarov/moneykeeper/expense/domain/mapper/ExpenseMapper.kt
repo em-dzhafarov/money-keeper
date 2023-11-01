@@ -1,11 +1,9 @@
 package com.dzhafarov.moneykeeper.expense.domain.mapper
 
 import com.dzhafarov.moneykeeper.core.domain.mapper.Mapper
+import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.db.dto.ExpenseDTO
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import javax.inject.Inject
 
 class ExpenseMapper @Inject constructor(
@@ -21,9 +19,8 @@ class ExpenseMapper @Inject constructor(
             method = paymentMethodMapper.to(input.method),
             reason = paymentReasonMapper.to(input.reason),
             currency = currencyMapper.to(input.currency),
-            title = input.title,
             description = input.description,
-            time = LocalDateTime.ofInstant(Instant.ofEpochMilli(input.time), ZoneOffset.UTC)
+            time = Timestamp.of(input.time).localDateTime
         )
     }
 
@@ -34,9 +31,8 @@ class ExpenseMapper @Inject constructor(
             method = paymentMethodMapper.from(input.method),
             reason = paymentReasonMapper.from(input.reason),
             currency = currencyMapper.from(input.currency),
-            title = input.title,
             description = input.description,
-            time = input.time.toInstant(ZoneOffset.UTC).toEpochMilli()
+            time = Timestamp.of(input.time).milliseconds
         )
     }
 }

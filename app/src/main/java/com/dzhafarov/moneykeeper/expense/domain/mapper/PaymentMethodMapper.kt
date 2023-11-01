@@ -9,7 +9,7 @@ class PaymentMethodMapper @Inject constructor() : Mapper<PaymentMethodDTO, Payme
 
     override suspend fun to(input: PaymentMethodDTO): PaymentMethod {
         return when (input) {
-            PaymentMethodDTO.CARD -> PaymentMethod.Card
+            PaymentMethodDTO.CARD -> PaymentMethod.CreditCard
             PaymentMethodDTO.CASH -> PaymentMethod.Cash
             PaymentMethodDTO.ONLINE -> PaymentMethod.Online
         }
@@ -17,7 +17,7 @@ class PaymentMethodMapper @Inject constructor() : Mapper<PaymentMethodDTO, Payme
 
     override suspend fun from(input: PaymentMethod): PaymentMethodDTO {
         return when (input) {
-            is PaymentMethod.Card -> PaymentMethodDTO.CARD
+            is PaymentMethod.CreditCard -> PaymentMethodDTO.CARD
             is PaymentMethod.Cash -> PaymentMethodDTO.CASH
             is PaymentMethod.Online -> PaymentMethodDTO.ONLINE
         }

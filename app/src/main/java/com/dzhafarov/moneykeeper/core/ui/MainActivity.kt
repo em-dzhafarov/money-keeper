@@ -9,7 +9,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,14 +26,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dzhafarov.moneykeeper.about.ui.AboutAppDialog
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.dashboard.DashboardScreen
+import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
+import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
 import com.dzhafarov.moneykeeper.expense.ui.AddExpenseScreen
 import com.dzhafarov.moneykeeper.home.ui.HomeScreen
 import com.dzhafarov.moneykeeper.notifications.NotificationsScreen
@@ -56,7 +59,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
     val navController = rememberNavController()
@@ -65,7 +67,7 @@ fun MainContent() {
     val shouldBlur = Destination.isDialog(route)
 
     Scaffold(
-        modifier = Modifier.blur(if (shouldBlur) 1.dp else 0.dp),
+        modifier = Modifier.blur(if (shouldBlur) 2.dp else 0.dp),
         bottomBar = {
             BottomNavContainer(navController)
         }
@@ -183,6 +185,42 @@ private fun ContentNavContainer(
         dialog(
             route = Destination.Dialog.AboutApp.route,
             content = { AboutAppDialog(navController) }
+        )
+
+        dialog(
+            route = Destination.Dialog.DateSelector.route + "/{${DateSelector.SELECTED_DATE_ARG}}",
+            arguments = listOf(
+                navArgument(DateSelector.SELECTED_DATE_ARG) {
+                    type = NavType.LongType
+                }
+            ),
+            content = { entry ->
+                DateSelector(
+                    navController = navController,
+                    initial = entry.arguments?.getLong(DateSelector.SELECTED_DATE_ARG)
+                )
+            }
+        )
+
+        dialog(
+            route = Destination.Dialog.TimeSelector.route
+                    + "/{${TimeSelector.SELECTED_HOUR_ARG}}"
+                    + "/{${TimeSelector.SELECTED_MINUTE_ARG}}",
+            arguments = listOf(
+                navArgument(TimeSelector.SELECTED_HOUR_ARG) {
+                    type = NavType.IntType
+                },
+                navArgument(TimeSelector.SELECTED_MINUTE_ARG) {
+                    type = NavType.IntType
+                }
+            ),
+            content = { entry ->
+                TimeSelector(
+                    navController = navController,
+                    hours = entry.arguments?.getInt(TimeSelector.SELECTED_HOUR_ARG),
+                    minutes = entry.arguments?.getInt(TimeSelector.SELECTED_MINUTE_ARG)
+                )
+            }
         )
     }
 }

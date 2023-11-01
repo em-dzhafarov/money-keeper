@@ -12,7 +12,46 @@
     <string name="home_screen_no_expenses_yet">There are no expenses yet.\n Please add them.</string>
     <string name="home_screen_add_expense">New Expense</string>
 
+    <string name="add_expense_screen_payment_reason_title">What is payment reason?</string>
+    <string name="add_expense_screen_payment_method_title">What is payment method?</string>
+    <string name="add_expense_screen_amount_title">How much? </string>
+    <string name="add_expense_screen_date_time_title">When was the expense?</string>
+    <string name="add_expense_screen_amount_label">Amount</string>
+    <string name="add_expense_screen_description_title">Additional information</string>
+    <string name="add_expense_screen_description_label">Description (Optional)</string>
+    <string name="add_expense_screen_save">Save expense</string>
+
+    <string name="add_expense_screen_method_error">Please select your payment method.</string>
+    <string name="add_expense_screen_reason_error">Please select your expense reason.</string>
+    <string name="add_expense_screen_amount_error">Please enter a valid amount.</string>
+
+    <string name="payment_reason_food">Food</string>
+    <string name="payment_reason_beauty">Beauty</string>
+    <string name="payment_reason_health">Health</string>
+    <string name="payment_reason_study">Study</string>
+    <string name="payment_reason_clothes">Clothes</string>
+    <string name="payment_reason_accommodation">Accommodation</string>
+    <string name="payment_reason_travel">Travel</string>
+    <string name="payment_reason_transportation">Transportation</string>
+    <string name="payment_reason_subscription">Subscription</string>
+    <string name="payment_reason_tax">Tax</string>
+    <string name="payment_reason_entertainment">Entertainment</string>
+
+    <string name="payment_method_credit_card">Credit card</string>
+    <string name="payment_method_cash">Cash</string>
+    <string name="payment_method_online">Online</string>
+
+    <string name="currency_pln">PLN</string>
+    <string name="currency_usd">USD</string>
+    <string name="currency_eur">EUR</string>
+
+    <string name="dialog_date_title">Select date</string>
+    <string name="dialog_time_title">Select time</string>
+    <string name="dialog_date_time_confirm">Confirm</string>
+    <string name="dialog_date_time_cancel">Cancel</string>
+
     <string name="dialog_about_app_title">About this app</string>
     <string name="dialog_about_app_text">This app designed to take control of your budget.\n\nYou could easily add your expenses and incoming.\n\nSee your budget state with nice diagrams and different time frames.</string>
     <string name="dialog_about_app_confirm_button">Got it!</string>
+
 </resources>

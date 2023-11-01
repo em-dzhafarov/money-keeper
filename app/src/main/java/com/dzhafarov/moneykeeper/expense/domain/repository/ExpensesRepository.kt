@@ -1,10 +1,13 @@
 package com.dzhafarov.moneykeeper.expense.domain.repository
 
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
+import kotlinx.coroutines.flow.Flow
 
 interface ExpensesRepository {
 
     suspend fun getAll(): List<Expense>
+
+    fun observeAll(): Flow<List<Expense>>
 
     suspend fun insert(expense: Expense)
 
