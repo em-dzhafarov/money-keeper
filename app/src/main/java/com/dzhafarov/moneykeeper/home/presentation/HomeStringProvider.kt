@@ -5,4 +5,6 @@ interface HomeStringProvider {
     suspend fun welcome(userName: String): String
     suspend fun noExpensesYet(): String
     suspend fun addExpense(): String
+    suspend fun editExpense(): String
+    suspend fun paidByPrefix(): String
 }

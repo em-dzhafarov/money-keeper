@@ -149,7 +149,13 @@ private fun ContentNavContainer(
         )
 
         composable(
-            route = Destination.Screen.AddExpense.route,
+            route = Destination.Screen.AddExpense.route
+                    + "/{${AddExpenseScreen.SELECTED_EXPENSE_ID_ARG}}",
+            arguments = listOf(
+                navArgument(AddExpenseScreen.SELECTED_EXPENSE_ID_ARG) {
+                    type = NavType.LongType
+                }
+            ),
             enterTransition = {
                 scaleIn(
                     transformOrigin = TransformOrigin(1f, 1f)
@@ -160,8 +166,11 @@ private fun ContentNavContainer(
                     transformOrigin = TransformOrigin(1f, 1f)
                 )
             },
-            content = {
-                AddExpenseScreen(navController)
+            content = { entry ->
+                AddExpenseScreen(
+                    navController = navController,
+                    expenseId = entry.arguments?.getLong(AddExpenseScreen.SELECTED_EXPENSE_ID_ARG) ?: 0
+                )
             }
         )
 

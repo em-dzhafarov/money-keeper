@@ -5,14 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
+import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetCurrenciesUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetDefaultCurrencyUseCase
+import com.dzhafarov.moneykeeper.expense.domain.use_case.GetExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentMethodsUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentReasonsUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.SaveExpenseUseCase
+import com.dzhafarov.moneykeeper.expense.domain.use_case.UpdateExpenseUseCase
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.CurrencyMapper
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.PaymentMethodMapper
-import com.dzhafarov.moneykeeper.expense.presentation.mapper.PaymentReasonsMapper
+import com.dzhafarov.moneykeeper.expense.presentation.mapper.PaymentReasonMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +35,10 @@ class AddExpenseViewModel @Inject constructor(
     private val getCurrenciesUseCase: GetCurrenciesUseCase,
     private val getDefaultCurrencyUseCase: GetDefaultCurrencyUseCase,
     private val saveExpenseUseCase: SaveExpenseUseCase,
-    private val paymentReasonsMapper: PaymentReasonsMapper,
+    private val updateExpenseUseCase: UpdateExpenseUseCase,
+    private val deleteExpenseByIdUseCase: DeleteExpenseByIdUseCase,
+    private val getExpenseByIdUseCase: GetExpenseByIdUseCase,
+    private val paymentReasonMapper: PaymentReasonMapper,
     private val paymentMethodMapper: PaymentMethodMapper,
     private val currencyMapper: CurrencyMapper
 ) : ViewModel() {
@@ -44,15 +50,49 @@ class AddExpenseViewModel @Inject constructor(
     val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
 
     private var currentTimestamp: Timestamp = Timestamp.now()
+    private var expenseId = 0L
+    private val isEditMode: Boolean get() = expenseId != 0L
 
     val initialDate: Long get() = currentTimestamp.milliseconds
     val initialTime: Pair<Int, Int> get() = currentTimestamp.let { it.hours to it.minutes }
 
-    init {
+
+    fun initializeExpenseIfNeeded(id: Long) {
+        expenseId = id
+
+        if (isEditMode) {
+            prepopulateWithExistingExpense(id)
+        } else {
+            onDateSelected(initialDate)
+            onTimeSelected(initialTime)
+        }
+
         loadStrings()
         loadPaymentReasons()
         loadPaymentMethods()
         loadCurrencies()
+    }
+
+    private fun prepopulateWithExistingExpense(id: Long) {
+        viewModelScope.launch {
+            val expense = getExpenseByIdUseCase.execute(id)
+
+            if (expense != null) {
+                _uiState.update {
+                    it.copy(
+                        selectedPaymentMethod = paymentMethodMapper.map(expense.method),
+                        selectedPaymentReason = paymentReasonMapper.map(expense.reason),
+                        selectedCurrency = currencyMapper.map(expense.currency),
+                        amountValue = expense.amount.toString(),
+                        descriptionValue = expense.description
+                    )
+                }
+
+                val timestamp = Timestamp.of(expense.time)
+                onDateSelected(timestamp.milliseconds)
+                onTimeSelected(timestamp.hours to timestamp.minutes)
+            }
+        }
     }
 
     fun onBackPressed() {
@@ -117,6 +157,7 @@ class AddExpenseViewModel @Inject constructor(
         val amount = state.amountValue.toDoubleOrNull()
         val method = state.selectedPaymentMethod?.value
         val reason = state.selectedPaymentReason?.value
+        val currency = state.selectedCurrency?.value
 
         if (amount == null) {
             _uiState.update {
@@ -142,15 +183,15 @@ class AddExpenseViewModel @Inject constructor(
             }
         }
 
-        if (reason == null || method == null || amount == null) {
+        if (reason == null || method == null || amount == null || currency == null) {
             return null
         }
 
-        val currency = state.selectedCurrency.value
         val description = state.descriptionValue
         val time = currentTimestamp.localDateTime
 
         return Expense(
+            id = expenseId,
             amount = amount,
             method = method,
             reason = reason,
@@ -160,12 +201,16 @@ class AddExpenseViewModel @Inject constructor(
         )
     }
 
-
     fun onSaveClick() {
         viewModelScope.launch {
             validateAndBuildExpense()?.let { expense ->
-                saveExpenseUseCase.execute(expense)
-                _uiAction.emit(AddExpenseAction.ExpenseSaved)
+                if (isEditMode) {
+                     updateExpenseUseCase.execute(expense)
+                    _uiAction.emit(AddExpenseAction.ExpenseUpdated)
+                } else {
+                    saveExpenseUseCase.execute(expense)
+                    _uiAction.emit(AddExpenseAction.ExpenseSaved)
+                }
             }
         }
     }
@@ -225,7 +270,7 @@ class AddExpenseViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
-                    title = stringProvider.title(),
+                    title = stringProvider.title(isEditMode),
                     paymentReasonTitle = stringProvider.paymentReasonTitle(),
                     paymentMethodTitle = stringProvider.paymentMethodTitle(),
                     dateTimeTitle = stringProvider.dateTimeTitle(),
@@ -233,7 +278,7 @@ class AddExpenseViewModel @Inject constructor(
                     amountLabel = stringProvider.amountLabel(),
                     descriptionLabel = stringProvider.descriptionLabel(),
                     descriptionTitle = stringProvider.descriptionTitle(),
-                    saveTitle = stringProvider.saveTitle()
+                    saveTitle = stringProvider.saveTitle(isEditMode)
                 )
             }
         }
@@ -244,7 +289,7 @@ class AddExpenseViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(
                     paymentReasons = getPaymentReasonsUseCase.execute()
-                        .map { paymentReasonsMapper.map(it) }
+                        .map { paymentReasonMapper.map(it) }
                 )
             }
         }

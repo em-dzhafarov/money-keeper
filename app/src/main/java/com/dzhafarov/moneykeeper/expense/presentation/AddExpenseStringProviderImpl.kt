@@ -9,8 +9,14 @@ class AddExpenseStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AddExpenseStringProvider {
 
-    override suspend fun title(): String {
-        return context.getString(R.string.add_expense_screen)
+    override suspend fun title(isEdit: Boolean): String {
+        return context.getString(
+            if (isEdit) {
+                R.string.edit_expense_screen
+            } else {
+                R.string.add_expense_screen
+            }
+        )
     }
 
     override suspend fun paymentReasonTitle(): String {
@@ -41,8 +47,14 @@ class AddExpenseStringProviderImpl @Inject constructor(
         return context.getString(R.string.add_expense_screen_amount_title)
     }
 
-    override suspend fun saveTitle(): String {
-        return context.getString(R.string.add_expense_screen_save)
+    override suspend fun saveTitle(isEdit: Boolean): String {
+        return context.getString(
+            if (isEdit) {
+                R.string.add_expense_screen_update
+            } else {
+                R.string.add_expense_screen_save
+            }
+        )
     }
 
     override suspend fun dateTimeTitle(): String {

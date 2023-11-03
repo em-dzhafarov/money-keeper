@@ -8,7 +8,7 @@ import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class PaymentReasonsMapper @Inject constructor(
+class PaymentReasonMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) : OneWayMapper<PaymentReason, PaymentReasonItem> {
 

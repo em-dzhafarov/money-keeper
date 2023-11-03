@@ -34,6 +34,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -66,11 +66,20 @@ import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
 import kotlinx.coroutines.flow.Flow
 
+object AddExpenseScreen {
+    const val SELECTED_EXPENSE_ID_ARG = "selected_expense_id"
+}
+
 @Composable
 fun AddExpenseScreen(
     navController: NavController,
+    expenseId: Long = 0,
     viewModel: AddExpenseViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = expenseId) {
+        viewModel.initializeExpenseIfNeeded(expenseId)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
 
     AddExpenseActions(
@@ -111,6 +120,7 @@ private fun ObserveResults(
 ) {
     navController.currentBackStackEntry
         ?.savedStateHandle
+        ?.takeIf { it.contains(DateSelector.SELECTED_DATE_RESULT) }
         ?.getStateFlow(DateSelector.SELECTED_DATE_RESULT, defaultDate)
         ?.collectAsState()
         ?.value
@@ -118,6 +128,7 @@ private fun ObserveResults(
 
     navController.currentBackStackEntry
         ?.savedStateHandle
+        ?.takeIf { it.contains(TimeSelector.SELECTED_TIME_RESULT) }
         ?.getStateFlow(TimeSelector.SELECTED_TIME_RESULT, defaultTime)
         ?.collectAsState()
         ?.value
@@ -150,6 +161,10 @@ private fun AddExpenseActions(
             }
 
             is AddExpenseAction.ExpenseSaved -> {
+                navController.popBackStack()
+            }
+
+            is AddExpenseAction.ExpenseUpdated -> {
                 navController.popBackStack()
             }
         }
@@ -238,7 +253,7 @@ private fun MainContent(
     amountValue: String,
     onAmountValueChanged: (String) -> Unit,
     currencies: List<CurrencyItem>,
-    selectedCurrency: CurrencyItem,
+    selectedCurrency: CurrencyItem?,
     onCurrencySelected: (CurrencyItem) -> Unit,
     dateTimeTitle: String,
     dateTimeSeparator: String,
@@ -520,7 +535,7 @@ private fun AmountContent(
     value: String,
     errorText: String,
     currencies: List<CurrencyItem>,
-    currency: CurrencyItem,
+    currency: CurrencyItem?,
     onValueChanged: (String) -> Unit,
     onSelectCurrency: (CurrencyItem) -> Unit,
     modifier: Modifier = Modifier
@@ -556,7 +571,7 @@ private fun AmountContent(
             trailingIcon = {
                 Text(
                     modifier = Modifier.clickable { isCurrencyPickerShown = true },
-                    text = currency.displayName,
+                    text = currency?.code.orEmpty(),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -599,7 +614,7 @@ private fun CurrencyPicker(
     onDismiss: () -> Unit,
     onSelect: (CurrencyItem) -> Unit,
     items: List<CurrencyItem>,
-    selected: CurrencyItem,
+    selected: CurrencyItem?,
     modifier: Modifier = Modifier
 ) {
     Popup(
@@ -616,9 +631,9 @@ private fun CurrencyPicker(
                         .fillMaxWidth(fraction = 0.2f)
                         .clickable { onSelect(currency) }
                         .padding(8.dp),
-                    text = currency.displayName,
+                    text = currency.code,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = if (selected.value == currency.value) {
+                        color = if (selected?.value == currency.value) {
                             MaterialTheme.colorScheme.onSecondary
                         } else {
                             MaterialTheme.colorScheme.inversePrimary
