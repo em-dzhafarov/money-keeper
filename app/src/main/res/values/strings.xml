@@ -6,11 +6,14 @@
     <string name="profile_screen">Profile</string>
     <string name="settings_screen">Settings</string>
     <string name="add_expense_screen">New Expense</string>
+    <string name="edit_expense_screen">Edit Expense</string>
     <string name="notifications_screen">Notifications</string>
 
     <string name="home_screen_welcome_message">Welcome %s!</string>
     <string name="home_screen_no_expenses_yet">There are no expenses yet.\n Please add them.</string>
     <string name="home_screen_add_expense">New Expense</string>
+    <string name="home_screen_edit_expense">Edit</string>
+    <string name="home_screen_paid_by_prefix">Paid by: \u0020</string>
 
     <string name="add_expense_screen_payment_reason_title">What is payment reason?</string>
     <string name="add_expense_screen_payment_method_title">What is payment method?</string>
@@ -20,6 +23,7 @@
     <string name="add_expense_screen_description_title">Additional information</string>
     <string name="add_expense_screen_description_label">Description (Optional)</string>
     <string name="add_expense_screen_save">Save expense</string>
+    <string name="add_expense_screen_update">Update expense</string>
 
     <string name="add_expense_screen_method_error">Please select your payment method.</string>
     <string name="add_expense_screen_reason_error">Please select your expense reason.</string>

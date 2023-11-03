@@ -60,6 +60,12 @@ class ExpensesRepositoryImpl @Inject constructor(
         expenses.forEach { update(it) }
     }
 
+    override suspend fun findById(id: Long): Expense? {
+        return expensesDao.findById(id)?.let {
+            expenseMapper.to(it)
+        }
+    }
+
     override suspend fun clear() {
         expensesDao.clear()
     }

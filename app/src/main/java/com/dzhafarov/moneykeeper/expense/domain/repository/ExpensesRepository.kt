@@ -21,5 +21,7 @@ interface ExpensesRepository {
 
     suspend fun update(expenses: List<Expense>)
 
+    suspend fun findById(id: Long): Expense?
+
     suspend fun clear()
 }

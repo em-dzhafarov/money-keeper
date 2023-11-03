@@ -3,7 +3,9 @@ package com.dzhafarov.moneykeeper.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
+import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +24,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val stringProvider: HomeStringProvider,
     private val getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase,
-    private val observeExpensesUseCase: ObserveExpensesUseCase
+    private val observeExpensesUseCase: ObserveExpensesUseCase,
+    private val deleteExpenseByIdUseCase: DeleteExpenseByIdUseCase,
+    private val expenseMapper: ExpenseMapper
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -46,6 +50,19 @@ class HomeViewModel @Inject constructor(
     fun onNotificationsClick() {
         viewModelScope.launch {
             _uiAction.emit(HomeAction.OpenNotifications)
+        }
+    }
+
+    fun onExpenseEditClicked(id: Long) {
+        viewModelScope.launch {
+            _uiAction.emit(HomeAction.EditExpense(id))
+        }
+    }
+
+    fun onExpenseDeleteSwiped(id: Long) {
+        viewModelScope.launch {
+            deleteExpenseByIdUseCase.execute(id)
+            _uiAction.emit(HomeAction.ExpenseDeleted)
         }
     }
 
@@ -74,7 +91,9 @@ class HomeViewModel @Inject constructor(
                 it.copy(
                     title = stringProvider.title(),
                     emptyExpensesMessage = stringProvider.noExpensesYet(),
-                    addExpenseMessage = stringProvider.addExpense()
+                    addExpenseMessage = stringProvider.addExpense(),
+                    editExpenseLabel = stringProvider.editExpense(),
+                    paidByPrefix = stringProvider.paidByPrefix()
                 )
             }
         }
@@ -84,9 +103,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             observeExpensesUseCase.execute()
                 .onEach { items ->
-                    _uiState.update {
-                        it.copy(
-                            expenses = items
+                    _uiState.update { state ->
+                        state.copy(
+                            expenses = items.map { expenseMapper.map(it) }
                         )
                     }
                 }

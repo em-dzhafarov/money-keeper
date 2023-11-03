@@ -1,7 +1,5 @@
 package com.dzhafarov.moneykeeper.expense.presentation
 
-import com.dzhafarov.moneykeeper.expense.domain.model.Currency
-
 data class AddExpenseUiState(
     val title: String = "",
     val paymentReasonTitle: String = "",
@@ -17,7 +15,7 @@ data class AddExpenseUiState(
     val amountTitle: String = "",
     val amountLabel: String = "",
     val currencies: List<CurrencyItem> = emptyList(),
-    val selectedCurrency: CurrencyItem = CurrencyItem(Currency.USD, "USD"),
+    val selectedCurrency: CurrencyItem? = null,
     val dateTimeTitle: String = "",
     val dateTimeSeparator: String = "-",
     val formattedDate: String = "",

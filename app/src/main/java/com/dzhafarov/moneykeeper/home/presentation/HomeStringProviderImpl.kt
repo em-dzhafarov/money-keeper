@@ -24,4 +24,12 @@ class HomeStringProviderImpl @Inject constructor(
     override suspend fun addExpense(): String {
         return context.getString(R.string.home_screen_add_expense)
     }
+
+    override suspend fun editExpense(): String {
+        return context.getString(R.string.home_screen_edit_expense)
+    }
+
+    override suspend fun paidByPrefix(): String {
+        return context.getString(R.string.home_screen_paid_by_prefix)
+    }
 }

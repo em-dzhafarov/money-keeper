@@ -1,11 +1,13 @@
 package com.dzhafarov.moneykeeper.home.presentation
 
-import com.dzhafarov.moneykeeper.expense.domain.model.Expense
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
 
 data class HomeUiState(
     val title: String = "",
     val welcomeMessage: String = "",
     val emptyExpensesMessage: String = "",
     val addExpenseMessage: String = "",
-    val expenses: List<Expense> = emptyList()
+    val editExpenseLabel: String = "",
+    val paidByPrefix: String = "",
+    val expenses: List<ExpenseItem> = emptyList()
 )
