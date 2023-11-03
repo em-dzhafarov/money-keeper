@@ -48,6 +48,7 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,7 +56,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -360,8 +363,15 @@ private fun ExpensesContent(
             itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
                 val dismissState = rememberDismissState()
 
-                if (dismissState.isDismissed(direction = DismissDirection.EndToStart)) {
+                if (dismissState.isDismissed(DismissDirection.EndToStart)) {
                     onDeleteSwiped(item.id)
+                }
+
+                if (dismissState.dismissDirection == DismissDirection.EndToStart) {
+                    val haptic = LocalHapticFeedback.current
+                    LaunchedEffect(Unit) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
                 }
 
                 SwipeToDismiss(
