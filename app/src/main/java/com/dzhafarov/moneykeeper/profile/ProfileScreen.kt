@@ -21,7 +21,7 @@ fun ProfileScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             BaseTopBar(
-                title = "Profile",
+                title = { Text(text = "Profile") },
                 onNavigationIconPressed = { navController.popBackStack() }
             )
         }

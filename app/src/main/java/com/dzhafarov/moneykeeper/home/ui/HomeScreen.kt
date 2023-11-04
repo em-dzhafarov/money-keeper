@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,7 +51,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,6 +67,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -72,6 +77,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
 import com.dzhafarov.moneykeeper.core.ui.Destination
@@ -156,6 +162,7 @@ private fun HomeActions(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeUiContent(
     uiState: HomeUiState,
@@ -167,9 +174,13 @@ private fun HomeUiContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scrollState = rememberLazyListState()
+    val topBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
@@ -182,9 +193,31 @@ private fun HomeUiContent(
         topBar = {
             BaseTopBar(
                 modifier = Modifier.fillMaxWidth(),
-                title = uiState.title,
+                title = {
+                    val fraction = topBarState.collapsedFraction
+
+                    AnimatedVisibility(
+                        visible = fraction > 0.5f,
+                        enter = expandIn(expandFrom = Alignment.TopStart),
+                        exit = shrinkOut()
+                    ) {
+                        Text(text = uiState.title)
+                    }
+
+                    AnimatedVisibility(
+                        visible = fraction <= 0.5f,
+                        enter = expandIn(),
+                        exit = shrinkOut()
+                    ) {
+                        Text(
+                            text = uiState.welcomeMessage,
+                        )
+                    }
+                },
                 navigationIcon = Icons.Default.Home,
+                scrollingBehavior = scrollBehavior,
                 onNavigationIconPressed = onHomeClick,
+                isLarge = true,
                 actions = {
                     IconButton(onClick = onNotificationsClick) {
                         Icon(
@@ -196,51 +229,15 @@ private fun HomeUiContent(
             )
         }
     ) { padding ->
-        MainContent(
+        ExpensesContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
             scrollState = scrollState,
-            welcomeMessage = uiState.welcomeMessage,
             emptyExpensesMessage = uiState.emptyExpensesMessage,
             editLabel = uiState.editExpenseLabel,
             paidByPrefix = uiState.paidByPrefix,
             expenses = uiState.expenses,
-            onEditClicked = onEditClicked,
-            onDeleteSwiped = onDeleteSwiped
-        )
-    }
-}
-
-@Composable
-private fun MainContent(
-    modifier: Modifier = Modifier,
-    scrollState: LazyListState,
-    welcomeMessage: String,
-    emptyExpensesMessage: String,
-    editLabel: String,
-    paidByPrefix: String,
-    onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (ExpenseItem) -> Unit,
-    expenses: List<ExpenseItem>
-) {
-    Column(
-        modifier = modifier
-    ) {
-        GreetingMessage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            message = welcomeMessage
-        )
-
-        ExpensesContent(
-            modifier = Modifier.fillMaxSize(),
-            expenses = expenses,
-            emptyExpensesMessage = emptyExpensesMessage,
-            paidByPrefix = paidByPrefix,
-            editLabel = editLabel,
-            scrollState = scrollState,
             onEditClicked = onEditClicked,
             onDeleteSwiped = onDeleteSwiped
         )
@@ -330,18 +327,6 @@ private fun AddIcon() {
         imageVector = Icons.Outlined.Add,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.onPrimary
-    )
-}
-
-@Composable
-private fun GreetingMessage(
-    message: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        modifier = modifier,
-        text = message,
-        style = MaterialTheme.typography.titleLarge
     )
 }
 

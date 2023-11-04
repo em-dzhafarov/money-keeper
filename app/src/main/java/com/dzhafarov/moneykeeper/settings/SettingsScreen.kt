@@ -21,7 +21,7 @@ fun SettingsScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             BaseTopBar(
-                title = "Settings",
+                title = { Text(text = "Settings") },
                 onNavigationIconPressed = { navController.popBackStack() }
             )
         }

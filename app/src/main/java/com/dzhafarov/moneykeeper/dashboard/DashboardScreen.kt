@@ -21,7 +21,7 @@ fun DashboardScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             BaseTopBar(
-                title = "Dashboard",
+                title = { Text(text = "Dashboard") },
                 onNavigationIconPressed = { navController.popBackStack() }
             )
         }

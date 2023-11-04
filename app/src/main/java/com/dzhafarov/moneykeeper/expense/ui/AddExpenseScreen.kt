@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -171,6 +172,7 @@ private fun AddExpenseActions(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddExpenseUiContent(
     uiState: AddExpenseUiState,
@@ -189,7 +191,7 @@ private fun AddExpenseUiContent(
         modifier = modifier,
         topBar = {
             BaseTopBar(
-                title = uiState.title,
+                title = { Text(text = uiState.title) },
                 navigationIcon = Icons.Default.ArrowBack,
                 onNavigationIconPressed = onBackPressed
             )

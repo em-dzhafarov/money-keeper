@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -131,10 +132,13 @@ class HomeViewModel @Inject constructor(
     private fun observeExpenses() {
         viewModelScope.launch {
             observeExpensesUseCase.execute()
+                .map { items ->
+                    items.map { expenseMapper.map(it) }
+                }
                 .onEach { items ->
                     _uiState.update { state ->
                         state.copy(
-                            expenses = items.map { expenseMapper.map(it) }.toMutableList()
+                            expenses = items
                         )
                     }
                 }
