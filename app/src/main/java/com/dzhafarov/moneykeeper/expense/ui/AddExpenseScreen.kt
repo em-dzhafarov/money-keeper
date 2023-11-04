@@ -279,7 +279,7 @@ private fun MainContent(
             onSelected = onPaymentReasonSelected
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         PaymentMethodContent(
             title = paymentMethodTitle,
@@ -289,7 +289,7 @@ private fun MainContent(
             onSelected = onPaymentMethodSelected
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         AmountContent(
             modifier = Modifier
@@ -305,7 +305,7 @@ private fun MainContent(
             onSelectCurrency = onCurrencySelected
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         DateTimeContent(
             modifier = Modifier
@@ -319,7 +319,7 @@ private fun MainContent(
             onSelectTime = onSelectTime
         )
 
-        Spacer(modifier = Modifier.width(24.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         DescriptionContent(
             modifier = Modifier
@@ -362,7 +362,7 @@ private fun PaymentReasonContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        LazyRow(contentPadding = PaddingValues(all = 16.dp)) {
+        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
             itemsIndexed(items) { index, item ->
                 PaymentReasonItemContent(item, selected == item, onSelected)
 
@@ -408,7 +408,7 @@ private fun PaymentMethodContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        LazyRow(contentPadding = PaddingValues(all = 16.dp)) {
+        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
             itemsIndexed(items) { index, item ->
                 PaymentMethodItemContent(item, selected == item, onSelected)
 
@@ -547,7 +547,7 @@ private fun AmountContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
 
         var isCurrencyPickerShown by remember { mutableStateOf(false) }
 
@@ -739,7 +739,7 @@ private fun DescriptionContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
