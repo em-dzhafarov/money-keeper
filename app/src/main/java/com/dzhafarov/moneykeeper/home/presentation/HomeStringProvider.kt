@@ -7,4 +7,6 @@ interface HomeStringProvider {
     suspend fun addExpense(): String
     suspend fun editExpense(): String
     suspend fun paidByPrefix(): String
+    suspend fun expenseDeletedMessage(): String
+    suspend fun undoDeleteButton(): String
 }

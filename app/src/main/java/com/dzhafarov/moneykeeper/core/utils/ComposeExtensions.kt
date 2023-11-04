@@ -20,7 +20,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 @Composable
 fun <T> Flow<T>.collectAsEffect(
     context: CoroutineContext = EmptyCoroutineContext,
-    block: (T) -> Unit
+    block: suspend (T) -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
         onEach(block)

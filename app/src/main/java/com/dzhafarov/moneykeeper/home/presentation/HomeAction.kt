@@ -5,5 +5,10 @@ sealed class HomeAction {
     object OpenNotifications : HomeAction()
     object OpenAboutAppInfo : HomeAction()
     data class EditExpense(val id: Long) : HomeAction()
-    object ExpenseDeleted : HomeAction()
+    data class DeleteExpense(
+        val message: String,
+        val actionLabel: String,
+        val onActionPerformed: () -> Unit,
+        val onDismissed: suspend () -> Unit,
+    ) : HomeAction()
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +33,7 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _uiAction: MutableSharedFlow<HomeAction> = MutableSharedFlow()
+    private val _uiAction: MutableSharedFlow<HomeAction> = MutableSharedFlow(extraBufferCapacity = 1)
     val uiAction: SharedFlow<HomeAction> = _uiAction.asSharedFlow()
 
     init {
@@ -59,10 +60,38 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onExpenseDeleteSwiped(id: Long) {
+    fun onExpenseDeleteSwiped(item: ExpenseItem) {
+        val position = _uiState.value.expenses.indexOf(item)
+
         viewModelScope.launch {
-            deleteExpenseByIdUseCase.execute(id)
-            _uiAction.emit(HomeAction.ExpenseDeleted)
+            _uiState.update { state ->
+                state.copy(
+                    expenses = state.expenses
+                        .toMutableList()
+                        .apply { remove(item) }
+                        .toList()
+                )
+            }
+
+            _uiAction.emit(
+                HomeAction.DeleteExpense(
+                    message = stringProvider.expenseDeletedMessage(),
+                    actionLabel = stringProvider.undoDeleteButton(),
+                    onActionPerformed = {
+                        _uiState.update { state ->
+                            state.copy(
+                                expenses = state.expenses
+                                    .toMutableList()
+                                    .apply { add(position, item) }
+                                    .toList()
+                            )
+                        }
+                    },
+                    onDismissed = {
+                        deleteExpenseByIdUseCase.execute(item.id)
+                    }
+                )
+            )
         }
     }
 
@@ -105,7 +134,7 @@ class HomeViewModel @Inject constructor(
                 .onEach { items ->
                     _uiState.update { state ->
                         state.copy(
-                            expenses = items.map { expenseMapper.map(it) }
+                            expenses = items.map { expenseMapper.map(it) }.toMutableList()
                         )
                     }
                 }

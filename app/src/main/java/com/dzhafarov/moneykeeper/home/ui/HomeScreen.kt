@@ -1,6 +1,5 @@
 package com.dzhafarov.moneykeeper.home.ui
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -44,6 +43,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
@@ -51,13 +54,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -85,10 +90,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     HomeActions(
         actions = viewModel.uiAction,
-        navController = navController
+        navController = navController,
+        snackbarHostState = snackbarHostState
     )
 
     HomeUiContent(
@@ -97,17 +104,17 @@ fun HomeScreen(
         onHomeClick = viewModel::onHomeClick,
         onNotificationsClick = viewModel::onNotificationsClick,
         onEditClicked = viewModel::onExpenseEditClicked,
-        onDeleteSwiped = viewModel::onExpenseDeleteSwiped
+        onDeleteSwiped = viewModel::onExpenseDeleteSwiped,
+        snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
 private fun HomeActions(
     actions: Flow<HomeAction>,
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
-
     actions.collectAsEffect { action ->
         when (action) {
             is HomeAction.AddExpense -> {
@@ -132,8 +139,18 @@ private fun HomeActions(
                 navController.navigateTo(Destination.Dialog.AboutApp)
             }
 
-            is HomeAction.ExpenseDeleted -> {
-                Toast.makeText(context, "Expense successfully deleted", Toast.LENGTH_SHORT).show()
+            is HomeAction.DeleteExpense -> {
+                val result = snackbarHostState.showSnackbar(
+                    message = action.message,
+                    actionLabel = action.actionLabel,
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Long
+                )
+
+                when (result) {
+                    SnackbarResult.ActionPerformed -> action.onActionPerformed()
+                    SnackbarResult.Dismissed -> action.onDismissed()
+                }
             }
         }
     }
@@ -146,12 +163,14 @@ private fun HomeUiContent(
     onHomeClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (Long) -> Unit
+    onDeleteSwiped: (ExpenseItem) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val scrollState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FabContent(
@@ -202,7 +221,7 @@ private fun MainContent(
     editLabel: String,
     paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (Long) -> Unit,
+    onDeleteSwiped: (ExpenseItem) -> Unit,
     expenses: List<ExpenseItem>
 ) {
     Column(
@@ -261,6 +280,7 @@ private fun SmallAddFab(
     FloatingActionButton(
         modifier = modifier,
         onClick = onClick,
+        containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp,
@@ -280,6 +300,7 @@ private fun ExtendedAddFab(
     ExtendedFloatingActionButton(
         modifier = modifier,
         onClick = onClick,
+        containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp,
@@ -308,7 +329,7 @@ private fun AddIcon() {
     Icon(
         imageVector = Icons.Outlined.Add,
         contentDescription = null,
-        tint = MaterialTheme.colorScheme.surfaceTint
+        tint = MaterialTheme.colorScheme.onPrimary
     )
 }
 
@@ -332,7 +353,7 @@ private fun ExpensesContent(
     editLabel: String,
     paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (Long) -> Unit,
+    onDeleteSwiped: (ExpenseItem) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -362,9 +383,21 @@ private fun ExpensesContent(
         } else {
             itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
                 val dismissState = rememberDismissState()
+                var lastDismissedItemId by remember { mutableLongStateOf(-1L) }
 
                 if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-                    onDeleteSwiped(item.id)
+                    if (lastDismissedItemId != item.id) {
+                        onDeleteSwiped(item)
+                        lastDismissedItemId = item.id
+                    } else {
+                        LaunchedEffect(Unit) {
+                            dismissState.snapTo(DismissValue.Default)
+                        }
+                    }
+                }
+
+                if (dismissState.currentValue == DismissValue.Default) {
+                    lastDismissedItemId = -1L
                 }
 
                 if (dismissState.dismissDirection == DismissDirection.EndToStart) {

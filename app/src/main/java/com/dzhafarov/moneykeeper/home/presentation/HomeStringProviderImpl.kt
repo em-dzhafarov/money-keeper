@@ -32,4 +32,12 @@ class HomeStringProviderImpl @Inject constructor(
     override suspend fun paidByPrefix(): String {
         return context.getString(R.string.home_screen_paid_by_prefix)
     }
+
+    override suspend fun expenseDeletedMessage(): String {
+        return context.getString(R.string.home_screen_expense_deleted)
+    }
+
+    override suspend fun undoDeleteButton(): String {
+        return context.getString(R.string.home_screen_expense_deleted_undo)
+    }
 }
