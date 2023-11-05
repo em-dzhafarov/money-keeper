@@ -20,7 +20,7 @@ class ExpenseMapper @Inject constructor(
             reason = paymentReasonMapper.to(input.reason),
             currency = currencyMapper.to(input.currency),
             description = input.description,
-            time = Timestamp.of(input.time).localDateTime
+            time = Timestamp.of(input.time)
         )
     }
 
@@ -32,7 +32,7 @@ class ExpenseMapper @Inject constructor(
             reason = paymentReasonMapper.from(input.reason),
             currency = currencyMapper.from(input.currency),
             description = input.description,
-            time = Timestamp.of(input.time).milliseconds
+            time = input.time.milliseconds
         )
     }
 }

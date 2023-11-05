@@ -1,5 +1,6 @@
 package com.dzhafarov.moneykeeper.date_time.domain
 
+import java.sql.Time
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -25,6 +26,12 @@ value class Timestamp(private val value: Long) {
 
     val localDateTime: LocalDateTime
         get() = LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.systemDefault())
+
+    val previousDate: Timestamp
+        get() {
+            val ldt = localDateTime
+            return of(ldt.toLocalDate().minusDays(1).atTime(ldt.toLocalTime()))
+        }
 
     companion object {
         private const val DEFAULT_TIME_PATTERN = "hh:mm a"
@@ -80,6 +87,10 @@ value class Timestamp(private val value: Long) {
 
         fun of(milliseconds: Long): Timestamp {
             return Timestamp(milliseconds)
+        }
+
+        fun areDatesEqual(first: Timestamp, second: Timestamp): Boolean {
+            return first.localDateTime.toLocalDate().isEqual(second.localDateTime.toLocalDate())
         }
     }
 }

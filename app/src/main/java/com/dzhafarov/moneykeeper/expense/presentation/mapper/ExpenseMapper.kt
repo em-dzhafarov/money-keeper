@@ -1,15 +1,16 @@
 package com.dzhafarov.moneykeeper.expense.presentation.mapper
 
 import com.dzhafarov.moneykeeper.core.domain.mapper.OneWayMapper
-import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
+import com.dzhafarov.moneykeeper.home.presentation.DateTimePresentationMapper
 import javax.inject.Inject
 
 class ExpenseMapper @Inject constructor(
     private val paymentMethodMapper: PaymentMethodMapper,
     private val paymentReasonMapper: PaymentReasonMapper,
-    private val currencyMapper: CurrencyMapper
+    private val currencyMapper: CurrencyMapper,
+    private val dateTimePresentationMapper: DateTimePresentationMapper
 ) : OneWayMapper<Expense, ExpenseItem> {
 
     override suspend fun map(input: Expense): ExpenseItem {
@@ -20,7 +21,7 @@ class ExpenseMapper @Inject constructor(
             reason = paymentReasonMapper.map(input.reason),
             currency = currencyMapper.map(input.currency),
             description = input.description,
-            time = Timestamp.of(input.time)
+            time = dateTimePresentationMapper.map(input.time)
         )
     }
 }

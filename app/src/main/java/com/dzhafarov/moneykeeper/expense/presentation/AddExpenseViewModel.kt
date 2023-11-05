@@ -84,11 +84,12 @@ class AddExpenseViewModel @Inject constructor(
                         selectedPaymentReason = paymentReasonMapper.map(expense.reason),
                         selectedCurrency = currencyMapper.map(expense.currency),
                         amountValue = expense.amount.toString(),
-                        descriptionValue = expense.description
+                        descriptionValue = expense.description,
+                        isDeleteVisible = true
                     )
                 }
 
-                val timestamp = Timestamp.of(expense.time)
+                val timestamp = expense.time
                 onDateSelected(timestamp.milliseconds)
                 onTimeSelected(timestamp.hours to timestamp.minutes)
             }
@@ -187,18 +188,22 @@ class AddExpenseViewModel @Inject constructor(
             return null
         }
 
-        val description = state.descriptionValue
-        val time = currentTimestamp.localDateTime
-
         return Expense(
             id = expenseId,
             amount = amount,
             method = method,
             reason = reason,
             currency = currency,
-            description = description,
-            time = time
+            description = state.descriptionValue,
+            time = currentTimestamp
         )
+    }
+
+    fun onDeleteClick() {
+        viewModelScope.launch {
+            deleteExpenseByIdUseCase.execute(expenseId)
+            _uiAction.emit(AddExpenseAction.ExpenseDeleted)
+        }
     }
 
     fun onSaveClick() {
@@ -278,7 +283,8 @@ class AddExpenseViewModel @Inject constructor(
                     amountLabel = stringProvider.amountLabel(),
                     descriptionLabel = stringProvider.descriptionLabel(),
                     descriptionTitle = stringProvider.descriptionTitle(),
-                    saveTitle = stringProvider.saveTitle(isEditMode)
+                    saveTitle = stringProvider.saveTitle(isEditMode),
+                    deleteTitle = stringProvider.deleteTitle()
                 )
             }
         }

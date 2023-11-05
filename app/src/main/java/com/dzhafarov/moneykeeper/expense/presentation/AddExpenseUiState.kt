@@ -21,6 +21,8 @@ data class AddExpenseUiState(
     val formattedDate: String = "",
     val formattedTime: String = "",
     val saveTitle: String = "",
+    val deleteTitle: String = "",
+    val isDeleteVisible: Boolean = false,
     val descriptionTitle: String = "",
     val descriptionLabel: String = "",
     val descriptionValue: String = ""

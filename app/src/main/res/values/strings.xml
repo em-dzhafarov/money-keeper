@@ -17,6 +17,11 @@
     <string name="home_screen_expense_deleted">Expense successfully deleted.</string>
     <string name="home_screen_expense_deleted_undo">Undo</string>
 
+    <string name="label_today">Today</string>
+    <string name="label_yesterday">Yesterday</string>
+    <string name="label_at_time">at %1$s</string>
+    <string name="label_on_date">On %1$s</string>
+
     <string name="add_expense_screen_payment_reason_title">What is payment reason?</string>
     <string name="add_expense_screen_payment_method_title">What is payment method?</string>
     <string name="add_expense_screen_amount_title">How much? </string>
@@ -26,7 +31,7 @@
     <string name="add_expense_screen_description_label">Description (Optional)</string>
     <string name="add_expense_screen_save">Save expense</string>
     <string name="add_expense_screen_update">Update expense</string>
-
+    <string name="add_expense_screen_delete">Delete expense</string>
 
     <string name="add_expense_screen_method_error">Please select your payment method.</string>
     <string name="add_expense_screen_reason_error">Please select your expense reason.</string>

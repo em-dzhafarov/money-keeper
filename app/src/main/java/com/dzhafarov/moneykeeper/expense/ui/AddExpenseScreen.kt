@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -105,6 +106,7 @@ fun AddExpenseScreen(
         onAmountChanged = viewModel::onAmountChanged,
         onCurrencySelected = viewModel::onCurrencySelected,
         onSaveClick = viewModel::onSaveClick,
+        onDeleteClick = viewModel::onDeleteClick,
         onSelectDate = viewModel::onSelectDate,
         onSelectTime = viewModel::onSelectTime,
         onDescriptionChanged = viewModel::onDescriptionChanged
@@ -168,6 +170,10 @@ private fun AddExpenseActions(
             is AddExpenseAction.ExpenseUpdated -> {
                 navController.popBackStack()
             }
+
+            is AddExpenseAction.ExpenseDeleted -> {
+                navController.popBackStack()
+            }
         }
     }
 }
@@ -185,6 +191,7 @@ private fun AddExpenseUiContent(
     onSelectTime: () -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSaveClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -219,6 +226,9 @@ private fun AddExpenseUiContent(
             onAmountValueChanged = onAmountChanged,
             saveTitle = uiState.saveTitle,
             onSaveClick = onSaveClick,
+            isDeleteVisible = uiState.isDeleteVisible,
+            deleteTitle = uiState.deleteTitle,
+            onDeleteClick = onDeleteClick,
             currencies = uiState.currencies,
             selectedCurrency = uiState.selectedCurrency,
             onCurrencySelected = onCurrencySelected,
@@ -268,7 +278,10 @@ private fun MainContent(
     descriptionLabel: String,
     onDescriptionChanged: (String) -> Unit,
     saveTitle: String,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    deleteTitle: String,
+    isDeleteVisible: Boolean,
+    onDeleteClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -335,13 +348,16 @@ private fun MainContent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        SaveContent(
+        BottomButtonsContent(
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()
                 .padding(16.dp),
-            title = saveTitle,
-            onClick = onSaveClick
+            saveTitle = saveTitle,
+            onSaveClick = onSaveClick,
+            deleteTitle = deleteTitle,
+            isDeleteVisible = isDeleteVisible,
+            onDeleteClick = onDeleteClick
         )
     }
 }
@@ -648,21 +664,43 @@ private fun CurrencyPicker(
 }
 
 @Composable
-private fun SaveContent(
-    title: String,
-    onClick: () -> Unit,
+private fun BottomButtonsContent(
+    saveTitle: String,
+    onSaveClick: () -> Unit,
+    isDeleteVisible: Boolean,
+    deleteTitle: String,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onClick,
+            onClick = onSaveClick,
             contentPadding = PaddingValues(16.dp)
         ) {
             Text(
-                text = title,
+                text = saveTitle,
                 style = MaterialTheme.typography.bodyLarge
             )
+        }
+
+        if (isDeleteVisible) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onDeleteClick,
+                contentPadding = PaddingValues(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                ),
+            ) {
+                Text(
+                    text = deleteTitle,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }

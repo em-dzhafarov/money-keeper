@@ -8,6 +8,7 @@ interface AddExpenseStringProvider {
     suspend fun paymentMethodError(): String
     suspend fun amountTitle(): String
     suspend fun saveTitle(isEdit: Boolean): String
+    suspend fun deleteTitle(): String
     suspend fun amountLabel(): String
     suspend fun amountError(): String
     suspend fun dateTimeTitle(): String

@@ -77,7 +77,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
 import com.dzhafarov.moneykeeper.core.ui.Destination
@@ -559,7 +558,7 @@ private fun ExpenseItemContent(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
-                    text = "${item.time.formattedDate} ${item.time.formattedTime}",
+                    text = item.time,
                     style = MaterialTheme.typography.bodySmall
                 )
             }

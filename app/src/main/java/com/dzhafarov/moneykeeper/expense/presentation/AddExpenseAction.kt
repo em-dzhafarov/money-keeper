@@ -6,4 +6,5 @@ sealed class AddExpenseAction {
     data class SelectTime(val hour: Int? = null, val minute: Int? = null) : AddExpenseAction()
     object ExpenseSaved : AddExpenseAction()
     object ExpenseUpdated : AddExpenseAction()
+    object ExpenseDeleted : AddExpenseAction()
 }

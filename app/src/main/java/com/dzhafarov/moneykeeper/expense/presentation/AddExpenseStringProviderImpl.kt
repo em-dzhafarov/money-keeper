@@ -57,6 +57,10 @@ class AddExpenseStringProviderImpl @Inject constructor(
         )
     }
 
+    override suspend fun deleteTitle(): String {
+        return context.getString(R.string.add_expense_screen_delete)
+    }
+
     override suspend fun dateTimeTitle(): String {
         return context.getString(R.string.add_expense_screen_date_time_title)
     }
