@@ -1,22 +1,19 @@
 package com.dzhafarov.moneykeeper.date_time.domain
 
-import java.sql.Time
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @JvmInline
 value class Timestamp(private val value: Long) {
 
-    val hours: Int get() = zonedDateTime().hour
+    val hours: Int get() = localDateTime.hour
 
-    val minutes: Int get() = zonedDateTime().minute
+    val minutes: Int get() = localDateTime.minute
 
-    val seconds: Int get() = zonedDateTime().second
+    val seconds: Int get() = localDateTime.second
 
     val milliseconds: Long get() = value
 
@@ -46,12 +43,10 @@ value class Timestamp(private val value: Long) {
         }
 
         private fun Timestamp.format(formatter: DateTimeFormatter): String {
-            return zonedDateTime().format(formatter)
+            return localDateTime.format(formatter)
         }
 
-        private fun Timestamp.zonedDateTime(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime {
-            return Instant.ofEpochMilli(value).atZone(zoneId)
-        }
+        fun now(): Timestamp = of(Instant.now().toEpochMilli())
 
         fun of(dateMillis: Long, hours: Int = 0, minutes: Int = 0, seconds: Int = 0): Timestamp {
             val time = LocalTime.of(hours, minutes, seconds)
@@ -67,21 +62,9 @@ value class Timestamp(private val value: Long) {
             )
         }
 
-        fun now(): Timestamp = of(Instant.now().toEpochMilli())
-
         fun of(dateTime: LocalDateTime): Timestamp {
             return of(
                 milliseconds = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            )
-        }
-
-        fun of(hours: Int = 0, minutes: Int = 0, seconds: Int = 0): Timestamp {
-            return of(
-                milliseconds = LocalTime.of(hours, minutes, seconds)
-                    .atDate(LocalDate.ofEpochDay(1))
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()
-                    .toEpochMilli()
             )
         }
 
