@@ -21,16 +21,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -200,7 +202,17 @@ private fun AddExpenseUiContent(
             BaseTopBar(
                 title = { Text(text = uiState.title) },
                 navigationIcon = Icons.Default.ArrowBack,
-                onNavigationIconPressed = onBackPressed
+                onNavigationIconPressed = onBackPressed,
+                actions = {
+                    if (uiState.isDeleteVisible) {
+                        IconButton(onClick = onDeleteClick) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = uiState.deleteTitle
+                            )
+                        }
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -226,9 +238,6 @@ private fun AddExpenseUiContent(
             onAmountValueChanged = onAmountChanged,
             saveTitle = uiState.saveTitle,
             onSaveClick = onSaveClick,
-            isDeleteVisible = uiState.isDeleteVisible,
-            deleteTitle = uiState.deleteTitle,
-            onDeleteClick = onDeleteClick,
             currencies = uiState.currencies,
             selectedCurrency = uiState.selectedCurrency,
             onCurrencySelected = onCurrencySelected,
@@ -278,10 +287,7 @@ private fun MainContent(
     descriptionLabel: String,
     onDescriptionChanged: (String) -> Unit,
     saveTitle: String,
-    onSaveClick: () -> Unit,
-    deleteTitle: String,
-    isDeleteVisible: Boolean,
-    onDeleteClick: () -> Unit
+    onSaveClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -348,16 +354,13 @@ private fun MainContent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        BottomButtonsContent(
+        BottomContent(
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()
                 .padding(16.dp),
             saveTitle = saveTitle,
-            onSaveClick = onSaveClick,
-            deleteTitle = deleteTitle,
-            isDeleteVisible = isDeleteVisible,
-            onDeleteClick = onDeleteClick
+            onSaveClick = onSaveClick
         )
     }
 }
@@ -380,7 +383,23 @@ private fun PaymentReasonContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+        val state = rememberLazyListState()
+
+        selected?.let { items.indexOf(it) }
+            ?.takeIf { it != -1 }
+            ?.let { position ->
+                LaunchedEffect(selected) {
+                    state.animateScrollToItem(position)
+                }
+            }
+
+        LazyRow(
+            state = state,
+            contentPadding = PaddingValues(
+                horizontal = 16.dp,
+                vertical = 8.dp
+            )
+        ) {
             itemsIndexed(items) { index, item ->
                 PaymentReasonItemContent(item, selected == item, onSelected)
 
@@ -664,15 +683,15 @@ private fun CurrencyPicker(
 }
 
 @Composable
-private fun BottomButtonsContent(
+private fun BottomContent(
     saveTitle: String,
     onSaveClick: () -> Unit,
-    isDeleteVisible: Boolean,
-    deleteTitle: String,
-    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onSaveClick,
@@ -682,25 +701,6 @@ private fun BottomButtonsContent(
                 text = saveTitle,
                 style = MaterialTheme.typography.bodyLarge
             )
-        }
-
-        if (isDeleteVisible) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onDeleteClick,
-                contentPadding = PaddingValues(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                ),
-            ) {
-                Text(
-                    text = deleteTitle,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
         }
     }
 }

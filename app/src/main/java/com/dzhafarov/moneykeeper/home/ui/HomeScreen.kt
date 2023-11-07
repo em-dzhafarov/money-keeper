@@ -471,7 +471,7 @@ private fun ExpenseItemContent(
                     modifier = Modifier.size(48.dp),
                     painter = painterResource(id = item.reason.resourceId),
                     contentDescription = item.reason.title,
-                    tint = MaterialTheme.colorScheme.tertiary
+                    tint = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -480,7 +480,7 @@ private fun ExpenseItemContent(
                     Text(
                         text = item.reason.title,
                         style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.tertiary,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Medium
                         )
                     )
@@ -493,13 +493,13 @@ private fun ExpenseItemContent(
                             modifier = Modifier.size(16.dp),
                             painter = painterResource(id = item.currency.iconRes),
                             contentDescription = item.currency.code,
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
 
                         Text(
                             text = item.amount,
                             style = MaterialTheme.typography.titleLarge.copy(
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.tertiary,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -536,7 +536,7 @@ private fun ExpenseItemContent(
                         append(paidByPrefix)
                         pushStyle(
                             SpanStyle(
-                                color = MaterialTheme.colorScheme.tertiary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -552,7 +552,7 @@ private fun ExpenseItemContent(
                         .size(20.dp),
                     painter = painterResource(id = item.method.resourceId),
                     contentDescription = item.method.title,
-                    tint = MaterialTheme.colorScheme.tertiary
+                    tint = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.weight(1f))

@@ -20,7 +20,6 @@
     <string name="label_today">Today</string>
     <string name="label_yesterday">Yesterday</string>
     <string name="label_at_time">at %1$s</string>
-    <string name="label_on_date">On %1$s</string>
 
     <string name="add_expense_screen_payment_reason_title">What is payment reason?</string>
     <string name="add_expense_screen_payment_method_title">What is payment method?</string>

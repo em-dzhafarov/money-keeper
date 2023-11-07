@@ -19,13 +19,16 @@ class DateTimePresentationMapper @Inject constructor(
                 context.getString(R.string.label_today) + " " +
                         context.getString(R.string.label_at_time, input.formattedTime)
             }
+
             Timestamp.areDatesEqual(now.previousDate, input) -> {
                 context.getString(R.string.label_yesterday) + " " +
                         context.getString(R.string.label_at_time, input.formattedTime)
             }
 
-            else -> context.getString(R.string.label_on_date, input.formattedDate) + " " +
-                    context.getString(R.string.label_at_time, input.formattedTime)
+            else -> {
+                input.formattedDate + " " +
+                        context.getString(R.string.label_at_time, input.formattedTime)
+            }
         }
     }
 }
