@@ -29,7 +29,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Card
@@ -78,6 +80,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.dzhafarov.moneykeeper.R
 import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
 import com.dzhafarov.moneykeeper.core.ui.Destination
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
@@ -110,6 +113,9 @@ fun HomeScreen(
         onNotificationsClick = viewModel::onNotificationsClick,
         onEditClicked = viewModel::onExpenseEditClicked,
         onDeleteSwiped = viewModel::onExpenseDeleteSwiped,
+        onViewLookingClick = viewModel::onViewLookingClick,
+        onFilterClick = viewModel::onFilterClick,
+        onSearchClick = viewModel::onSearchClick,
         snackbarHostState = snackbarHostState
     )
 }
@@ -170,6 +176,9 @@ private fun HomeUiContent(
     onNotificationsClick: () -> Unit,
     onEditClicked: (Long) -> Unit,
     onDeleteSwiped: (ExpenseItem) -> Unit,
+    onViewLookingClick: () -> Unit,
+    onFilterClick: () -> Unit,
+    onSearchClick: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val scrollState = rememberLazyListState()
@@ -238,7 +247,10 @@ private fun HomeUiContent(
             paidByPrefix = uiState.paidByPrefix,
             expenses = uiState.expenses,
             onEditClicked = onEditClicked,
-            onDeleteSwiped = onDeleteSwiped
+            onDeleteSwiped = onDeleteSwiped,
+            onViewLookingClick = onViewLookingClick,
+            onFilterClick = onFilterClick,
+            onSearchClick = onSearchClick
         )
     }
 }
@@ -338,6 +350,9 @@ private fun ExpensesContent(
     paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
     onDeleteSwiped: (ExpenseItem) -> Unit,
+    onViewLookingClick: () -> Unit,
+    onFilterClick: () -> Unit,
+    onSearchClick: () -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -365,6 +380,17 @@ private fun ExpensesContent(
                 )
             }
         } else {
+            item {
+                ExpenseHeaderContent(
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .fillMaxWidth(),
+                    onViewLookingClick = onViewLookingClick,
+                    onFilterClick = onFilterClick,
+                    onSearchClick = onSearchClick
+                )
+            }
+
             itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
                 val dismissState = rememberDismissState()
                 var lastDismissedItemId by remember { mutableLongStateOf(-1L) }
@@ -444,6 +470,49 @@ private fun ExpensesContent(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ExpenseHeaderContent(
+    onViewLookingClick: () -> Unit,
+    onFilterClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        IconButton(onClick = onViewLookingClick) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.List,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        IconButton(onClick = onFilterClick) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(id = R.drawable.ic_filter),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        IconButton(onClick = onSearchClick) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
+            )
         }
     }
 }

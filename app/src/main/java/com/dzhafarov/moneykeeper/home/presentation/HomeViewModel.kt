@@ -61,6 +61,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onViewLookingClick() {
+
+    }
+
+    fun onFilterClick() {
+
+    }
+
+    fun onSearchClick() {
+
+    }
+
     fun onExpenseDeleteSwiped(item: ExpenseItem) {
         val position = _uiState.value.expenses.indexOf(item)
 
