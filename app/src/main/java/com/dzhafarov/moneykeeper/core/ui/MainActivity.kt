@@ -38,7 +38,7 @@ import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.dashboard.DashboardScreen
 import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
 import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
-import com.dzhafarov.moneykeeper.expense.ui.AddExpenseScreen
+import com.dzhafarov.moneykeeper.expense.ui.ExpenseScreen
 import com.dzhafarov.moneykeeper.home.ui.HomeScreen
 import com.dzhafarov.moneykeeper.notifications.NotificationsScreen
 import com.dzhafarov.moneykeeper.profile.ProfileScreen
@@ -149,10 +149,10 @@ private fun ContentNavContainer(
         )
 
         composable(
-            route = Destination.Screen.AddExpense.route
-                    + "/{${AddExpenseScreen.SELECTED_EXPENSE_ID_ARG}}",
+            route = Destination.Screen.Expense.route
+                    + "/{${ExpenseScreen.SELECTED_EXPENSE_ID_ARG}}",
             arguments = listOf(
-                navArgument(AddExpenseScreen.SELECTED_EXPENSE_ID_ARG) {
+                navArgument(ExpenseScreen.SELECTED_EXPENSE_ID_ARG) {
                     type = NavType.LongType
                 }
             ),
@@ -167,9 +167,9 @@ private fun ContentNavContainer(
                 )
             },
             content = { entry ->
-                AddExpenseScreen(
+                ExpenseScreen(
                     navController = navController,
-                    expenseId = entry.arguments?.getLong(AddExpenseScreen.SELECTED_EXPENSE_ID_ARG) ?: 0
+                    expenseId = entry.arguments?.getLong(ExpenseScreen.SELECTED_EXPENSE_ID_ARG) ?: 0
                 )
             }
         )

@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.presentation
 
-data class AddExpenseUiState(
+data class ExpenseUiState(
     val title: String = "",
     val paymentReasonTitle: String = "",
     val paymentReasonError: String = "",

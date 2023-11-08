@@ -62,31 +62,31 @@ import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
 import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
-import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseAction
-import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseUiState
-import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseViewModel
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseAction
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseUiState
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseViewModel
 import com.dzhafarov.moneykeeper.expense.presentation.CurrencyItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
 import kotlinx.coroutines.flow.Flow
 
-object AddExpenseScreen {
+object ExpenseScreen {
     const val SELECTED_EXPENSE_ID_ARG = "selected_expense_id"
 }
 
 @Composable
-fun AddExpenseScreen(
+fun ExpenseScreen(
     navController: NavController,
     expenseId: Long = 0,
-    viewModel: AddExpenseViewModel = hiltViewModel()
+    viewModel: ExpenseViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = expenseId) {
+    LaunchedEffect(expenseId) {
         viewModel.initializeExpenseIfNeeded(expenseId)
     }
 
     val uiState by viewModel.uiState.collectAsState()
 
-    AddExpenseActions(
+    ExpenseActions(
         actions = viewModel.uiAction,
         navController = navController
     )
@@ -99,7 +99,7 @@ fun AddExpenseScreen(
         onTimeResultReceived = viewModel::onTimeSelected
     )
 
-    AddExpenseUiContent(
+    ExpenseUiContent(
         modifier = Modifier.fillMaxSize(),
         uiState = uiState,
         onBackPressed = viewModel::onBackPressed,
@@ -141,39 +141,39 @@ private fun ObserveResults(
 }
 
 @Composable
-private fun AddExpenseActions(
-    actions: Flow<AddExpenseAction>,
+private fun ExpenseActions(
+    actions: Flow<ExpenseAction>,
     navController: NavController
 ) {
     actions.collectAsEffect { action ->
         when (action) {
-            is AddExpenseAction.NavigateBack -> {
+            is ExpenseAction.NavigateBack -> {
                 navController.popBackStack()
             }
 
-            is AddExpenseAction.SelectDate -> {
+            is ExpenseAction.SelectDate -> {
                 navController.navigateTo(
                     destination = Destination.Dialog.DateSelector,
                     args = listOf(action.millis)
                 )
             }
 
-            is AddExpenseAction.SelectTime -> {
+            is ExpenseAction.SelectTime -> {
                 navController.navigateTo(
                     destination = Destination.Dialog.TimeSelector,
                     args = listOf(action.hour, action.minute)
                 )
             }
 
-            is AddExpenseAction.ExpenseSaved -> {
+            is ExpenseAction.ExpenseSaved -> {
                 navController.popBackStack()
             }
 
-            is AddExpenseAction.ExpenseUpdated -> {
+            is ExpenseAction.ExpenseUpdated -> {
                 navController.popBackStack()
             }
 
-            is AddExpenseAction.ExpenseDeleted -> {
+            is ExpenseAction.ExpenseDeleted -> {
                 navController.popBackStack()
             }
         }
@@ -182,8 +182,8 @@ private fun AddExpenseActions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddExpenseUiContent(
-    uiState: AddExpenseUiState,
+private fun ExpenseUiContent(
+    uiState: ExpenseUiState,
     onBackPressed: () -> Unit,
     onPaymentReasonSelected: (PaymentReasonItem) -> Unit,
     onPaymentMethodSelected: (PaymentMethodItem) -> Unit,

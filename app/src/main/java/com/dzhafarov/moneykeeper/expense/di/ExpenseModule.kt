@@ -12,8 +12,8 @@ import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentMethodReposito
 import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentMethodRepositoryImpl
 import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentReasonRepository
 import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentReasonRepositoryImpl
-import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseStringProvider
-import com.dzhafarov.moneykeeper.expense.presentation.AddExpenseStringProviderImpl
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseStringProvider
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseStringProviderImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,7 +27,7 @@ import javax.inject.Singleton
 interface ExpenseModule {
 
     @Binds
-    fun bindAddExpenseStringProvider(actual: AddExpenseStringProviderImpl): AddExpenseStringProvider
+    fun bindExpenseStringProvider(actual: ExpenseStringProviderImpl): ExpenseStringProvider
 
     @Binds
     fun bindExpensesRepository(actual: ExpensesRepositoryImpl): ExpensesRepository

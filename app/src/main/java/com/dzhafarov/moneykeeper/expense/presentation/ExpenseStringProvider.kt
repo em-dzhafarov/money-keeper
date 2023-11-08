@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.presentation
 
-interface AddExpenseStringProvider {
+interface ExpenseStringProvider {
     suspend fun title(isEdit: Boolean): String
     suspend fun paymentReasonTitle(): String
     suspend fun paymentReasonError(): String

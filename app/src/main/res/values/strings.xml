@@ -21,20 +21,20 @@
     <string name="label_yesterday">Yesterday</string>
     <string name="label_at_time">at %1$s</string>
 
-    <string name="add_expense_screen_payment_reason_title">What is payment reason?</string>
-    <string name="add_expense_screen_payment_method_title">What is payment method?</string>
-    <string name="add_expense_screen_amount_title">How much? </string>
-    <string name="add_expense_screen_date_time_title">When was the expense?</string>
-    <string name="add_expense_screen_amount_label">Amount</string>
-    <string name="add_expense_screen_description_title">Additional information</string>
-    <string name="add_expense_screen_description_label">Description (Optional)</string>
-    <string name="add_expense_screen_save">Save expense</string>
-    <string name="add_expense_screen_update">Update expense</string>
-    <string name="add_expense_screen_delete">Delete expense</string>
+    <string name="expense_screen_payment_reason_title">What is payment reason?</string>
+    <string name="expense_screen_payment_method_title">What is payment method?</string>
+    <string name="expense_screen_amount_title">How much? </string>
+    <string name="expense_screen_date_time_title">When was the expense?</string>
+    <string name="expense_screen_amount_label">Amount</string>
+    <string name="expense_screen_description_title">Additional information</string>
+    <string name="expense_screen_description_label">Description (Optional)</string>
+    <string name="expense_screen_save">Save expense</string>
+    <string name="expense_screen_update">Update expense</string>
+    <string name="expense_screen_delete">Delete expense</string>
 
-    <string name="add_expense_screen_method_error">Please select your payment method.</string>
-    <string name="add_expense_screen_reason_error">Please select your expense reason.</string>
-    <string name="add_expense_screen_amount_error">Please enter a valid amount.</string>
+    <string name="expense_screen_method_error">Please select your payment method.</string>
+    <string name="expense_screen_reason_error">Please select your expense reason.</string>
+    <string name="expense_screen_amount_error">Please enter a valid amount.</string>
 
     <string name="payment_reason_food">Food</string>
     <string name="payment_reason_beauty">Beauty</string>

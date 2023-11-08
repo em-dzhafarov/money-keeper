@@ -28,8 +28,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddExpenseViewModel @Inject constructor(
-    private val stringProvider: AddExpenseStringProvider,
+class ExpenseViewModel @Inject constructor(
+    private val stringProvider: ExpenseStringProvider,
     private val getPaymentReasonsUseCase: GetPaymentReasonsUseCase,
     private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase,
     private val getCurrenciesUseCase: GetCurrenciesUseCase,
@@ -43,11 +43,11 @@ class AddExpenseViewModel @Inject constructor(
     private val currencyMapper: CurrencyMapper
 ) : ViewModel() {
 
-    private val _uiAction = MutableSharedFlow<AddExpenseAction>()
-    val uiAction: SharedFlow<AddExpenseAction> = _uiAction.asSharedFlow()
+    private val _uiAction = MutableSharedFlow<ExpenseAction>()
+    val uiAction: SharedFlow<ExpenseAction> = _uiAction.asSharedFlow()
 
-    private val _uiState = MutableStateFlow(AddExpenseUiState())
-    val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ExpenseUiState())
+    val uiState: StateFlow<ExpenseUiState> = _uiState.asStateFlow()
 
     private var currentTimestamp: Timestamp = Timestamp.now()
     private var expenseId = 0L
@@ -98,7 +98,7 @@ class AddExpenseViewModel @Inject constructor(
 
     fun onBackPressed() {
         viewModelScope.launch {
-            _uiAction.emit(AddExpenseAction.NavigateBack)
+            _uiAction.emit(ExpenseAction.NavigateBack)
         }
     }
 
@@ -202,7 +202,7 @@ class AddExpenseViewModel @Inject constructor(
     fun onDeleteClick() {
         viewModelScope.launch {
             deleteExpenseByIdUseCase.execute(expenseId)
-            _uiAction.emit(AddExpenseAction.ExpenseDeleted)
+            _uiAction.emit(ExpenseAction.ExpenseDeleted)
         }
     }
 
@@ -211,10 +211,10 @@ class AddExpenseViewModel @Inject constructor(
             validateAndBuildExpense()?.let { expense ->
                 if (isEditMode) {
                      updateExpenseUseCase.execute(expense)
-                    _uiAction.emit(AddExpenseAction.ExpenseUpdated)
+                    _uiAction.emit(ExpenseAction.ExpenseUpdated)
                 } else {
                     saveExpenseUseCase.execute(expense)
-                    _uiAction.emit(AddExpenseAction.ExpenseSaved)
+                    _uiAction.emit(ExpenseAction.ExpenseSaved)
                 }
             }
         }
@@ -223,7 +223,7 @@ class AddExpenseViewModel @Inject constructor(
     fun onSelectDate() {
         viewModelScope.launch {
             _uiAction.emit(
-                AddExpenseAction.SelectDate(
+                ExpenseAction.SelectDate(
                     millis = currentTimestamp.milliseconds
                 )
             )
@@ -233,7 +233,7 @@ class AddExpenseViewModel @Inject constructor(
     fun onSelectTime() {
         viewModelScope.launch {
             _uiAction.emit(
-                AddExpenseAction.SelectTime(
+                ExpenseAction.SelectTime(
                     hour = currentTimestamp.hours,
                     minute = currentTimestamp.minutes
                 )

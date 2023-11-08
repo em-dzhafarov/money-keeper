@@ -30,7 +30,7 @@ sealed class Destination(val route: String) {
             Screen.Root.Dashboard,
             Screen.Root.Profile,
             Screen.Root.Settings,
-            Screen.AddExpense,
+            Screen.Expense,
             Screen.Notifications,
             Dialog.AboutApp,
             Dialog.DateSelector,
@@ -99,8 +99,8 @@ sealed class Destination(val route: String) {
             )
         }
 
-        object AddExpense : Screen(
-            route = "add_expense",
+        object Expense : Screen(
+            route = "expense",
             resourceId = R.string.add_expense_screen
         )
 

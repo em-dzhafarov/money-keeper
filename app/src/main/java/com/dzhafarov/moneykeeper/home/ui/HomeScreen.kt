@@ -130,14 +130,14 @@ private fun HomeActions(
         when (action) {
             is HomeAction.AddExpense -> {
                 navController.navigateTo(
-                    destination = Destination.Screen.AddExpense,
+                    destination = Destination.Screen.Expense,
                     args = listOf(0L)
                 )
             }
 
             is HomeAction.EditExpense -> {
                 navController.navigateTo(
-                    destination = Destination.Screen.AddExpense,
+                    destination = Destination.Screen.Expense,
                     args = listOf(action.id)
                 )
             }
@@ -605,8 +605,8 @@ private fun ExpenseItemContent(
                         append(paidByPrefix)
                         pushStyle(
                             SpanStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = FontWeight.Normal
                             )
                         )
                         append(item.method.title)
@@ -621,7 +621,7 @@ private fun ExpenseItemContent(
                         .size(20.dp),
                     painter = painterResource(id = item.method.resourceId),
                     contentDescription = item.method.title,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.tertiary
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
