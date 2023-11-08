@@ -1,9 +1,9 @@
 package com.dzhafarov.moneykeeper.profile.model
 
-import java.time.LocalDate
+import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 
 data class UserProfile(
     val firstName: String,
     val lastName: String,
-    val dateOfBirth: LocalDate
+    val dateOfBirth: Timestamp
 )

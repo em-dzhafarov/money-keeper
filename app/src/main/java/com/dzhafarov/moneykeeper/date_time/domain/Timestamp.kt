@@ -1,6 +1,7 @@
 package com.dzhafarov.moneykeeper.date_time.domain
 
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -47,6 +48,16 @@ value class Timestamp(private val value: Long) {
         }
 
         fun now(): Timestamp = of(Instant.now().toEpochMilli())
+
+        fun of(year: Int, month: Int, dayOfMonth: Int): Timestamp {
+            return of(
+                milliseconds = LocalDate.of(year, month, dayOfMonth)
+                    .atTime(LocalTime.of(0, 0))
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()
+                    .toEpochMilli()
+            )
+        }
 
         fun of(dateMillis: Long, hours: Int = 0, minutes: Int = 0, seconds: Int = 0): Timestamp {
             val time = LocalTime.of(hours, minutes, seconds)

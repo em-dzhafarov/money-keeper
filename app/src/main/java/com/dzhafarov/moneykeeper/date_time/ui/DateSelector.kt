@@ -11,6 +11,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
-import com.dzhafarov.moneykeeper.date_time.presentation.DateSelectorUiAction
+import com.dzhafarov.moneykeeper.date_time.presentation.DateSelectorEvent
 import com.dzhafarov.moneykeeper.date_time.presentation.DateSelectorUiState
 import com.dzhafarov.moneykeeper.date_time.presentation.DateSelectorViewModel
 import kotlinx.coroutines.flow.Flow
@@ -35,16 +36,18 @@ fun DateSelector(
     initial: Long?,
     viewModel: DateSelectorViewModel = hiltViewModel()
 ) {
-    viewModel.initializeDefaults(initial)
+    LaunchedEffect(initial) {
+        viewModel.initializeDefaults(initial)
+    }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.state.collectAsState()
 
-    DateSelectorActions(
-        actions = viewModel.uiAction,
+    DateSelectorEvents(
+        events = viewModel.events,
         navController = navController
     )
 
-    DateSelectorUiContent(
+    DateSelectorContent(
         uiState = uiState,
         onDismiss = viewModel::onBackPressed,
         onSelected = viewModel::onDateSelected
@@ -52,20 +55,20 @@ fun DateSelector(
 }
 
 @Composable
-private fun DateSelectorActions(
-    actions: Flow<DateSelectorUiAction>,
+private fun DateSelectorEvents(
+    events: Flow<DateSelectorEvent>,
     navController: NavController
 ) {
-    actions.collectAsEffect { action ->
-        when (action) {
-            is DateSelectorUiAction.NavigateBack -> {
+    events.collectAsEffect { event ->
+        when (event) {
+            is DateSelectorEvent.NavigateBack -> {
                 navController.popBackStack()
             }
 
-            is DateSelectorUiAction.Result -> {
+            is DateSelectorEvent.Result -> {
                 navController.previousBackStackEntry
                     ?.savedStateHandle
-                    ?.set(DateSelector.SELECTED_DATE_RESULT, action.value)
+                    ?.set(DateSelector.SELECTED_DATE_RESULT, event.value)
 
                 navController.popBackStack()
             }
@@ -75,7 +78,7 @@ private fun DateSelectorActions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DateSelectorUiContent(
+private fun DateSelectorContent(
     uiState: DateSelectorUiState,
     onDismiss: () -> Unit,
     onSelected: (Long) -> Unit

@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,7 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
-import com.dzhafarov.moneykeeper.date_time.presentation.TimeSelectorUiAction
+import com.dzhafarov.moneykeeper.date_time.presentation.TimeSelectorEvent
 import com.dzhafarov.moneykeeper.date_time.presentation.TimeSelectorUiState
 import com.dzhafarov.moneykeeper.date_time.presentation.TimeSelectorViewModel
 import kotlinx.coroutines.flow.Flow
@@ -46,16 +47,18 @@ fun TimeSelector(
     minutes: Int?,
     viewModel: TimeSelectorViewModel = hiltViewModel()
 ) {
-    viewModel.initializeDefaults(hours, minutes)
+    LaunchedEffect(hours, minutes) {
+        viewModel.initializeDefaults(hours, minutes)
+    }
+    
+    val uiState by viewModel.state.collectAsState()
 
-    val uiState by viewModel.uiState.collectAsState()
-
-    TimeSelectorActions(
-        actions = viewModel.uiAction,
+    TimeSelectorEvents(
+        events = viewModel.events,
         navController = navController
     )
 
-    TimeSelectorUiContent(
+    TimeSelectorContent(
         uiState = uiState,
         onDismiss = viewModel::onBackPressed,
         onTimeSelected = viewModel::onTimeSelected
@@ -63,20 +66,20 @@ fun TimeSelector(
 }
 
 @Composable
-private fun TimeSelectorActions(
-    actions: Flow<TimeSelectorUiAction>,
+private fun TimeSelectorEvents(
+    events: Flow<TimeSelectorEvent>,
     navController: NavController
 ) {
-    actions.collectAsEffect { action ->
-        when (action) {
-            is TimeSelectorUiAction.NavigateBack -> {
+    events.collectAsEffect { event ->
+        when (event) {
+            is TimeSelectorEvent.NavigateBack -> {
                 navController.popBackStack()
             }
 
-            is TimeSelectorUiAction.Result -> {
+            is TimeSelectorEvent.Result -> {
                 navController.previousBackStackEntry
                     ?.savedStateHandle
-                    ?.set(TimeSelector.SELECTED_TIME_RESULT, action.value)
+                    ?.set(TimeSelector.SELECTED_TIME_RESULT, event.value)
 
                 navController.popBackStack()
             }
@@ -86,7 +89,7 @@ private fun TimeSelectorActions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TimeSelectorUiContent(
+private fun TimeSelectorContent(
     uiState: TimeSelectorUiState,
     onDismiss: () -> Unit,
     onTimeSelected: (Pair<Int, Int>) -> Unit

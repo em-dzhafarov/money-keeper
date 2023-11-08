@@ -87,7 +87,7 @@ import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.isScrollingUp
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
-import com.dzhafarov.moneykeeper.home.presentation.HomeAction
+import com.dzhafarov.moneykeeper.home.presentation.HomeEvent
 import com.dzhafarov.moneykeeper.home.presentation.HomeUiState
 import com.dzhafarov.moneykeeper.home.presentation.HomeViewModel
 import kotlinx.coroutines.flow.Flow
@@ -97,16 +97,16 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState: HomeUiState by viewModel.uiState.collectAsState()
+    val uiState: HomeUiState by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    HomeActions(
-        actions = viewModel.uiAction,
+    HomeEvents(
+        events = viewModel.events,
         navController = navController,
         snackbarHostState = snackbarHostState
     )
 
-    HomeUiContent(
+    HomeContent(
         uiState = uiState,
         onAddExpenseClick = viewModel::onAddExpenseClick,
         onHomeClick = viewModel::onHomeClick,
@@ -121,46 +121,54 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeActions(
-    actions: Flow<HomeAction>,
+private fun HomeEvents(
+    events: Flow<HomeEvent>,
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
-    actions.collectAsEffect { action ->
-        when (action) {
-            is HomeAction.AddExpense -> {
+    events.collectAsEffect { event ->
+        when (event) {
+            is HomeEvent.AddExpense -> {
                 navController.navigateTo(
                     destination = Destination.Screen.Expense,
                     args = listOf(0L)
                 )
             }
 
-            is HomeAction.EditExpense -> {
+            is HomeEvent.EditExpense -> {
                 navController.navigateTo(
                     destination = Destination.Screen.Expense,
-                    args = listOf(action.id)
+                    args = listOf(event.id)
                 )
             }
 
-            is HomeAction.OpenNotifications -> {
+            is HomeEvent.OpenNotifications -> {
                 navController.navigateTo(Destination.Screen.Notifications)
             }
 
-            is HomeAction.OpenAboutAppInfo -> {
+            is HomeEvent.OpenAboutAppInfo -> {
                 navController.navigateTo(Destination.Dialog.AboutApp)
             }
 
-            is HomeAction.DeleteExpense -> {
+            is HomeEvent.OpenFilter -> {
+
+            }
+
+            is HomeEvent.OpenSearch -> {
+
+            }
+
+            is HomeEvent.DeleteExpense -> {
                 val result = snackbarHostState.showSnackbar(
-                    message = action.message,
-                    actionLabel = action.actionLabel,
+                    message = event.message,
+                    actionLabel = event.actionLabel,
                     withDismissAction = true,
-                    duration = SnackbarDuration.Long
+                    duration = SnackbarDuration.Short
                 )
 
                 when (result) {
-                    SnackbarResult.ActionPerformed -> action.onActionPerformed()
-                    SnackbarResult.Dismissed -> action.onDismissed()
+                    SnackbarResult.ActionPerformed -> event.onActionPerformed()
+                    SnackbarResult.Dismissed -> event.onDismissed()
                 }
             }
         }
@@ -169,7 +177,7 @@ private fun HomeActions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeUiContent(
+private fun HomeContent(
     uiState: HomeUiState,
     onAddExpenseClick: () -> Unit,
     onHomeClick: () -> Unit,

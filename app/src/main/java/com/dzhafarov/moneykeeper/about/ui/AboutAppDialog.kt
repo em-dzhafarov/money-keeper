@@ -15,16 +15,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.dzhafarov.moneykeeper.about.presentation.AboutAppEvent
 import com.dzhafarov.moneykeeper.about.presentation.AboutAppUiState
 import com.dzhafarov.moneykeeper.about.presentation.AboutAppViewModel
+import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
+import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun AboutAppDialog(navController: NavController) {
-    val viewModel = hiltViewModel<AboutAppViewModel>()
-    val uiState: AboutAppUiState by viewModel.uiState.collectAsState()
+fun AboutAppDialog(
+    navController: NavController,
+    viewModel: AboutAppViewModel = hiltViewModel()
+) {
+    val uiState: AboutAppUiState by viewModel.state.collectAsState()
 
+    AboutAppEvents(
+        events = viewModel.events,
+        navController = navController
+    )
+
+    AboutAppContent(
+        uiState = uiState,
+        onDismiss = viewModel::onDismiss
+    )
+}
+
+@Composable
+fun AboutAppEvents(
+    events: Flow<AboutAppEvent>,
+    navController: NavController
+) {
+    events.collectAsEffect { event ->
+        when (event) {
+            is AboutAppEvent.Close -> {
+                navController.popBackStack()
+            }
+        }
+    }
+}
+
+@Composable
+fun AboutAppContent(
+    uiState: AboutAppUiState,
+    onDismiss: () -> Unit
+) {
     AlertDialog(
-        onDismissRequest = { navController.popBackStack() },
+        onDismissRequest = onDismiss,
         icon = {
             Icon(
                 imageVector = Icons.Default.Home,
@@ -47,7 +82,7 @@ fun AboutAppDialog(navController: NavController) {
             )
         },
         confirmButton = {
-            Button(onClick = { navController.popBackStack() }) {
+            Button(onClick = onDismiss) {
                 Text(text = uiState.confirm)
             }
         }

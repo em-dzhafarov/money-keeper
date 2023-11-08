@@ -17,12 +17,12 @@ import com.dzhafarov.moneykeeper.expense.presentation.mapper.CurrencyMapper
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.PaymentMethodMapper
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.PaymentReasonMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,11 +43,11 @@ class ExpenseViewModel @Inject constructor(
     private val currencyMapper: CurrencyMapper
 ) : ViewModel() {
 
-    private val _uiAction = MutableSharedFlow<ExpenseAction>()
-    val uiAction: SharedFlow<ExpenseAction> = _uiAction.asSharedFlow()
+    private val _state = MutableStateFlow(ExpenseUiState())
+    val state: StateFlow<ExpenseUiState> = _state.asStateFlow()
 
-    private val _uiState = MutableStateFlow(ExpenseUiState())
-    val uiState: StateFlow<ExpenseUiState> = _uiState.asStateFlow()
+    private val _events = Channel<ExpenseEvent>()
+    val events: Flow<ExpenseEvent> = _events.receiveAsFlow()
 
     private var currentTimestamp: Timestamp = Timestamp.now()
     private var expenseId = 0L
@@ -78,7 +78,7 @@ class ExpenseViewModel @Inject constructor(
             val expense = getExpenseByIdUseCase.execute(id)
 
             if (expense != null) {
-                _uiState.update {
+                _state.update {
                     it.copy(
                         selectedPaymentMethod = paymentMethodMapper.map(expense.method),
                         selectedPaymentReason = paymentReasonMapper.map(expense.reason),
@@ -98,12 +98,12 @@ class ExpenseViewModel @Inject constructor(
 
     fun onBackPressed() {
         viewModelScope.launch {
-            _uiAction.emit(ExpenseAction.NavigateBack)
+            _events.send(ExpenseEvent.NavigateBack)
         }
     }
 
     fun onPaymentReasonSelected(reason: PaymentReasonItem) {
-        _uiState.update {
+        _state.update {
             it.copy(
                 selectedPaymentReason = reason,
                 paymentReasonError = ""
@@ -112,7 +112,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun onPaymentMethodSelected(method: PaymentMethodItem) {
-        _uiState.update {
+        _state.update {
             it.copy(
                 selectedPaymentMethod = method,
                 paymentMethodError = ""
@@ -121,7 +121,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun onAmountChanged(value: String) {
-        _uiState.update {
+        _state.update {
             it.copy(
                 amountValue = value,
                 amountError = ""
@@ -130,7 +130,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun onDescriptionChanged(value: String) {
-        _uiState.update {
+        _state.update {
             it.copy(
                 descriptionValue = value
             )
@@ -138,7 +138,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun onCurrencySelected(value: CurrencyItem) {
-        _uiState.update {
+        _state.update {
             it.copy(
                 selectedCurrency = value
             )
@@ -146,7 +146,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private suspend fun validateAndBuildExpense(): Expense? {
-        _uiState.update {
+        _state.update {
             it.copy(
                 amountError = "",
                 paymentMethodError = "",
@@ -154,14 +154,14 @@ class ExpenseViewModel @Inject constructor(
             )
         }
 
-        val state = _uiState.value
+        val state = _state.value
         val amount = state.amountValue.toDoubleOrNull()
         val method = state.selectedPaymentMethod?.value
         val reason = state.selectedPaymentReason?.value
         val currency = state.selectedCurrency?.value
 
         if (amount == null) {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     amountError = stringProvider.amountError()
                 )
@@ -169,7 +169,7 @@ class ExpenseViewModel @Inject constructor(
         }
 
         if (method == null) {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     paymentMethodError = stringProvider.paymentMethodError()
                 )
@@ -177,7 +177,7 @@ class ExpenseViewModel @Inject constructor(
         }
 
         if (reason == null) {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     paymentReasonError = stringProvider.paymentReasonError()
                 )
@@ -202,7 +202,7 @@ class ExpenseViewModel @Inject constructor(
     fun onDeleteClick() {
         viewModelScope.launch {
             deleteExpenseByIdUseCase.execute(expenseId)
-            _uiAction.emit(ExpenseAction.ExpenseDeleted)
+            _events.send(ExpenseEvent.ExpenseDeleted)
         }
     }
 
@@ -211,10 +211,10 @@ class ExpenseViewModel @Inject constructor(
             validateAndBuildExpense()?.let { expense ->
                 if (isEditMode) {
                      updateExpenseUseCase.execute(expense)
-                    _uiAction.emit(ExpenseAction.ExpenseUpdated)
+                    _events.send(ExpenseEvent.ExpenseUpdated)
                 } else {
                     saveExpenseUseCase.execute(expense)
-                    _uiAction.emit(ExpenseAction.ExpenseSaved)
+                    _events.send(ExpenseEvent.ExpenseSaved)
                 }
             }
         }
@@ -222,8 +222,8 @@ class ExpenseViewModel @Inject constructor(
 
     fun onSelectDate() {
         viewModelScope.launch {
-            _uiAction.emit(
-                ExpenseAction.SelectDate(
+            _events.send(
+                ExpenseEvent.SelectDate(
                     millis = currentTimestamp.milliseconds
                 )
             )
@@ -232,8 +232,8 @@ class ExpenseViewModel @Inject constructor(
 
     fun onSelectTime() {
         viewModelScope.launch {
-            _uiAction.emit(
-                ExpenseAction.SelectTime(
+            _events.send(
+                ExpenseEvent.SelectTime(
                     hour = currentTimestamp.hours,
                     minute = currentTimestamp.minutes
                 )
@@ -248,7 +248,7 @@ class ExpenseViewModel @Inject constructor(
             minutes = currentTimestamp.minutes
         )
 
-        _uiState.update {
+        _state.update {
             it.copy(
                 formattedDate = currentTimestamp.formattedDate
             )
@@ -264,7 +264,7 @@ class ExpenseViewModel @Inject constructor(
             minutes = minute,
         )
 
-        _uiState.update {
+        _state.update {
             it.copy(
                 formattedTime = currentTimestamp.formattedTime
             )
@@ -273,7 +273,7 @@ class ExpenseViewModel @Inject constructor(
 
     private fun loadStrings() {
         viewModelScope.launch {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     title = stringProvider.title(isEditMode),
                     paymentReasonTitle = stringProvider.paymentReasonTitle(),
@@ -292,7 +292,7 @@ class ExpenseViewModel @Inject constructor(
 
     private fun loadPaymentReasons() {
         viewModelScope.launch {
-            _uiState.update { state ->
+            _state.update { state ->
                 state.copy(
                     paymentReasons = getPaymentReasonsUseCase.execute()
                         .map { paymentReasonMapper.map(it) }
@@ -303,7 +303,7 @@ class ExpenseViewModel @Inject constructor(
 
     private fun loadPaymentMethods() {
         viewModelScope.launch {
-            _uiState.update { state ->
+            _state.update { state ->
                 state.copy(
                     paymentMethods = getPaymentMethodsUseCase.execute()
                         .map { paymentMethodMapper.map(it) }
@@ -314,7 +314,7 @@ class ExpenseViewModel @Inject constructor(
 
     private fun loadCurrencies() {
         viewModelScope.launch {
-            _uiState.update { state ->
+            _state.update { state ->
                 state.copy(
                     selectedCurrency = getDefaultCurrencyUseCase.execute()
                         .let { currencyMapper.map(it) },

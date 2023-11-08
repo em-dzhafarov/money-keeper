@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,11 +19,11 @@ class TimeSelectorViewModel @Inject constructor(
     private val stringProvider: DateTimeSelectorStringProvider
 ) : ViewModel() {
 
-    private val _uiAction = MutableSharedFlow<TimeSelectorUiAction>()
-    val uiAction: SharedFlow<TimeSelectorUiAction> = _uiAction.asSharedFlow()
+    private val _state = MutableStateFlow(TimeSelectorUiState())
+    val state: StateFlow<TimeSelectorUiState> = _state.asStateFlow()
 
-    private val _uiState = MutableStateFlow(TimeSelectorUiState())
-    val uiState: StateFlow<TimeSelectorUiState> = _uiState.asStateFlow()
+    private val _events = Channel<TimeSelectorEvent>()
+    val events: Flow<TimeSelectorEvent> = _events.receiveAsFlow()
 
     init {
         loadStrings()
@@ -36,7 +36,7 @@ class TimeSelectorViewModel @Inject constructor(
             Timestamp.now().let { it.hours to it.minutes }
         }
 
-        _uiState.update {
+        _state.update {
             it.copy(
                 hour = hour,
                 minute = minute
@@ -46,19 +46,19 @@ class TimeSelectorViewModel @Inject constructor(
 
     fun onBackPressed() {
         viewModelScope.launch {
-            _uiAction.emit(TimeSelectorUiAction.NavigateBack)
+            _events.send(TimeSelectorEvent.NavigateBack)
         }
     }
 
     fun onTimeSelected(data: Pair<Int, Int>) {
         viewModelScope.launch {
-            _uiAction.emit(TimeSelectorUiAction.Result(data))
+            _events.send(TimeSelectorEvent.Result(data))
         }
     }
 
     private fun loadStrings() {
         viewModelScope.launch {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     title = stringProvider.timeTitle(),
                     cancel = stringProvider.cancelButton(),

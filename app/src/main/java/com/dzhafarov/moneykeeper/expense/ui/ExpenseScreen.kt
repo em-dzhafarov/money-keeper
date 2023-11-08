@@ -62,7 +62,7 @@ import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
 import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
-import com.dzhafarov.moneykeeper.expense.presentation.ExpenseAction
+import com.dzhafarov.moneykeeper.expense.presentation.ExpenseEvent
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseUiState
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseViewModel
 import com.dzhafarov.moneykeeper.expense.presentation.CurrencyItem
@@ -84,14 +84,14 @@ fun ExpenseScreen(
         viewModel.initializeExpenseIfNeeded(expenseId)
     }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.state.collectAsState()
 
-    ExpenseActions(
-        actions = viewModel.uiAction,
+    ExpenseEvents(
+        events = viewModel.events,
         navController = navController
     )
 
-    ObserveResults(
+    ObserveDateTimePickerResults(
         navController = navController,
         defaultDate = viewModel.initialDate,
         defaultTime = viewModel.initialTime,
@@ -99,7 +99,7 @@ fun ExpenseScreen(
         onTimeResultReceived = viewModel::onTimeSelected
     )
 
-    ExpenseUiContent(
+    ExpenseContent(
         modifier = Modifier.fillMaxSize(),
         uiState = uiState,
         onBackPressed = viewModel::onBackPressed,
@@ -116,7 +116,7 @@ fun ExpenseScreen(
 }
 
 @Composable
-private fun ObserveResults(
+private fun ObserveDateTimePickerResults(
     navController: NavController,
     defaultDate: Long,
     defaultTime: Pair<Int, Int>,
@@ -141,39 +141,39 @@ private fun ObserveResults(
 }
 
 @Composable
-private fun ExpenseActions(
-    actions: Flow<ExpenseAction>,
+private fun ExpenseEvents(
+    events: Flow<ExpenseEvent>,
     navController: NavController
 ) {
-    actions.collectAsEffect { action ->
-        when (action) {
-            is ExpenseAction.NavigateBack -> {
+    events.collectAsEffect { event ->
+        when (event) {
+            is ExpenseEvent.NavigateBack -> {
                 navController.popBackStack()
             }
 
-            is ExpenseAction.SelectDate -> {
+            is ExpenseEvent.SelectDate -> {
                 navController.navigateTo(
                     destination = Destination.Dialog.DateSelector,
-                    args = listOf(action.millis)
+                    args = listOf(event.millis)
                 )
             }
 
-            is ExpenseAction.SelectTime -> {
+            is ExpenseEvent.SelectTime -> {
                 navController.navigateTo(
                     destination = Destination.Dialog.TimeSelector,
-                    args = listOf(action.hour, action.minute)
+                    args = listOf(event.hour, event.minute)
                 )
             }
 
-            is ExpenseAction.ExpenseSaved -> {
+            is ExpenseEvent.ExpenseSaved -> {
                 navController.popBackStack()
             }
 
-            is ExpenseAction.ExpenseUpdated -> {
+            is ExpenseEvent.ExpenseUpdated -> {
                 navController.popBackStack()
             }
 
-            is ExpenseAction.ExpenseDeleted -> {
+            is ExpenseEvent.ExpenseDeleted -> {
                 navController.popBackStack()
             }
         }
@@ -182,7 +182,7 @@ private fun ExpenseActions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ExpenseUiContent(
+private fun ExpenseContent(
     uiState: ExpenseUiState,
     onBackPressed: () -> Unit,
     onPaymentReasonSelected: (PaymentReasonItem) -> Unit,

@@ -9,15 +9,15 @@ import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,11 +31,11 @@ class HomeViewModel @Inject constructor(
     private val expenseMapper: ExpenseMapper
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(HomeUiState())
+    val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
-    private val _uiAction: MutableSharedFlow<HomeAction> = MutableSharedFlow(extraBufferCapacity = 1)
-    val uiAction: SharedFlow<HomeAction> = _uiAction.asSharedFlow()
+    private val _events = Channel<HomeEvent>()
+    val events: Flow<HomeEvent> = _events.receiveAsFlow()
 
     init {
         loadWelcomeMessage()
@@ -45,39 +45,50 @@ class HomeViewModel @Inject constructor(
 
     fun onAddExpenseClick() {
         viewModelScope.launch {
-            _uiAction.emit(HomeAction.AddExpense)
+            _events.send(HomeEvent.AddExpense)
         }
     }
 
     fun onNotificationsClick() {
         viewModelScope.launch {
-            _uiAction.emit(HomeAction.OpenNotifications)
+            _events.send(HomeEvent.OpenNotifications)
         }
     }
 
     fun onExpenseEditClicked(id: Long) {
         viewModelScope.launch {
-            _uiAction.emit(HomeAction.EditExpense(id))
+            _events.send(HomeEvent.EditExpense(id))
         }
     }
 
     fun onViewLookingClick() {
-
+        _state.update {
+            it.copy(
+                lookingView = when (it.lookingView) {
+                    HomeLookView.LIST -> HomeLookView.GRID
+                    HomeLookView.GRID -> HomeLookView.LIST
+                }
+            )
+        }
     }
 
     fun onFilterClick() {
-
+        viewModelScope.launch {
+            _events.send(HomeEvent.OpenFilter)
+        }
     }
 
     fun onSearchClick() {
-
+        viewModelScope.launch {
+            _events.send(HomeEvent.OpenSearch)
+        }
     }
 
     fun onExpenseDeleteSwiped(item: ExpenseItem) {
-        val position = _uiState.value.expenses.indexOf(item)
+        val position = _state.value.expenses.indexOf(item)
 
         viewModelScope.launch {
-            _uiState.update { state ->
+            _state.update { state ->
                 state.copy(
                     expenses = state.expenses
                         .toMutableList()
@@ -86,12 +97,12 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            _uiAction.emit(
-                HomeAction.DeleteExpense(
+            _events.send(
+                HomeEvent.DeleteExpense(
                     message = stringProvider.expenseDeletedMessage(),
                     actionLabel = stringProvider.undoDeleteButton(),
                     onActionPerformed = {
-                        _uiState.update { state ->
+                        _state.update { state ->
                             state.copy(
                                 expenses = state.expenses
                                     .toMutableList()
@@ -110,7 +121,7 @@ class HomeViewModel @Inject constructor(
 
     fun onHomeClick() {
         viewModelScope.launch {
-            _uiAction.emit(HomeAction.OpenAboutAppInfo)
+            _events.send(HomeEvent.OpenAboutAppInfo)
         }
     }
 
@@ -119,7 +130,7 @@ class HomeViewModel @Inject constructor(
             val fullName = getCurrentUserProfileUseCase.execute()
                 .let { "${it.firstName} ${it.lastName}" }
 
-            _uiState.update {
+            _state.update {
                 it.copy(
                     welcomeMessage = stringProvider.welcome(fullName)
                 )
@@ -129,7 +140,7 @@ class HomeViewModel @Inject constructor(
 
     private fun loadStrings() {
         viewModelScope.launch {
-            _uiState.update {
+            _state.update {
                 it.copy(
                     title = stringProvider.title(),
                     emptyExpensesMessage = stringProvider.noExpensesYet(),
@@ -148,7 +159,7 @@ class HomeViewModel @Inject constructor(
                     items.map { expenseMapper.map(it) }
                 }
                 .onEach { items ->
-                    _uiState.update { state ->
+                    _state.update { state ->
                         state.copy(
                             expenses = items
                         )
