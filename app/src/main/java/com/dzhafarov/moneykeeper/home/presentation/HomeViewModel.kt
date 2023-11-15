@@ -64,9 +64,9 @@ class HomeViewModel @Inject constructor(
     fun onViewLookingClick() {
         _state.update {
             it.copy(
-                lookingView = when (it.lookingView) {
-                    HomeLookView.LIST -> HomeLookView.GRID
-                    HomeLookView.GRID -> HomeLookView.LIST
+                displayMode = when (it.displayMode) {
+                    ExpensesDisplayMode.LIST -> ExpensesDisplayMode.GRID
+                    ExpensesDisplayMode.GRID -> ExpensesDisplayMode.LIST
                 }
             )
         }
@@ -84,7 +84,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onExpenseDeleteSwiped(item: ExpenseItem) {
+    fun onExpenseDeleteSwiped(id: Long) {
+        val item = _state.value.expenses.find { it.id == id } ?: return
         val position = _state.value.expenses.indexOf(item)
 
         viewModelScope.launch {
@@ -127,12 +128,11 @@ class HomeViewModel @Inject constructor(
 
     private fun loadWelcomeMessage() {
         viewModelScope.launch {
-            val fullName = getCurrentUserProfileUseCase.execute()
-                .let { "${it.firstName} ${it.lastName}" }
+            val name = getCurrentUserProfileUseCase.execute().firstName
 
             _state.update {
                 it.copy(
-                    welcomeMessage = stringProvider.welcome(fullName)
+                    welcomeMessage = stringProvider.welcome(name)
                 )
             }
         }

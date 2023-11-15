@@ -11,7 +11,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -36,9 +35,7 @@ fun DateSelector(
     initial: Long?,
     viewModel: DateSelectorViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(initial) {
-        viewModel.initializeDefaults(initial)
-    }
+    viewModel.initializeDefaults(initial)
 
     val uiState by viewModel.state.collectAsState()
 

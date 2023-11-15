@@ -5,6 +5,10 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -14,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,11 +31,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
@@ -60,9 +68,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -110,7 +117,6 @@ fun HomeScreen(
         uiState = uiState,
         onAddExpenseClick = viewModel::onAddExpenseClick,
         onHomeClick = viewModel::onHomeClick,
-        onNotificationsClick = viewModel::onNotificationsClick,
         onEditClicked = viewModel::onExpenseEditClicked,
         onDeleteSwiped = viewModel::onExpenseDeleteSwiped,
         onViewLookingClick = viewModel::onViewLookingClick,
@@ -181,17 +187,18 @@ private fun HomeContent(
     uiState: HomeUiState,
     onAddExpenseClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onNotificationsClick: () -> Unit,
     onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (ExpenseItem) -> Unit,
+    onDeleteSwiped: (Long) -> Unit,
     onViewLookingClick: () -> Unit,
     onFilterClick: () -> Unit,
     onSearchClick: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    val scrollState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
+    val lazyStaggeredGridState = rememberLazyStaggeredGridState()
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
+    val isGrid by remember(uiState.displayMode) { mutableStateOf(uiState.displayMode.isGrid()) }
 
     Scaffold(
         modifier = Modifier
@@ -201,7 +208,11 @@ private fun HomeContent(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FabContent(
-                state = scrollState,
+                isScrollingUp = if (isGrid) {
+                    lazyStaggeredGridState.isScrollingUp()
+                } else {
+                    lazyListState.isScrollingUp()
+                },
                 onClick = onAddExpenseClick,
                 title = uiState.addExpenseMessage
             )
@@ -210,24 +221,22 @@ private fun HomeContent(
             BaseTopBar(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
-                    val fraction = topBarState.collapsedFraction
+                    val isCollapsed = topBarState.collapsedFraction > 0.5f
 
                     AnimatedVisibility(
-                        visible = fraction > 0.5f,
-                        enter = expandIn(expandFrom = Alignment.TopStart),
+                        visible = isCollapsed,
+                        enter = expandIn(),
                         exit = shrinkOut()
                     ) {
                         Text(text = uiState.title)
                     }
 
                     AnimatedVisibility(
-                        visible = fraction <= 0.5f,
+                        visible = !isCollapsed,
                         enter = expandIn(),
                         exit = shrinkOut()
                     ) {
-                        Text(
-                            text = uiState.welcomeMessage,
-                        )
+                        Text(text = uiState.welcomeMessage)
                     }
                 },
                 navigationIcon = Icons.Default.Home,
@@ -235,56 +244,96 @@ private fun HomeContent(
                 onNavigationIconPressed = onHomeClick,
                 isLarge = true,
                 actions = {
-                    IconButton(onClick = onNotificationsClick) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = null
-                        )
-                    }
+                    HeaderActionButtonsContent(
+                        isGrid = isGrid,
+                        onViewLookingClick = onViewLookingClick,
+                        onFilterClick = onFilterClick,
+                        onSearchClick = onSearchClick
+                    )
                 }
             )
         }
     ) { padding ->
-        ExpensesContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            scrollState = scrollState,
-            emptyExpensesMessage = uiState.emptyExpensesMessage,
-            editLabel = uiState.editExpenseLabel,
-            paidByPrefix = uiState.paidByPrefix,
-            expenses = uiState.expenses,
-            onEditClicked = onEditClicked,
-            onDeleteSwiped = onDeleteSwiped,
-            onViewLookingClick = onViewLookingClick,
-            onFilterClick = onFilterClick,
-            onSearchClick = onSearchClick
+        AnimatedVisibility(
+            visible = uiState.expenses.isEmpty(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            content = {
+                ExpensesEmptyContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    message = uiState.emptyExpensesMessage
+                )
+            }
+        )
+
+        AnimatedVisibility(
+            visible = isGrid,
+            enter = scaleIn(),
+            exit = scaleOut(),
+            content = {
+                ExpensesGridContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    expenses = uiState.expenses,
+                    scrollState = lazyStaggeredGridState,
+                    onEditClicked = onEditClicked,
+                    onDeleteSwiped = onDeleteSwiped
+                )
+            }
+        )
+
+        AnimatedVisibility(
+            visible = isGrid.not(),
+            enter = scaleIn(),
+            exit = scaleOut(),
+            content = {
+                ExpensesListContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    scrollState = lazyListState,
+                    editLabel = uiState.editExpenseLabel,
+                    paidByPrefix = uiState.paidByPrefix,
+                    expenses = uiState.expenses,
+                    onEditClicked = onEditClicked,
+                    onDeleteSwiped = onDeleteSwiped
+                )
+            }
         )
     }
 }
 
 @Composable
 private fun FabContent(
-    state: LazyListState,
+    isScrollingUp: Boolean,
     onClick: () -> Unit,
     title: String,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        val isSmallFab = state.isScrollingUp().not()
+        val isSmallFab = isScrollingUp.not()
 
-        AnimatedVisibility(visible = isSmallFab) {
-            SmallAddFab(
-                onClick = onClick
-            )
-        }
+        AnimatedVisibility(
+            visible = isSmallFab,
+            content = {
+                SmallAddFab(
+                    onClick = onClick
+                )
+            }
+        )
 
-        AnimatedVisibility(visible = !isSmallFab) {
-            ExtendedAddFab(
-                title = title,
-                onClick = onClick
-            )
-        }
+        AnimatedVisibility(
+            visible = !isSmallFab,
+            content = {
+                ExtendedAddFab(
+                    title = title,
+                    onClick = onClick
+                )
+            }
+        )
     }
 }
 
@@ -349,141 +398,50 @@ private fun AddIcon() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ExpensesContent(
+private fun ExpensesListContent(
     expenses: List<ExpenseItem>,
-    emptyExpensesMessage: String,
     editLabel: String,
     paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
-    onDeleteSwiped: (ExpenseItem) -> Unit,
-    onViewLookingClick: () -> Unit,
-    onFilterClick: () -> Unit,
-    onSearchClick: () -> Unit,
+    onDeleteSwiped: (Long) -> Unit,
     scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
         state = scrollState,
-        verticalArrangement = if (expenses.isEmpty()) {
-            Arrangement.Center
-        } else {
-            Arrangement.Top
-        },
-        horizontalAlignment = if (expenses.isEmpty()) {
-            Alignment.CenterHorizontally
-        } else {
-            Alignment.Start
-        },
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
         contentPadding = PaddingValues(16.dp)
     ) {
-        if (expenses.isEmpty()) {
-            item {
-                Text(
-                    text = emptyExpensesMessage,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else {
-            item {
-                ExpenseHeaderContent(
-                    modifier = Modifier
-                        .padding(vertical = 4.dp)
-                        .fillMaxWidth(),
-                    onViewLookingClick = onViewLookingClick,
-                    onFilterClick = onFilterClick,
-                    onSearchClick = onSearchClick
-                )
-            }
-
-            itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
-                val dismissState = rememberDismissState()
-                var lastDismissedItemId by remember { mutableLongStateOf(-1L) }
-
-                if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-                    if (lastDismissedItemId != item.id) {
-                        onDeleteSwiped(item)
-                        lastDismissedItemId = item.id
-                    } else {
-                        LaunchedEffect(Unit) {
-                            dismissState.snapTo(DismissValue.Default)
-                        }
-                    }
+        itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
+            DismissItemContent(
+                modifier = Modifier.animateItemPlacement(tween(500)),
+                currentId = item.id,
+                onDismiss = onDeleteSwiped,
+                content = {
+                    ExpenseItemContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        item = item,
+                        editLabel = editLabel,
+                        paidByPrefix = paidByPrefix,
+                        onEditClicked = onEditClicked
+                    )
                 }
+            )
 
-                if (dismissState.currentValue == DismissValue.Default) {
-                    lastDismissedItemId = -1L
-                }
-
-                if (dismissState.dismissDirection == DismissDirection.EndToStart) {
-                    val haptic = LocalHapticFeedback.current
-                    LaunchedEffect(Unit) {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
-                }
-
-                SwipeToDismiss(
-                    state = dismissState,
-                    modifier = Modifier.animateItemPlacement(tween(durationMillis = 500)),
-                    directions = setOf(DismissDirection.EndToStart),
-                    background = {
-                        val backgroundColor by animateColorAsState(
-                            targetValue = when (dismissState.targetValue) {
-                                DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.8f)
-                                else -> Color.White
-                            },
-                            label = ""
-                        )
-
-                        val iconScale by animateFloatAsState(
-                            targetValue = if (dismissState.targetValue == DismissValue.DismissedToStart) {
-                                1.3f
-                            } else {
-                                0.5f
-                            },
-                            label = ""
-                        )
-
-                        Box(
-                            Modifier
-                                .clip(CardDefaults.shape)
-                                .fillMaxSize()
-                                .background(color = backgroundColor)
-                                .padding(end = 16.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(iconScale),
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
-                        }
-                    },
-                    dismissContent = {
-                        ExpenseItemContent(
-                            modifier = Modifier.fillMaxWidth(),
-                            item = item,
-                            editLabel = editLabel,
-                            paidByPrefix = paidByPrefix,
-                            onEditClicked = onEditClicked
-                        )
-                    }
-                )
-
-                if (index != expenses.lastIndex) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+            if (index != expenses.lastIndex) {
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
 
 @Composable
-private fun ExpenseHeaderContent(
+private fun HeaderActionButtonsContent(
+    isGrid: Boolean,
     onViewLookingClick: () -> Unit,
     onFilterClick: () -> Unit,
     onSearchClick: () -> Unit,
@@ -497,13 +455,17 @@ private fun ExpenseHeaderContent(
         IconButton(onClick = onViewLookingClick) {
             Icon(
                 modifier = Modifier.size(24.dp),
-                imageVector = Icons.Default.List,
+                painter = painterResource(
+                    id = if (isGrid) {
+                        R.drawable.ic_list_view
+                    } else {
+                        R.drawable.ic_grid_view
+                    }
+                ),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary
             )
         }
-
-        Spacer(modifier = Modifier.weight(1f))
 
         IconButton(onClick = onFilterClick) {
             Icon(
@@ -641,4 +603,154 @@ private fun ExpenseItemContent(
             }
         }
     }
+}
+
+@Composable
+private fun ExpensesEmptyContent(
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ExpensesGridContent(
+    expenses: List<ExpenseItem>,
+    scrollState: LazyStaggeredGridState,
+    onEditClicked: (Long) -> Unit,
+    onDeleteSwiped: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalStaggeredGrid(
+        modifier = modifier,
+        state = scrollState,
+        columns = StaggeredGridCells.Fixed(2),
+        verticalItemSpacing = 8.dp,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        itemsIndexed(expenses, key = { _, item -> item.id }) { index, item ->
+            val isFromEndToStart by remember(scrollState.layoutInfo.visibleItemsInfo) {
+                mutableStateOf(
+                    scrollState.layoutInfo
+                        .visibleItemsInfo
+                        .find { it.index == index }
+                        ?.let { it.lane % 2 == 0 }
+                        ?: false
+                )
+            }
+
+            DismissItemContent(
+                modifier = Modifier.animateItemPlacement(tween(500)),
+                currentId = item.id,
+                onDismiss =  onDeleteSwiped,
+                isFromEndToStart = isFromEndToStart,
+                content = {
+                    ExpenseItemContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        item = item,
+                        editLabel = "",
+                        paidByPrefix = "",
+                        onEditClicked = onEditClicked
+                    )
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DismissItemContent(
+    currentId: Long,
+    onDismiss: (Long) -> Unit,
+    content: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    isFromEndToStart: Boolean = true
+) {
+    val state = rememberDismissState()
+
+    val dismissDirection = if (isFromEndToStart) {
+        DismissDirection.EndToStart
+    } else {
+        DismissDirection.StartToEnd
+    }
+
+    if (state.isDismissed(dismissDirection)) {
+        onDismiss(currentId)
+
+        LaunchedEffect(currentId) {
+            state.snapTo(DismissValue.Default)
+        }
+    }
+
+    if (state.dismissDirection == dismissDirection) {
+        val haptic = LocalHapticFeedback.current
+        LaunchedEffect(Unit) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
+
+    SwipeToDismiss(
+        state = state,
+        modifier = modifier,
+        directions = setOf(dismissDirection),
+        background = {
+            val dismissValue = if (isFromEndToStart) {
+                DismissValue.DismissedToStart
+            } else {
+                DismissValue.DismissedToEnd
+            }
+
+            val backgroundColor by animateColorAsState(
+                targetValue = when (state.targetValue) {
+                    dismissValue -> Color.Red.copy(alpha = 0.8f)
+                    else -> Color.White
+                },
+                label = ""
+            )
+
+            val iconScale by animateFloatAsState(
+                targetValue = if (state.targetValue == dismissValue) {
+                    1.3f
+                } else {
+                    0.5f
+                },
+                label = ""
+            )
+
+            Box(
+                Modifier
+                    .clip(CardDefaults.shape)
+                    .fillMaxSize()
+                    .background(color = backgroundColor)
+                    .padding(all = 16.dp),
+                contentAlignment = if (isFromEndToStart) {
+                    Alignment.CenterEnd
+                } else {
+                    Alignment.CenterStart
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.scale(iconScale),
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+        },
+        dismissContent = {
+            content.invoke(this)
+        }
+    )
 }

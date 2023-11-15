@@ -10,5 +10,5 @@ data class HomeUiState(
     val editExpenseLabel: String = "",
     val paidByPrefix: String = "",
     val expenses: List<ExpenseItem> = emptyList(),
-    val lookingView: HomeLookView = HomeLookView.LIST
+    val displayMode: ExpensesDisplayMode = ExpensesDisplayMode.LIST
 )

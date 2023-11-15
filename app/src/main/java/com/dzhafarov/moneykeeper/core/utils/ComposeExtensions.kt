@@ -2,6 +2,7 @@ package com.dzhafarov.moneykeeper.core.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -31,6 +32,30 @@ fun <T> Flow<T>.collectAsEffect(
 
 @Composable
 fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) {
+        mutableIntStateOf(firstVisibleItemIndex)
+    }
+
+    var previousScrollOffset by remember(this) {
+        mutableIntStateOf(firstVisibleItemScrollOffset)
+    }
+
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+
+@Composable
+fun LazyStaggeredGridState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) {
         mutableIntStateOf(firstVisibleItemIndex)
     }
