@@ -3,6 +3,7 @@ package com.dzhafarov.moneykeeper.core.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -34,6 +36,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dzhafarov.moneykeeper.about.ui.AboutAppDialog
+import com.dzhafarov.moneykeeper.core.presentation.MainViewModel
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
 import com.dzhafarov.moneykeeper.dashboard.DashboardScreen
 import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
@@ -49,8 +52,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().setKeepOnScreenCondition { viewModel.isSplashShown }
+
         setContent {
             AppTheme {
                 MainContent()
