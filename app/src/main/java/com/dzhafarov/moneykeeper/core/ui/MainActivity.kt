@@ -1,5 +1,6 @@
 package com.dzhafarov.moneykeeper.core.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +47,7 @@ import com.dzhafarov.moneykeeper.expense.ui.ExpenseScreen
 import com.dzhafarov.moneykeeper.home.ui.HomeScreen
 import com.dzhafarov.moneykeeper.notifications.NotificationsScreen
 import com.dzhafarov.moneykeeper.profile.ProfileScreen
-import com.dzhafarov.moneykeeper.settings.SettingsScreen
+import com.dzhafarov.moneykeeper.settings.ui.SettingsScreen
 import com.dzhafarov.moneykeeper.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,13 +58,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().setKeepOnScreenCondition { viewModel.isSplashShown }
+        installSplashScreen().setKeepOnScreenCondition {
+            viewModel.state.value.isSplashShown
+        }
 
         setContent {
-            AppTheme {
-                MainContent()
-            }
+            val state by viewModel.state.collectAsState()
+
+            AppTheme(
+                useDarkTheme = state.isDarkTheme,
+                dynamicColor = state.isDynamicTheme,
+                content = { MainContent() }
+            )
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        viewModel.invalidateThemeIfNeeded(this)
     }
 }
 

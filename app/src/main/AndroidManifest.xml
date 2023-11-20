@@ -17,6 +17,7 @@
         <activity
             android:name=".core.ui.MainActivity"
             android:exported="true"
+            android:configChanges="uiMode"
             android:theme="@style/Theme.App.Starting">
 
             <intent-filter>

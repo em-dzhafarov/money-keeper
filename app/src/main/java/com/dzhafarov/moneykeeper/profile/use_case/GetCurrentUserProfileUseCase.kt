@@ -1,13 +1,13 @@
 package com.dzhafarov.moneykeeper.profile.use_case
 
-import com.dzhafarov.moneykeeper.core.domain.use_case.UseCase
+import com.dzhafarov.moneykeeper.core.domain.use_case.UseCaseSuspend
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.profile.model.UserProfile
 import javax.inject.Inject
 
 class GetCurrentUserProfileUseCase @Inject constructor(
     // talking to repository
-) : UseCase<Nothing?, UserProfile> {
+) : UseCaseSuspend<Nothing?, UserProfile> {
 
     override suspend fun execute(input: Nothing?): UserProfile {
         return UserProfile(
