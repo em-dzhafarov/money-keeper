@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.dzhafarov.moneykeeper.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
-import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -144,9 +143,7 @@ class HomeViewModel @Inject constructor(
                 it.copy(
                     title = stringProvider.title(),
                     emptyExpensesMessage = stringProvider.noExpensesYet(),
-                    addExpenseMessage = stringProvider.addExpense(),
-                    editExpenseLabel = stringProvider.editExpense(),
-                    paidByPrefix = stringProvider.paidByPrefix()
+                    addExpenseMessage = stringProvider.addExpense()
                 )
             }
         }

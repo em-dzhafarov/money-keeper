@@ -12,6 +12,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,7 +36,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -79,11 +78,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -93,7 +89,10 @@ import com.dzhafarov.moneykeeper.core.ui.Destination
 import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.core.utils.isScrollingUp
 import com.dzhafarov.moneykeeper.core.utils.navigateTo
+import com.dzhafarov.moneykeeper.expense.presentation.CurrencyItem
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
+import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
+import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
 import com.dzhafarov.moneykeeper.home.presentation.HomeEvent
 import com.dzhafarov.moneykeeper.home.presentation.HomeUiState
 import com.dzhafarov.moneykeeper.home.presentation.HomeViewModel
@@ -270,8 +269,8 @@ private fun HomeContent(
 
         AnimatedVisibility(
             visible = isGrid,
-            enter = scaleIn(),
-            exit = scaleOut(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
             content = {
                 ExpensesGridContent(
                     modifier = Modifier
@@ -287,16 +286,14 @@ private fun HomeContent(
 
         AnimatedVisibility(
             visible = isGrid.not(),
-            enter = scaleIn(),
-            exit = scaleOut(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
             content = {
                 ExpensesListContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     scrollState = lazyListState,
-                    editLabel = uiState.editExpenseLabel,
-                    paidByPrefix = uiState.paidByPrefix,
                     expenses = uiState.expenses,
                     onEditClicked = onEditClicked,
                     onDeleteSwiped = onDeleteSwiped
@@ -402,8 +399,6 @@ private fun AddIcon() {
 @Composable
 private fun ExpensesListContent(
     expenses: List<ExpenseItem>,
-    editLabel: String,
-    paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
     onDeleteSwiped: (Long) -> Unit,
     scrollState: LazyListState,
@@ -422,11 +417,9 @@ private fun ExpensesListContent(
                 currentId = item.id,
                 onDismiss = onDeleteSwiped,
                 content = {
-                    ExpenseItemContent(
+                    ExpenseListItemContent(
                         modifier = Modifier.fillMaxWidth(),
                         item = item,
-                        editLabel = editLabel,
-                        paidByPrefix = paidByPrefix,
                         onEditClicked = onEditClicked
                     )
                 }
@@ -488,10 +481,8 @@ private fun HeaderActionButtonsContent(
 }
 
 @Composable
-private fun ExpenseItemContent(
+private fun ExpenseListItemContent(
     item: ExpenseItem,
-    editLabel: String,
-    paidByPrefix: String,
     onEditClicked: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -501,105 +492,33 @@ private fun ExpenseItemContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { onEditClicked.invoke(item.id) }
                 .padding(16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier.size(48.dp),
-                    painter = painterResource(id = item.reason.resourceId),
-                    contentDescription = item.reason.title,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                PaymentReasonIcon(reason = item.reason)
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Column {
-                    Text(
-                        text = item.reason.title,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
-
-                    Row(
-                        modifier = Modifier.offset(x = (-3).dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(id = item.currency.iconRes),
-                            contentDescription = item.currency.code,
-                            tint = MaterialTheme.colorScheme.tertiary
-                        )
-
-                        Text(
-                            text = item.amount,
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
+                    PaymentReasonSection(reason = item.reason)
+                    AmountSection(amount = item.amount, currency = item.currency)
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Text(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { onEditClicked(item.id) }
-                        .padding(4.dp),
-                    text = editLabel,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = TextDecoration.Underline
-                )
+                Column(horizontalAlignment = Alignment.End) {
+                    PaymentMethodSection(method = item.method)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    DateTimeSection(dateTime = item.time)
+                }
             }
 
             if (item.description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = item.description,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = buildAnnotatedString {
-                        append(paidByPrefix)
-                        pushStyle(
-                            SpanStyle(
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = FontWeight.Normal
-                            )
-                        )
-                        append(item.method.title)
-                        pop()
-                    },
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Icon(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(20.dp),
-                    painter = painterResource(id = item.method.resourceId),
-                    contentDescription = item.method.title,
-                    tint = MaterialTheme.colorScheme.tertiary
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = item.time,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                DescriptionSection(description = item.description)
             }
         }
     }
@@ -653,18 +572,57 @@ private fun ExpensesGridContent(
             DismissItemContent(
                 modifier = Modifier.animateItemPlacement(tween(500)),
                 currentId = item.id,
-                onDismiss =  onDeleteSwiped,
+                onDismiss = onDeleteSwiped,
                 isFromEndToStart = isFromEndToStart,
                 content = {
-                    ExpenseItemContent(
+                    ExpenseGridItemContent(
                         modifier = Modifier.fillMaxWidth(),
                         item = item,
-                        editLabel = "",
-                        paidByPrefix = "",
                         onEditClicked = onEditClicked
                     )
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun ExpenseGridItemContent(
+    item: ExpenseItem,
+    onEditClicked: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onEditClicked.invoke(item.id) }
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PaymentReasonIcon(reason = item.reason)
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column {
+                    PaymentReasonSection(reason = item.reason)
+                    AmountSection(amount = item.amount, currency = item.currency)
+                }
+            }
+
+            if (item.description.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                DescriptionSection(description = item.description)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            PaymentMethodSection(method = item.method)
+            Spacer(modifier = Modifier.height(8.dp))
+            DateTimeSection(dateTime = item.time)
         }
     }
 }
@@ -753,4 +711,111 @@ fun DismissItemContent(
             content.invoke(this)
         }
     )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PaymentReasonSection(
+    reason: PaymentReasonItem,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier.basicMarquee(),
+        text = reason.title,
+        style = MaterialTheme.typography.titleMedium.copy(
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Medium
+        ),
+        maxLines = 1
+    )
+}
+
+@Composable
+private fun PaymentReasonIcon(
+    reason: PaymentReasonItem,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        modifier = modifier.size(40.dp),
+        painter = painterResource(id = reason.resourceId),
+        contentDescription = reason.title,
+        tint = MaterialTheme.colorScheme.primary
+    )
+}
+
+@Composable
+private fun PaymentMethodSection(
+    method: PaymentMethodItem,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = method.title,
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        Icon(
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .size(16.dp),
+            painter = painterResource(id = method.resourceId),
+            contentDescription = method.title
+        )
+    }
+}
+
+@Composable
+private fun DateTimeSection(
+    dateTime: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier,
+        text = dateTime,
+        style = MaterialTheme.typography.bodySmall
+    )
+}
+
+@Composable
+private fun DescriptionSection(
+    description: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier,
+        text = description,
+        style = MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    )
+}
+
+@Composable
+private fun AmountSection(
+    amount: String,
+    currency: CurrencyItem,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(id = currency.iconRes),
+            contentDescription = currency.code,
+            tint = MaterialTheme.colorScheme.tertiary
+        )
+
+        Text(
+            text = amount,
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.tertiary,
+                fontWeight = FontWeight.Medium
+            )
+        )
+    }
 }
