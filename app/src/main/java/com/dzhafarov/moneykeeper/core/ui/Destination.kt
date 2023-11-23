@@ -34,11 +34,17 @@ sealed class Destination(val route: String) {
             Screen.Notifications,
             Dialog.AboutApp,
             Dialog.DateSelector,
-            Dialog.TimeSelector
+            Dialog.TimeSelector,
+            BottomSheet.Filter,
+            BottomSheet.Search,
         )
 
         fun isDialog(route: String?): Boolean {
             return of(route) is Dialog
+        }
+
+        fun isBottomSheet(route: String?): Boolean {
+            return of(route) is BottomSheet
         }
 
         fun isRootScreen(route: String?): Boolean {
@@ -56,6 +62,12 @@ sealed class Destination(val route: String) {
         object DateSelector : Dialog("date_selector")
 
         object TimeSelector : Dialog("time_selector")
+    }
+
+    sealed class BottomSheet(route: String) : Destination(route) {
+        object Search : BottomSheet(route = "search")
+
+        object Filter : BottomSheet(route = "filter")
     }
 
     sealed class Screen(

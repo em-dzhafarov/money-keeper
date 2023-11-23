@@ -156,11 +156,11 @@ private fun HomeEvents(
             }
 
             is HomeEvent.OpenFilter -> {
-
+                navController.navigateTo(Destination.BottomSheet.Filter)
             }
 
             is HomeEvent.OpenSearch -> {
-
+                navController.navigateTo(Destination.BottomSheet.Search)
             }
 
             is HomeEvent.DeleteExpense -> {
