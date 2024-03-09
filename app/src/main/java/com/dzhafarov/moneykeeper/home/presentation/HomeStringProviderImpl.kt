@@ -21,6 +21,14 @@ class HomeStringProviderImpl @Inject constructor(
         return context.getString(R.string.home_screen_no_expenses_yet)
     }
 
+    override suspend fun noExpensesMatchTheGivenFilter(): String {
+        return context.getString(R.string.home_screen_no_expenses_match_the_given_filter)
+    }
+
+    override suspend fun noExpensesToFilterOut(): String {
+        return context.getString(R.string.home_screen_no_expenses_to_filter_out)
+    }
+
     override suspend fun addExpense(): String {
         return context.getString(R.string.home_screen_add_expense)
     }

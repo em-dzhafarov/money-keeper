@@ -1,5 +1,6 @@
 package com.dzhafarov.moneykeeper.home.ui
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -34,6 +35,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
@@ -76,6 +78,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -131,6 +134,8 @@ private fun HomeEvents(
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
+    val context = LocalContext.current
+
     events.collectAsEffect { event ->
         when (event) {
             is HomeEvent.AddExpense -> {
@@ -156,7 +161,11 @@ private fun HomeEvents(
             }
 
             is HomeEvent.OpenFilter -> {
-                navController.navigateTo(Destination.BottomSheet.Filter)
+                if (event.hasExpenses) {
+                    navController.navigateTo(Destination.BottomSheet.Filter)
+                } else {
+                    Toast.makeText(context, event.emptyExpenses, Toast.LENGTH_SHORT).show()
+                }
             }
 
             is HomeEvent.OpenSearch -> {
@@ -245,6 +254,7 @@ private fun HomeContent(
                 actions = {
                     HeaderActionButtonsContent(
                         isGrid = isGrid,
+                        isFilterEmpty = uiState.isFilterEmpty,
                         onViewLookingClick = onViewLookingClick,
                         onFilterClick = onFilterClick,
                         onSearchClick = onSearchClick
@@ -435,6 +445,7 @@ private fun ExpensesListContent(
 @Composable
 private fun HeaderActionButtonsContent(
     isGrid: Boolean,
+    isFilterEmpty: Boolean,
     onViewLookingClick: () -> Unit,
     onFilterClick: () -> Unit,
     onSearchClick: () -> Unit,
@@ -465,7 +476,11 @@ private fun HeaderActionButtonsContent(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(id = R.drawable.ic_filter),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
+                tint = if (isFilterEmpty) {
+                    MaterialTheme.colorScheme.secondary
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
             )
         }
 

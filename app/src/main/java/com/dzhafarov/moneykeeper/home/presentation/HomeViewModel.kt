@@ -6,6 +6,7 @@ import com.dzhafarov.moneykeeper.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
+import com.dzhafarov.moneykeeper.filter.domain.ObserveAppliedFiltersUseCase
 import com.dzhafarov.moneykeeper.profile.use_case.GetCurrentUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -26,6 +28,7 @@ class HomeViewModel @Inject constructor(
     private val stringProvider: HomeStringProvider,
     private val getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase,
     private val observeExpensesUseCase: ObserveExpensesUseCase,
+    private val observeAppliedFiltersUseCase: ObserveAppliedFiltersUseCase,
     private val deleteExpenseByIdUseCase: DeleteExpenseByIdUseCase,
     private val expenseMapper: ExpenseMapper
 ) : ViewModel() {
@@ -73,7 +76,14 @@ class HomeViewModel @Inject constructor(
 
     fun onFilterClick() {
         viewModelScope.launch {
-            _events.send(HomeEvent.OpenFilter)
+            _events.send(
+                HomeEvent.OpenFilter(
+                    hasExpenses = _state.value.let {
+                        it.expenses.isNotEmpty() || it.isFilterEmpty.not()
+                    },
+                    emptyExpenses = stringProvider.noExpensesToFilterOut()
+                )
+            )
         }
     }
 
@@ -152,6 +162,24 @@ class HomeViewModel @Inject constructor(
     private fun observeExpenses() {
         viewModelScope.launch {
             observeExpensesUseCase.execute()
+                .combine(observeAppliedFiltersUseCase.execute(), ::Pair)
+                .onEach { (_, predicates) ->
+                    _state.update {
+                        it.copy(
+                            isFilterEmpty = predicates.isEmpty(),
+                            emptyExpensesMessage = if (predicates.isNotEmpty()) {
+                                stringProvider.noExpensesMatchTheGivenFilter()
+                            } else {
+                                stringProvider.noExpensesYet()
+                            }
+                        )
+                    }
+                }
+                .map { (items, predicates) ->
+                    items.filter { expense ->
+                        predicates.all { it.invoke(expense) }
+                    }
+                }
                 .map { items ->
                     items.map { expenseMapper.map(it) }
                 }

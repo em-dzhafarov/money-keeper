@@ -8,5 +8,6 @@ data class HomeUiState(
     val emptyExpensesMessage: String = "",
     val addExpenseMessage: String = "",
     val expenses: List<ExpenseItem> = emptyList(),
-    val displayMode: ExpensesDisplayMode = ExpensesDisplayMode.LIST
+    val displayMode: ExpensesDisplayMode = ExpensesDisplayMode.LIST,
+    val isFilterEmpty: Boolean = true
 )

@@ -31,6 +31,14 @@ value class Timestamp(private val value: Long) {
             return of(ldt.toLocalDate().minusDays(1).atTime(ldt.toLocalTime()))
         }
 
+    fun inBetween(startMillis: Long, endMillis: Long): Boolean {
+        val current = this.localDateTime
+        val start = of(startMillis).localDateTime
+        val end = of(endMillis).localDateTime
+
+        return current.isAfter(start) && current.isBefore(end)
+    }
+
     companion object {
         private const val DEFAULT_TIME_PATTERN = "hh:mm a"
         private const val DEFAULT_DATE_PATTERN = "dd MMM yyyy"

@@ -69,4 +69,12 @@ class ExpensesRepositoryImpl @Inject constructor(
     override suspend fun clear() {
         expensesDao.clear()
     }
+
+    override suspend fun getMinAmount(): Double {
+        return expensesDao.getMinAmount()
+    }
+
+    override suspend fun getMaxAmount(): Double {
+        return expensesDao.getMaxAmount()
+    }
 }

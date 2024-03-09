@@ -11,6 +11,8 @@
 
     <string name="home_screen_welcome_message">Welcome %s!</string>
     <string name="home_screen_no_expenses_yet">There are no expenses yet.\n Please add them.</string>
+    <string name="home_screen_no_expenses_match_the_given_filter">No expenses found for the given filter. Please try to clear or modify it.</string>
+    <string name="home_screen_no_expenses_to_filter_out">No expenses to filter out yet!</string>
     <string name="home_screen_add_expense">New Expense</string>
     <string name="home_screen_edit_expense">Edit</string>
     <string name="home_screen_paid_by_prefix">Paid by: \u0020</string>
@@ -53,8 +55,11 @@
     <string name="payment_method_online">Online</string>
 
     <string name="currency_pln">PLN</string>
+    <string name="currency_pln_full">Polish Zloty</string>
     <string name="currency_usd">USD</string>
+    <string name="currency_usd_full">United States Dollar</string>
     <string name="currency_eur">EUR</string>
+    <string name="currency_eur_full">The Euro</string>
 
     <string name="dialog_date_title">Select date</string>
     <string name="dialog_time_title">Select time</string>
@@ -71,5 +76,15 @@
     <string name="settings_screen_dark_theme">Dark</string>
     <string name="settings_screen_system_theme">System</string>
     <string name="settings_screen_dynamic_theme">Dynamic Colors</string>
+
+    <string name="filter_screen_apply_filters">Apply</string>
+    <string name="filter_screen_clear_filters">Clear</string>
+    <string name="filter_screen_cancel">Cancel</string>
+    <string name="filter_screen_price_range_title">Price Range: </string>
+    <string name="filter_screen_description_title">Description: </string>
+    <string name="filter_screen_description_hint">Enter your text</string>
+    <string name="filter_screen_currency_title">Currency of an expense: </string>
+    <string name="filter_screen_payment_method_title">Method of payment: </string>
+    <string name="filter_screen_payment_reason_title">Reason of payment: </string>
 
 </resources>

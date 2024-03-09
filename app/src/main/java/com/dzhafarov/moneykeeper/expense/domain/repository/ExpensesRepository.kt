@@ -24,4 +24,8 @@ interface ExpensesRepository {
     suspend fun findById(id: Long): Expense?
 
     suspend fun clear()
+
+    suspend fun getMinAmount(): Double
+
+    suspend fun getMaxAmount(): Double
 }

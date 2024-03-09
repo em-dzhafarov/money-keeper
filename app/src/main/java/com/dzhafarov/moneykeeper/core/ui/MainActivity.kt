@@ -45,7 +45,7 @@ import com.dzhafarov.moneykeeper.dashboard.DashboardScreen
 import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
 import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
 import com.dzhafarov.moneykeeper.expense.ui.ExpenseScreen
-import com.dzhafarov.moneykeeper.filter.FilterScreen
+import com.dzhafarov.moneykeeper.filter.ui.FilterScreen
 import com.dzhafarov.moneykeeper.home.ui.HomeScreen
 import com.dzhafarov.moneykeeper.notifications.NotificationsScreen
 import com.dzhafarov.moneykeeper.profile.ProfileScreen

@@ -13,16 +13,31 @@ class CurrencyMapper @Inject constructor(
 ) : OneWayMapper<Currency, CurrencyItem> {
 
     override suspend fun map(input: Currency): CurrencyItem {
-        val (nameRes, iconRes) = when (input) {
-            is Currency.PLN -> R.string.currency_pln to R.drawable.currency_zloty
-            is Currency.USD -> R.string.currency_usd to R.drawable.currency_dollar
-            is Currency.EUR -> R.string.currency_eur to R.drawable.currency_euro
+        return when (input) {
+            is Currency.PLN -> {
+                CurrencyItem(
+                    value = input,
+                    iconRes = R.drawable.currency_zloty,
+                    code = context.getString(R.string.currency_pln),
+                    name = context.getString(R.string.currency_pln_full)
+                )
+            }
+            is Currency.USD -> {
+                CurrencyItem(
+                    value = input,
+                    iconRes = R.drawable.currency_dollar,
+                    code = context.getString(R.string.currency_usd),
+                    name = context.getString(R.string.currency_usd_full)
+                )
+            }
+            is Currency.EUR -> {
+                CurrencyItem(
+                    value = input,
+                    iconRes = R.drawable.currency_euro,
+                    code = context.getString(R.string.currency_eur),
+                    name = context.getString(R.string.currency_eur_full)
+                )
+            }
         }
-
-        return CurrencyItem(
-            value = input,
-            iconRes = iconRes,
-            code = context.getString(nameRes)
-        )
     }
 }

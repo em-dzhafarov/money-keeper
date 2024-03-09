@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun BaseBottomSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     scrollState: ScrollState = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {

@@ -29,4 +29,10 @@ interface ExpenseDao {
 
     @Query("DELETE FROM $EXPENSES_TABLE_NAME")
     suspend fun clear()
+
+    @Query("SELECT amount FROM $EXPENSES_TABLE_NAME ORDER BY amount LIMIT 1")
+    suspend fun getMinAmount(): Double
+
+    @Query("SELECT amount FROM $EXPENSES_TABLE_NAME ORDER BY amount DESC LIMIT 1")
+    suspend fun getMaxAmount(): Double
 }

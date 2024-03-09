@@ -7,4 +7,5 @@ data class CurrencyItem(
     val value: Currency,
     @DrawableRes val iconRes: Int,
     val code: String,
+    val name: String
 )
