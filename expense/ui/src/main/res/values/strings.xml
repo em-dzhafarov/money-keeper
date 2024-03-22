@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_expense_screen">New Expense</string>
+    <string name="edit_expense_screen">Edit Expense</string>
+    <string name="expense_screen_payment_reason_title">What is payment reason?</string>
+    <string name="expense_screen_payment_method_title">What is payment method?</string>
+    <string name="expense_screen_amount_title">How much? </string>
+    <string name="expense_screen_date_time_title">When was the expense?</string>
+    <string name="expense_screen_amount_label">Amount</string>
+    <string name="expense_screen_description_title">Additional information</string>
+    <string name="expense_screen_description_label">Description (Optional)</string>
+    <string name="expense_screen_save">Save expense</string>
+    <string name="expense_screen_update">Update expense</string>
+    <string name="expense_screen_delete">Delete expense</string>
+
+    <string name="expense_screen_method_error">Please select your payment method.</string>
+    <string name="expense_screen_reason_error">Please select your expense reason.</string>
+    <string name="expense_screen_amount_error">Please enter a valid amount.</string>
+
+    <string name="currency_pln">PLN</string>
+    <string name="currency_pln_full">Polish Zloty</string>
+    <string name="currency_usd">USD</string>
+    <string name="currency_usd_full">United States Dollar</string>
+    <string name="currency_eur">EUR</string>
+    <string name="currency_eur_full">The Euro</string>
+
+    <string name="label_today">Today</string>
+    <string name="label_yesterday">Yesterday</string>
+    <string name="label_at_time">at %1$s</string>
+
+    <string name="payment_method_credit_card">Credit card</string>
+    <string name="payment_method_cash">Cash</string>
+    <string name="payment_method_online">Online</string>
+
+    <string name="payment_reason_food">Food</string>
+    <string name="payment_reason_beauty">Beauty</string>
+    <string name="payment_reason_health">Health</string>
+    <string name="payment_reason_study">Study</string>
+    <string name="payment_reason_clothes">Clothes</string>
+    <string name="payment_reason_accommodation">Accommodation</string>
+    <string name="payment_reason_travel">Travel</string>
+    <string name="payment_reason_transportation">Transportation</string>
+    <string name="payment_reason_subscription">Subscription</string>
+    <string name="payment_reason_tax">Tax</string>
+    <string name="payment_reason_entertainment">Entertainment</string>
+
+</resources>

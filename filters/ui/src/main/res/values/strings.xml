@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter_screen_apply_filters">Apply</string>
+    <string name="filter_screen_clear_filters">Clear</string>
+    <string name="filter_screen_cancel">Cancel</string>
+    <string name="filter_screen_price_range_title">Price Range: </string>
+    <string name="filter_screen_description_title">Description: </string>
+    <string name="filter_screen_description_hint">Enter your text</string>
+    <string name="filter_screen_currency_title">Currency of an expense: </string>
+    <string name="filter_screen_payment_method_title">Method of payment: </string>
+    <string name="filter_screen_payment_reason_title">Reason of payment: </string>
+</resources>

@@ -6,11 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.date_time.presentation.DateViewModel
 
-object DateSelector {
-    const val SELECTED_DATE_RESULT = "selected_date_result"
-    const val SELECTED_DATE_ARG = "selected_date_arg"
-}
-
 @Composable
 fun DateSelectorDialog(
     navController: NavController,

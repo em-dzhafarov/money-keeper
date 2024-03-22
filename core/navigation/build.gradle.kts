@@ -33,5 +33,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    api("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    api("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

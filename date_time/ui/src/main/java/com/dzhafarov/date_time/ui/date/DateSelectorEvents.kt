@@ -2,6 +2,7 @@ package com.dzhafarov.date_time.ui.date
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.dzhafarov.core.navigation.Keys
 import com.dzhafarov.core.ui.utils.collectAsEffect
 import com.dzhafarov.date_time.presentation.DateEvent
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ internal fun DateSelectorEvents(
 private fun NavController.setResult(value: Long) {
     previousBackStackEntry
         ?.savedStateHandle
-        ?.set(DateSelector.SELECTED_DATE_RESULT, value)
+        ?.set(Keys.DateSelector.SELECTED_DATE_RESULT, value)
 
     popBackStack()
 }

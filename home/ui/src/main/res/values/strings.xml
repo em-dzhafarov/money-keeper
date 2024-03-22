@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_screen">Home</string>
+    <string name="home_screen_welcome_message">Welcome %s!</string>
+    <string name="home_screen_no_expenses_yet">There are no expenses yet.\n Please add them.</string>
+    <string name="home_screen_no_expenses_match_the_given_filter">No expenses found for the given filter. Please try to clear or modify it.</string>
+    <string name="home_screen_no_expenses_to_filter_out">No expenses to filter out yet!</string>
+    <string name="home_screen_add_expense">New Expense</string>
+    <string name="home_screen_edit_expense">Edit</string>
+    <string name="home_screen_paid_by_prefix">Paid by: \u0020</string>
+    <string name="home_screen_expense_deleted">Expense successfully deleted.</string>
+    <string name="home_screen_expense_deleted_undo">Undo</string>
+</resources>

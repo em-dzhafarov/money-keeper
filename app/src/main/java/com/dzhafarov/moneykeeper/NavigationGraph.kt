@@ -45,15 +45,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.dzhafarov.core.navigation.Keys
 import com.dzhafarov.moneykeeper.dashboard.DashboardScreen
-import com.dzhafarov.moneykeeper.expense.ui.ExpenseScreen
-import com.dzhafarov.moneykeeper.filter.ui.FilterScreen
-import com.dzhafarov.moneykeeper.home.ui.HomeScreen
+import com.dzhafarov.expense.ui.ExpenseScreen
+import com.dzhafarov.home.ui.HomeScreen
 import com.dzhafarov.moneykeeper.notifications.NotificationsScreen
 import com.dzhafarov.moneykeeper.profile.ProfileScreen
 import com.dzhafarov.moneykeeper.search.SearchScreen
 import com.dzhafarov.settings.ui.SettingsScreen
 import com.dzhafarov.core.navigation.navigateTo
+import com.dzhafarov.filters.ui.FilterScreen
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -221,37 +222,37 @@ private fun ContentNavContainer(
             )
 
             dialog(
-                route = Destination.Dialog.DateSelector.route + "/{${com.dzhafarov.date_time.ui.date.DateSelector.SELECTED_DATE_ARG}}",
+                route = Destination.Dialog.DateSelector.route + "/{${Keys.DateSelector.SELECTED_DATE_ARG}}",
                 arguments = listOf(
-                    navArgument(com.dzhafarov.date_time.ui.date.DateSelector.SELECTED_DATE_ARG) {
+                    navArgument(Keys.DateSelector.SELECTED_DATE_ARG) {
                         type = NavType.LongType
                     }
                 ),
                 content = { entry ->
                     com.dzhafarov.date_time.ui.date.DateSelectorDialog(
                         navController = navController,
-                        initial = entry.arguments?.getLong(com.dzhafarov.date_time.ui.date.DateSelector.SELECTED_DATE_ARG)
+                        initial = entry.arguments?.getLong(Keys.DateSelector.SELECTED_DATE_ARG)
                     )
                 }
             )
 
             dialog(
                 route = Destination.Dialog.TimeSelector.route
-                        + "/{${com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_HOUR_ARG}}"
-                        + "/{${com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_MINUTE_ARG}}",
+                        + "/{${Keys.TimeSelector.SELECTED_HOUR_ARG}}"
+                        + "/{${Keys.TimeSelector.SELECTED_MINUTE_ARG}}",
                 arguments = listOf(
-                    navArgument(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_HOUR_ARG) {
+                    navArgument(Keys.TimeSelector.SELECTED_HOUR_ARG) {
                         type = NavType.IntType
                     },
-                    navArgument(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_MINUTE_ARG) {
+                    navArgument(Keys.TimeSelector.SELECTED_MINUTE_ARG) {
                         type = NavType.IntType
                     }
                 ),
                 content = { entry ->
                     com.dzhafarov.date_time.ui.time.TimeSelectorDialog(
                         navController = navController,
-                        hours = entry.arguments?.getInt(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_HOUR_ARG),
-                        minutes = entry.arguments?.getInt(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_MINUTE_ARG)
+                        hours = entry.arguments?.getInt(Keys.TimeSelector.SELECTED_HOUR_ARG),
+                        minutes = entry.arguments?.getInt(Keys.TimeSelector.SELECTED_MINUTE_ARG)
                     )
                 }
             )

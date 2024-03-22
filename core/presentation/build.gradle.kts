@@ -34,5 +34,8 @@ android {
 
 dependencies {
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+
+    // View Model
+    api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 }

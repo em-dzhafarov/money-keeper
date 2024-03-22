@@ -42,10 +42,10 @@ dependencies {
     implementation(project(":core:presentation"))
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    api("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    api(platform("androidx.compose:compose-bom:2023.10.01"))
+    api("androidx.compose.ui:ui-tooling-preview")
+    api("androidx.compose.material3:material3")
 }

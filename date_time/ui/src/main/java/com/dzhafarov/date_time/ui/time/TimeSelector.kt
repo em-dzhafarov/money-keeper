@@ -6,12 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.date_time.presentation.TimeViewModel
 
-object TimeSelector {
-    const val SELECTED_TIME_RESULT = "selected_time_result"
-    const val SELECTED_HOUR_ARG = "selected_hour_arg"
-    const val SELECTED_MINUTE_ARG = "selected_minute_arg"
-}
-
 @Composable
 fun TimeSelectorDialog(
     navController: NavController,
