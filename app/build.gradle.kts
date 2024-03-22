@@ -96,6 +96,10 @@ dependencies {
     implementation(project(":expense"))
     implementation(project(":home"))
     implementation(project(":filters"))
+    implementation(project(":dashboard"))
+    implementation(project(":notifications"))
+    implementation(project(":search"))
+    implementation(project(":profile"))
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
