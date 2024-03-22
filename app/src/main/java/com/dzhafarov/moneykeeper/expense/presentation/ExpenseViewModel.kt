@@ -2,7 +2,7 @@ package com.dzhafarov.moneykeeper.expense.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase

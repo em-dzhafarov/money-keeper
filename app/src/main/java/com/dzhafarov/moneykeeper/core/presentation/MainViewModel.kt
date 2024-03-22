@@ -3,8 +3,8 @@ package com.dzhafarov.moneykeeper.core.presentation
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
-import com.dzhafarov.moneykeeper.core.utils.isDarkTheme
+import com.dzhafarov.core.domain.use_case.execute
+import com.dzhafarov.core.ui.utils.isDarkTheme
 import com.dzhafarov.moneykeeper.settings.domain.use_case.GetSelectedThemeUseCase
 import com.dzhafarov.moneykeeper.settings.domain.use_case.ObserveSelectedThemeUseCase
 import com.dzhafarov.moneykeeper.settings.domain.model.Theme

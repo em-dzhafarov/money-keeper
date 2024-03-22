@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.settings.presentation
 
-data class SettingsUiState(
+internal data class SettingsUiState(
     val title: String = "",
     val appearanceAndLookingLabel: String = "",
     val selectThemeLabel: String = "",

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.dzhafarov.moneykeeper.notifications
 
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
+import com.dzhafarov.core.ui.BaseTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(navController: NavController) {
     Scaffold(

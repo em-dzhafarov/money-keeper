@@ -7,7 +7,7 @@ enum class ThemeType {
         val Default = SYSTEM
 
         fun of(value: Int?): ThemeType? {
-            return value?.let { values()[it] }
+            return value?.let { entries[it] }
         }
     }
 }

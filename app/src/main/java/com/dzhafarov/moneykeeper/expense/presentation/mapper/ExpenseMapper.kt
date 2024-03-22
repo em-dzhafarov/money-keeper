@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.presentation.mapper
 
-import com.dzhafarov.moneykeeper.core.domain.mapper.OneWayMapper
+import com.dzhafarov.core.domain.mapper.OneWayMapper
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseItem
 import com.dzhafarov.moneykeeper.home.presentation.DateTimePresentationMapper

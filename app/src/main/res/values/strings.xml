@@ -66,10 +66,6 @@
     <string name="dialog_date_time_confirm">Confirm</string>
     <string name="dialog_date_time_cancel">Cancel</string>
 
-    <string name="dialog_about_app_title">About this app</string>
-    <string name="dialog_about_app_text">This app designed to take control of your budget.\n\nYou could easily add your expenses and incoming.\n\nSee your budget state with nice diagrams and different time frames.</string>
-    <string name="dialog_about_app_confirm_button">Got it!</string>
-
     <string name="settings_screen_appearance_label">Appearance and looking</string>
     <string name="settings_screen_select_theme_label">Theme</string>
     <string name="settings_screen_light_theme">Light</string>

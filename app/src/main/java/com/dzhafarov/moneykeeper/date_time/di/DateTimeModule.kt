@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DateTimeModule {
+internal interface DateTimeModule {
 
     @Binds
     fun bindDateTimeStringProvider(actual: DateTimeSelectorStringProviderImpl): DateTimeSelectorStringProvider

@@ -2,7 +2,7 @@ package com.dzhafarov.moneykeeper.home.presentation
 
 import android.content.Context
 import com.dzhafarov.moneykeeper.R
-import com.dzhafarov.moneykeeper.core.domain.mapper.OneWayMapper
+import com.dzhafarov.core.domain.mapper.OneWayMapper
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

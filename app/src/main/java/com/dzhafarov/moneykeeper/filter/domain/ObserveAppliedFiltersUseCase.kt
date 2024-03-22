@@ -1,7 +1,7 @@
 package com.dzhafarov.moneykeeper.filter.domain
 
-import com.dzhafarov.moneykeeper.core.domain.use_case.UseCase
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.use_case.UseCase
+import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetCurrenciesUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentMethodsUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentReasonsUseCase

@@ -2,7 +2,7 @@ package com.dzhafarov.moneykeeper.filter.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetCurrenciesUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentMethodsUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetPaymentReasonsUseCase

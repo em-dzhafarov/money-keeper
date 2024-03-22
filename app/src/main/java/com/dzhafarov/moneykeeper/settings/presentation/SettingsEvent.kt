@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.settings.presentation
 
-sealed class SettingsEvent {
-    object NavigateBack : SettingsEvent()
-    object NavigateHome : SettingsEvent()
+internal sealed class SettingsEvent {
+    data object NavigateBack : SettingsEvent()
+    data object NavigateHome : SettingsEvent()
 }

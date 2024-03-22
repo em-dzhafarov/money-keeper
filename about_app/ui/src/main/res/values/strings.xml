@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_about_app_title">About this app</string>
+    <string name="dialog_about_app_text">This app designed to take control of your budget.\n\nYou could easily add your expenses and incoming.\n\nSee your budget state with nice diagrams and different time frames.</string>
+    <string name="dialog_about_app_confirm_button">Got it!</string>
+</resources>

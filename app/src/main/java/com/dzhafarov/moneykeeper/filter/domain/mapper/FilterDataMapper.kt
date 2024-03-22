@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.filter.domain.mapper
 
-import com.dzhafarov.moneykeeper.core.domain.mapper.Mapper
+import com.dzhafarov.core.domain.mapper.Mapper
 import com.dzhafarov.moneykeeper.filter.presentation.FilterData
 import com.google.gson.Gson
 import javax.inject.Inject

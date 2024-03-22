@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.settings.domain.use_case
 
-import com.dzhafarov.moneykeeper.core.domain.use_case.UseCaseSuspend
+import com.dzhafarov.core.domain.use_case.UseCaseSuspend
 import com.dzhafarov.moneykeeper.settings.domain.model.Theme
 import com.dzhafarov.moneykeeper.settings.storage.IsDynamicThemePreference
 import com.dzhafarov.moneykeeper.settings.storage.ThemeTypePreference

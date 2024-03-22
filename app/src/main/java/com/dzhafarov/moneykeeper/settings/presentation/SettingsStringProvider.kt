@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.settings.presentation
 
-interface SettingsStringProvider {
+internal interface SettingsStringProvider {
     val title: String
     val appearanceAndLookingLabel: String
     val selectThemeLabel: String

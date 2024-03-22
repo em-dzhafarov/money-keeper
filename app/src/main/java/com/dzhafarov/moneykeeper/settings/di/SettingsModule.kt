@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface SettingsModule {
+internal interface SettingsModule {
 
     @Binds
     fun bindSettingsStringProvider(actual: SettingsStringProviderImpl): SettingsStringProvider

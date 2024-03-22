@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.domain.mapper
 
-import com.dzhafarov.moneykeeper.core.domain.mapper.Mapper
+import com.dzhafarov.core.domain.mapper.Mapper
 import com.dzhafarov.moneykeeper.expense.db.dto.PaymentReasonDTO
 import com.dzhafarov.moneykeeper.expense.domain.model.PaymentReason
 import javax.inject.Inject

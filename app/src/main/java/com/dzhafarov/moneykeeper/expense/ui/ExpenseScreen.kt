@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.dzhafarov.moneykeeper.expense.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -56,18 +58,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.dzhafarov.moneykeeper.core.ui.BaseTopBar
-import com.dzhafarov.moneykeeper.core.ui.Destination
-import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
-import com.dzhafarov.moneykeeper.core.utils.navigateTo
-import com.dzhafarov.moneykeeper.date_time.ui.DateSelector
-import com.dzhafarov.moneykeeper.date_time.ui.TimeSelector
+import com.dzhafarov.core.ui.BaseTopBar
+import com.dzhafarov.core.ui.utils.collectAsEffect
+import com.dzhafarov.moneykeeper.date_time.ui.date.DateSelector
+import com.dzhafarov.moneykeeper.date_time.ui.time.TimeSelector
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseEvent
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseUiState
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseViewModel
 import com.dzhafarov.moneykeeper.expense.presentation.CurrencyItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
+import com.dzhafarov.core.navigation.Destination
+import com.dzhafarov.core.navigation.navigateTo
 import kotlinx.coroutines.flow.Flow
 
 object ExpenseScreen {
@@ -153,14 +155,14 @@ private fun ExpenseEvents(
 
             is ExpenseEvent.SelectDate -> {
                 navController.navigateTo(
-                    destination = Destination.Dialog.DateSelector,
+                    destination = com.dzhafarov.core.navigation.Destination.Dialog.DateSelector,
                     args = listOf(event.millis)
                 )
             }
 
             is ExpenseEvent.SelectTime -> {
                 navController.navigateTo(
-                    destination = Destination.Dialog.TimeSelector,
+                    destination = com.dzhafarov.core.navigation.Destination.Dialog.TimeSelector,
                     args = listOf(event.hour, event.minute)
                 )
             }
@@ -180,7 +182,6 @@ private fun ExpenseEvents(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExpenseContent(
     uiState: ExpenseUiState,

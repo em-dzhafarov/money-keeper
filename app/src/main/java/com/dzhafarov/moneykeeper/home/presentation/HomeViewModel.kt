@@ -2,7 +2,8 @@ package com.dzhafarov.moneykeeper.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.use_case.execute
+import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.ObserveExpensesUseCase
 import com.dzhafarov.moneykeeper.expense.presentation.mapper.ExpenseMapper
@@ -31,13 +32,13 @@ class HomeViewModel @Inject constructor(
     private val observeAppliedFiltersUseCase: ObserveAppliedFiltersUseCase,
     private val deleteExpenseByIdUseCase: DeleteExpenseByIdUseCase,
     private val expenseMapper: ExpenseMapper
-) : ViewModel() {
+) : ViewModel(), ViewModelContract<HomeUiState, HomeEvent, HomeUiAction> {
 
     private val _state = MutableStateFlow(HomeUiState())
-    val state: StateFlow<HomeUiState> = _state.asStateFlow()
+    override val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
     private val _events = Channel<HomeEvent>()
-    val events: Flow<HomeEvent> = _events.receiveAsFlow()
+    override val events: Flow<HomeEvent> = _events.receiveAsFlow()
 
     init {
         loadWelcomeMessage()
@@ -45,25 +46,31 @@ class HomeViewModel @Inject constructor(
         observeExpenses()
     }
 
-    fun onAddExpenseClick() {
+    override fun reduce(action: HomeUiAction) {
+        when (action) {
+            is HomeUiAction.OnAddExpenseClick -> onAddExpenseClick()
+            is HomeUiAction.OnExpenseEditClick -> onExpenseEditClicked(action.id)
+            is HomeUiAction.OnExpenseDeleteSwipe -> onExpenseDeleteSwiped(action.id)
+            is HomeUiAction.OnViewLookingClick -> onViewLookingClick()
+            is HomeUiAction.OnFilterClick -> onFilterClick()
+            is HomeUiAction.OnSearchClick -> onSearchClick()
+            is HomeUiAction.OnHomeClick -> onHomeClick()
+        }
+    }
+
+    private fun onAddExpenseClick() {
         viewModelScope.launch {
             _events.send(HomeEvent.AddExpense)
         }
     }
 
-    fun onNotificationsClick() {
-        viewModelScope.launch {
-            _events.send(HomeEvent.OpenNotifications)
-        }
-    }
-
-    fun onExpenseEditClicked(id: Long) {
+    private fun onExpenseEditClicked(id: Long) {
         viewModelScope.launch {
             _events.send(HomeEvent.EditExpense(id))
         }
     }
 
-    fun onViewLookingClick() {
+    private fun onViewLookingClick() {
         _state.update {
             it.copy(
                 displayMode = when (it.displayMode) {
@@ -74,7 +81,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onFilterClick() {
+    private fun onFilterClick() {
         viewModelScope.launch {
             _events.send(
                 HomeEvent.OpenFilter(
@@ -87,13 +94,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onSearchClick() {
+    private fun onSearchClick() {
         viewModelScope.launch {
             _events.send(HomeEvent.OpenSearch)
         }
     }
 
-    fun onExpenseDeleteSwiped(id: Long) {
+    private fun onExpenseDeleteSwiped(id: Long) {
         val item = _state.value.expenses.find { it.id == id } ?: return
         val position = _state.value.expenses.indexOf(item)
 
@@ -129,7 +136,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onHomeClick() {
+    private fun onHomeClick() {
         viewModelScope.launch {
             _events.send(HomeEvent.OpenAboutAppInfo)
         }

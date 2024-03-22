@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.domain.use_case
 
-import com.dzhafarov.moneykeeper.core.domain.use_case.UseCaseSuspend
+import com.dzhafarov.core.domain.use_case.UseCaseSuspend
 import com.dzhafarov.moneykeeper.expense.domain.model.PaymentReason
 import com.dzhafarov.moneykeeper.expense.domain.repository.PaymentReasonRepository
 import javax.inject.Inject

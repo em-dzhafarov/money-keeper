@@ -2,7 +2,7 @@ package com.dzhafarov.moneykeeper.expense.presentation.mapper
 
 import android.content.Context
 import com.dzhafarov.moneykeeper.R
-import com.dzhafarov.moneykeeper.core.domain.mapper.OneWayMapper
+import com.dzhafarov.core.domain.mapper.OneWayMapper
 import com.dzhafarov.moneykeeper.expense.domain.model.PaymentMethod
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
 import dagger.hilt.android.qualifiers.ApplicationContext

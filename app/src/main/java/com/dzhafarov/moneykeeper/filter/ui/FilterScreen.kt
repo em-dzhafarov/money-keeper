@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.moneykeeper.R
-import com.dzhafarov.moneykeeper.core.ui.BaseBottomSheet
-import com.dzhafarov.moneykeeper.core.utils.collectAsEffect
+import com.dzhafarov.core.ui.BaseBottomSheet
+import com.dzhafarov.core.ui.utils.collectAsEffect
 import com.dzhafarov.moneykeeper.expense.presentation.CurrencyItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentMethodItem
 import com.dzhafarov.moneykeeper.expense.presentation.PaymentReasonItem
@@ -80,7 +80,7 @@ private fun FilterScreenEvents(
 @Composable
 private fun FilterScreenContent(
     viewModel: FilterViewModel
-) = BaseBottomSheet(
+) = com.dzhafarov.core.ui.BaseBottomSheet(
     onDismiss = viewModel::onDismiss,
     content = { MainContent(viewModel) }
 )

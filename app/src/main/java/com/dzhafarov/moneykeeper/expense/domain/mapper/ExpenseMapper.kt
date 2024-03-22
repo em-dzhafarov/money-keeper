@@ -1,6 +1,6 @@
 package com.dzhafarov.moneykeeper.expense.domain.mapper
 
-import com.dzhafarov.moneykeeper.core.domain.mapper.Mapper
+import com.dzhafarov.core.domain.mapper.Mapper
 import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.db.dto.ExpenseDTO
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense

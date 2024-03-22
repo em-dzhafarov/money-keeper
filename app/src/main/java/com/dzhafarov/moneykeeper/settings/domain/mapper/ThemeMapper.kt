@@ -1,7 +1,7 @@
 package com.dzhafarov.moneykeeper.settings.domain.mapper
 
-import com.dzhafarov.moneykeeper.core.domain.mapper.OneWayMapper
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.mapper.OneWayMapper
+import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.moneykeeper.settings.domain.use_case.IsDynamicColorsSupportedUseCase
 import com.dzhafarov.moneykeeper.settings.domain.model.Theme
 import com.dzhafarov.moneykeeper.settings.domain.model.ThemeType

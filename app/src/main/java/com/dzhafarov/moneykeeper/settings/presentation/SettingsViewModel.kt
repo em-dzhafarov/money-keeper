@@ -2,7 +2,8 @@ package com.dzhafarov.moneykeeper.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzhafarov.moneykeeper.core.domain.use_case.execute
+import com.dzhafarov.core.domain.use_case.execute
+import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.moneykeeper.settings.domain.use_case.GetSelectedThemeUseCase
 import com.dzhafarov.moneykeeper.settings.domain.use_case.IsDynamicColorsSupportedUseCase
 import com.dzhafarov.moneykeeper.settings.domain.model.ThemeType
@@ -19,30 +20,42 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+internal class SettingsViewModel @Inject constructor(
     private val stringProvider: SettingsStringProvider,
     private val getSelectedThemeUseCase: GetSelectedThemeUseCase,
     private val updateSelectedThemeUseCase: UpdateSelectedThemeUseCase,
     private val isDynamicColorsSupportedUseCase: IsDynamicColorsSupportedUseCase
-) : ViewModel() {
+) : ViewModel(), ViewModelContract<SettingsUiState, SettingsEvent, SettingsUiAction> {
 
     private val _state = MutableStateFlow(SettingsUiState())
-    val state: StateFlow<SettingsUiState> = _state.asStateFlow()
+    override val state: StateFlow<SettingsUiState> = _state.asStateFlow()
 
     private val _events = Channel<SettingsEvent>()
-    val events: Flow<SettingsEvent> = _events.receiveAsFlow()
+    override val events: Flow<SettingsEvent> = _events.receiveAsFlow()
 
     init {
         initialize()
     }
 
-    fun onNavigateBack() {
+    override fun reduce(action: SettingsUiAction) {
+        when (action) {
+            is SettingsUiAction.OnAppearanceClick -> onAppearanceClick()
+            is SettingsUiAction.OnDarkThemeSelected -> onDarkThemeSelected()
+            is SettingsUiAction.OnDynamicThemeCheckChanged -> onDynamicThemeCheckChanged(action.isChecked)
+            is SettingsUiAction.OnLightThemeSelected -> onLightThemeSelected()
+            is SettingsUiAction.OnNavigateBack -> onNavigateBack()
+            is SettingsUiAction.OnSelectThemeClick -> onSelectThemeClick()
+            is SettingsUiAction.OnSystemThemeSelected -> onSystemThemeSelected()
+        }
+    }
+
+    private fun onNavigateBack() {
         viewModelScope.launch {
             _events.send(SettingsEvent.NavigateBack)
         }
     }
 
-    fun onAppearanceClick() {
+    private fun onAppearanceClick() {
         _state.update {
             it.copy(
                 isAppearanceSectionVisible = it.isAppearanceSectionVisible.not()
@@ -50,7 +63,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onDynamicThemeCheckChanged(isChecked: Boolean) {
+    private fun onDynamicThemeCheckChanged(isChecked: Boolean) {
         _state.update {
             it.copy(
                 isDynamicTheme = isChecked
@@ -66,7 +79,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onSelectThemeClick() {
+    private fun onSelectThemeClick() {
         _state.update {
             it.copy(
                 isThemeItemsVisible = it.isThemeItemsVisible.not()
@@ -74,7 +87,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onLightThemeSelected() {
+    private fun onLightThemeSelected() {
         _state.update {
             it.copy(
                 isLightTheme = true,
@@ -92,7 +105,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onDarkThemeSelected() {
+    private fun onDarkThemeSelected() {
         _state.update {
             it.copy(
                 isLightTheme = false,
@@ -110,7 +123,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onSystemThemeSelected() {
+    private fun onSystemThemeSelected() {
         _state.update {
             it.copy(
                 isLightTheme = false,

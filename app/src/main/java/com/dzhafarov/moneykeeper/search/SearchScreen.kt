@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.dzhafarov.moneykeeper.search
 
 import androidx.compose.foundation.layout.Box
@@ -9,9 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.dzhafarov.moneykeeper.core.ui.BaseBottomSheet
+import com.dzhafarov.core.ui.BaseBottomSheet
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavController) {
     BaseBottomSheet(
