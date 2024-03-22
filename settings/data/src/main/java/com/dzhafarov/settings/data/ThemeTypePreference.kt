@@ -1,15 +1,14 @@
 package com.dzhafarov.settings.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.intPreferencesKey
 import com.dzhafarov.core.data.DataStorePreference
-import com.dzhafarov.core.data.dataStore
+import com.dzhafarov.core.data.Key
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class ThemeTypePreference @Inject constructor(
     @ApplicationContext context: Context
-) : DataStorePreference<Int>(context.dataStore) {
+) : DataStorePreference<Int>(context) {
 
-    override val key = intPreferencesKey("THEME_TYPE")
+    override val key = Key.OfInt("THEME_TYPE")
 }

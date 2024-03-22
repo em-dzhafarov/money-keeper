@@ -1,5 +1,6 @@
 package com.dzhafarov.core.data
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -7,24 +8,24 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-abstract class DataStorePreference<T>(
-    private val store: DataStore<Preferences>
-) {
+abstract class DataStorePreference<T>(context: Context) {
+    private val store: DataStore<Preferences> = context.dataStore
+    private val _key by lazy { key.toPreferenceKey() }
 
-    protected abstract val key: Preferences.Key<T>
+    protected abstract val key: Key<T>
 
     open suspend fun edit(input: T) {
         store.edit {
-            it[key] = input
+            it[_key] = input
         }
     }
 
     open suspend fun clear() {
-        store.edit { it.remove(key) }
+        store.edit { it.remove(_key) }
     }
 
     open fun observe(): Flow<T?> {
-        return store.data.map { it[key] }
+        return store.data.map { it[_key] }
     }
 
     suspend fun get(): T? {
