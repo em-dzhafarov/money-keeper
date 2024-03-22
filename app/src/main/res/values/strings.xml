@@ -61,11 +61,6 @@
     <string name="currency_eur">EUR</string>
     <string name="currency_eur_full">The Euro</string>
 
-    <string name="dialog_date_title">Select date</string>
-    <string name="dialog_time_title">Select time</string>
-    <string name="dialog_date_time_confirm">Confirm</string>
-    <string name="dialog_date_time_cancel">Cancel</string>
-
     <string name="settings_screen_appearance_label">Appearance and looking</string>
     <string name="settings_screen_select_theme_label">Theme</string>
     <string name="settings_screen_light_theme">Light</string>

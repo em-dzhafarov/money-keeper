@@ -3,7 +3,7 @@ package com.dzhafarov.moneykeeper.expense.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
-import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
+import com.dzhafarov.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import com.dzhafarov.moneykeeper.expense.domain.use_case.DeleteExpenseByIdUseCase
 import com.dzhafarov.moneykeeper.expense.domain.use_case.GetCurrenciesUseCase
@@ -49,7 +49,7 @@ class ExpenseViewModel @Inject constructor(
     private val _events = Channel<ExpenseEvent>()
     val events: Flow<ExpenseEvent> = _events.receiveAsFlow()
 
-    private var currentTimestamp: Timestamp = Timestamp.now()
+    private var currentTimestamp: com.dzhafarov.date_time.domain.Timestamp = com.dzhafarov.date_time.domain.Timestamp.now()
     private var expenseId = 0L
     private val isEditMode: Boolean get() = expenseId != 0L
 
@@ -242,7 +242,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun onDateSelected(millis: Long) {
-        currentTimestamp = Timestamp.of(
+        currentTimestamp = com.dzhafarov.date_time.domain.Timestamp.of(
             dateMillis = millis,
             hours = currentTimestamp.hours,
             minutes = currentTimestamp.minutes
@@ -258,7 +258,7 @@ class ExpenseViewModel @Inject constructor(
     fun onTimeSelected(data: Pair<Int, Int>) {
         val (hour, minute) = data
 
-        currentTimestamp = Timestamp.of(
+        currentTimestamp = com.dzhafarov.date_time.domain.Timestamp.of(
             dateMillis = currentTimestamp.milliseconds,
             hours = hour,
             minutes = minute,

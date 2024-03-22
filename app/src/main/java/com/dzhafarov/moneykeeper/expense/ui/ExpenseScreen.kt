@@ -60,8 +60,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dzhafarov.core.ui.BaseTopBar
 import com.dzhafarov.core.ui.utils.collectAsEffect
-import com.dzhafarov.moneykeeper.date_time.ui.date.DateSelector
-import com.dzhafarov.moneykeeper.date_time.ui.time.TimeSelector
+import com.dzhafarov.date_time.ui.date.DateSelector
+import com.dzhafarov.date_time.ui.time.TimeSelector
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseEvent
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseUiState
 import com.dzhafarov.moneykeeper.expense.presentation.ExpenseViewModel
@@ -127,16 +127,16 @@ private fun ObserveDateTimePickerResults(
 ) {
     navController.currentBackStackEntry
         ?.savedStateHandle
-        ?.takeIf { it.contains(DateSelector.SELECTED_DATE_RESULT) }
-        ?.getStateFlow(DateSelector.SELECTED_DATE_RESULT, defaultDate)
+        ?.takeIf { it.contains(com.dzhafarov.date_time.ui.date.DateSelector.SELECTED_DATE_RESULT) }
+        ?.getStateFlow(com.dzhafarov.date_time.ui.date.DateSelector.SELECTED_DATE_RESULT, defaultDate)
         ?.collectAsState()
         ?.value
         ?.let(onDateResultReceived)
 
     navController.currentBackStackEntry
         ?.savedStateHandle
-        ?.takeIf { it.contains(TimeSelector.SELECTED_TIME_RESULT) }
-        ?.getStateFlow(TimeSelector.SELECTED_TIME_RESULT, defaultTime)
+        ?.takeIf { it.contains(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_TIME_RESULT) }
+        ?.getStateFlow(com.dzhafarov.date_time.ui.time.TimeSelector.SELECTED_TIME_RESULT, defaultTime)
         ?.collectAsState()
         ?.value
         ?.let(onTimeResultReceived)

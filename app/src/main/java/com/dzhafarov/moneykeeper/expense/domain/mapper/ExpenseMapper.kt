@@ -1,7 +1,7 @@
 package com.dzhafarov.moneykeeper.expense.domain.mapper
 
 import com.dzhafarov.core.domain.mapper.Mapper
-import com.dzhafarov.moneykeeper.date_time.domain.Timestamp
+import com.dzhafarov.date_time.domain.Timestamp
 import com.dzhafarov.moneykeeper.expense.db.dto.ExpenseDTO
 import com.dzhafarov.moneykeeper.expense.domain.model.Expense
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class ExpenseMapper @Inject constructor(
             reason = paymentReasonMapper.to(input.reason),
             currency = currencyMapper.to(input.currency),
             description = input.description,
-            time = Timestamp.of(input.time)
+            time = com.dzhafarov.date_time.domain.Timestamp.of(input.time)
         )
     }
 
