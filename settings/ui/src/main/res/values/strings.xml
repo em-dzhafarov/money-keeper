@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_screen">Settings</string>
+    <string name="settings_screen_appearance_label">Appearance and looking</string>
+    <string name="settings_screen_select_theme_label">Theme</string>
+    <string name="settings_screen_light_theme">Light</string>
+    <string name="settings_screen_dark_theme">Dark</string>
+    <string name="settings_screen_system_theme">System</string>
+    <string name="settings_screen_dynamic_theme">Dynamic Colors</string>
+</resources>

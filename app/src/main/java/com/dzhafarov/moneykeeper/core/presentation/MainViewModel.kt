@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.core.ui.utils.isDarkTheme
-import com.dzhafarov.moneykeeper.settings.domain.use_case.GetSelectedThemeUseCase
-import com.dzhafarov.moneykeeper.settings.domain.use_case.ObserveSelectedThemeUseCase
-import com.dzhafarov.moneykeeper.settings.domain.model.Theme
-import com.dzhafarov.moneykeeper.settings.domain.model.ThemeType
+import com.dzhafarov.settings.domain.use_case.GetSelectedThemeUseCase
+import com.dzhafarov.settings.domain.use_case.ObserveSelectedThemeUseCase
+import com.dzhafarov.settings.domain.model.Theme
+import com.dzhafarov.settings.domain.model.ThemeType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay

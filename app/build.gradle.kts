@@ -92,6 +92,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":about_app"))
     implementation(project(":date_time"))
+    implementation(project(":settings"))
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")

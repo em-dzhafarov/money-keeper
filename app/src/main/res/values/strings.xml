@@ -61,13 +61,6 @@
     <string name="currency_eur">EUR</string>
     <string name="currency_eur_full">The Euro</string>
 
-    <string name="settings_screen_appearance_label">Appearance and looking</string>
-    <string name="settings_screen_select_theme_label">Theme</string>
-    <string name="settings_screen_light_theme">Light</string>
-    <string name="settings_screen_dark_theme">Dark</string>
-    <string name="settings_screen_system_theme">System</string>
-    <string name="settings_screen_dynamic_theme">Dynamic Colors</string>
-
     <string name="filter_screen_apply_filters">Apply</string>
     <string name="filter_screen_clear_filters">Clear</string>
     <string name="filter_screen_cancel">Cancel</string>

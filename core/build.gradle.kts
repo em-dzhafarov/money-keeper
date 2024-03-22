@@ -37,4 +37,5 @@ dependencies {
     api(project(":core:presentation"))
     api(project(":core:ui"))
     api(project(":core:navigation"))
+    api(project(":core:data"))
 }
