@@ -2,26 +2,18 @@ package com.dzhafarov.filters.domain.mapper
 
 import com.dzhafarov.core.domain.mapper.Mapper
 import com.dzhafarov.filters.domain.FilterData
-import com.google.gson.Gson
+import com.dzhafarov.filters.domain.parser.FilterDataParser
 import javax.inject.Inject
 
 class FilterDataMapper @Inject constructor(
-    private val gson: Gson
+    private val filterDataParser: FilterDataParser
 ) : Mapper<FilterData?, String> {
 
     override suspend fun to(input: FilterData?): String {
-        return try {
-            gson.toJson(input)
-        } catch (e: RuntimeException) {
-            ""
-        }
+        return filterDataParser.wrap(input)
     }
 
     override suspend fun from(input: String): FilterData? {
-        return try {
-            gson.fromJson(input, FilterData::class.java)
-        } catch (e: RuntimeException) {
-            null
-        }
+        return filterDataParser.unwrap(input, FilterData::class.java)
     }
 }

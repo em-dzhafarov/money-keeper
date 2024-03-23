@@ -10,10 +10,8 @@ import com.dzhafarov.home.ui.content.ScreenContent
 import com.dzhafarov.home.ui.events.ScreenEvents
 
 @Composable
-fun HomeScreen(
-    navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
-) {
+fun HomeScreen(navController: NavController) {
+    val viewModel: HomeViewModel = hiltViewModel()
     val snackbarHostState = remember { SnackbarHostState() }
 
     ScreenEvents(

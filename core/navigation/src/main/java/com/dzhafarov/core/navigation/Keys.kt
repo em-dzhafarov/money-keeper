@@ -11,4 +11,8 @@ object Keys {
         const val SELECTED_DATE_RESULT = "selected_date_result"
         const val SELECTED_DATE_ARG = "selected_date_arg"
     }
+
+    object Expense {
+        const val SELECTED_EXPENSE_ID_ARG = "selected_expense_id"
+    }
 }

@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.dzhafarov.moneykeeper.main.presentation.MainViewModel
-import com.dzhafarov.moneykeeper.ui.theme.AppTheme
+import com.dzhafarov.moneykeeper.main.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -71,16 +71,13 @@ import com.dzhafarov.expense.presentation.PaymentReasonItem
 import com.dzhafarov.core.navigation.navigateTo
 import kotlinx.coroutines.flow.Flow
 
-object ExpenseScreen {
-    const val SELECTED_EXPENSE_ID_ARG = "selected_expense_id"
-}
-
 @Composable
 fun ExpenseScreen(
     navController: NavController,
-    expenseId: Long = 0,
-    viewModel: ExpenseViewModel = hiltViewModel()
+    expenseId: Long = 0
 ) {
+    val viewModel: ExpenseViewModel = hiltViewModel()
+
     LaunchedEffect(expenseId) {
         viewModel.initializeExpenseIfNeeded(expenseId)
     }
@@ -670,7 +667,7 @@ private fun CurrencyPicker(
                         .padding(8.dp),
                     text = currency.code,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = if (selected?.value == currency.value) {
+                        color = if (selected == currency) {
                             MaterialTheme.colorScheme.onSecondary
                         } else {
                             MaterialTheme.colorScheme.inversePrimary

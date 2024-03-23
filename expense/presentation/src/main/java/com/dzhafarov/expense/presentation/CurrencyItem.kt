@@ -8,4 +8,12 @@ data class CurrencyItem(
     @DrawableRes val iconRes: Int,
     val code: String,
     val name: String
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return value == (other as? CurrencyItem)?.value
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+}

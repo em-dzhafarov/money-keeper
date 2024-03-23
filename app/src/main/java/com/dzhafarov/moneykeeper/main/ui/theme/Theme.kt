@@ -1,4 +1,4 @@
-package com.dzhafarov.moneykeeper.ui.theme
+package com.dzhafarov.moneykeeper.main.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.dzhafarov.moneykeeper.main.ui.theme.AppTypography
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,

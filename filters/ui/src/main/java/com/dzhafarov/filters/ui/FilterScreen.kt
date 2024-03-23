@@ -51,10 +51,8 @@ import com.dzhafarov.filters.presentation.states.PriceRangeUiState
 import com.dzhafarov.filters.presentation.states.SummaryUiState
 
 @Composable
-fun FilterScreen(
-    navController: NavController,
-    viewModel: FilterViewModel = hiltViewModel()
-) {
+fun FilterScreen(navController: NavController) {
+    val viewModel: FilterViewModel = hiltViewModel()
     FilterScreenEvents(navController, viewModel)
     FilterScreenContent(viewModel)
 }

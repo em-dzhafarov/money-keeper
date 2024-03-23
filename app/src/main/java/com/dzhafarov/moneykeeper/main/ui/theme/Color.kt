@@ -1,4 +1,4 @@
-package com.dzhafarov.moneykeeper.ui.theme
+package com.dzhafarov.moneykeeper.main.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

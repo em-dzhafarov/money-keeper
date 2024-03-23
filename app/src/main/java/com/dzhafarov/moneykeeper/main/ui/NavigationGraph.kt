@@ -179,9 +179,9 @@ private fun ContentNavContainer(
 
             composable(
                 route = Destination.Screen.Expense.route
-                        + "/{${ExpenseScreen.SELECTED_EXPENSE_ID_ARG}}",
+                        + "/{${Keys.Expense.SELECTED_EXPENSE_ID_ARG}}",
                 arguments = listOf(
-                    navArgument(ExpenseScreen.SELECTED_EXPENSE_ID_ARG) {
+                    navArgument(Keys.Expense.SELECTED_EXPENSE_ID_ARG) {
                         type = NavType.LongType
                     }
                 ),
@@ -198,7 +198,7 @@ private fun ContentNavContainer(
                 content = { entry ->
                     ExpenseScreen(
                         navController = navController,
-                        expenseId = entry.arguments?.getLong(ExpenseScreen.SELECTED_EXPENSE_ID_ARG) ?: 0
+                        expenseId = entry.arguments?.getLong(Keys.Expense.SELECTED_EXPENSE_ID_ARG) ?: 0
                     )
                 }
             )
