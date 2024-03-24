@@ -38,6 +38,8 @@ class HomeViewModel @Inject constructor(
     private val _events = Channel<HomeEvent>()
     override val events: Flow<HomeEvent> = _events.receiveAsFlow()
 
+    private val _itemsBeingRemoved = MutableStateFlow(setOf<Long>())
+
     init {
         loadStrings()
         observeExpenses()
@@ -99,31 +101,15 @@ class HomeViewModel @Inject constructor(
 
     private fun onExpenseDeleteSwiped(id: Long) {
         val item = _state.value.expenses.find { it.id == id } ?: return
-        val position = _state.value.expenses.indexOf(item)
+        _itemsBeingRemoved.update { it + setOf(id) }
 
         viewModelScope.launch {
-            _state.update { state ->
-                state.copy(
-                    expenses = state.expenses
-                        .toMutableList()
-                        .apply { remove(item) }
-                        .toList()
-                )
-            }
-
             _events.send(
                 HomeEvent.DeleteExpense(
                     message = stringProvider.expenseDeletedMessage,
                     actionLabel = stringProvider.undoDeleteButton,
                     onActionPerformed = {
-                        _state.update { state ->
-                            state.copy(
-                                expenses = state.expenses
-                                    .toMutableList()
-                                    .apply { add(position, item) }
-                                    .toList()
-                            )
-                        }
+                        _itemsBeingRemoved.update { it - setOf(id) }
                     },
                     onDismissed = {
                         deleteExpenseByIdUseCase.execute(item.id)
@@ -154,6 +140,11 @@ class HomeViewModel @Inject constructor(
     private fun observeExpenses() {
         viewModelScope.launch {
             observeExpensesUseCase.execute()
+                .combine(_itemsBeingRemoved) { original, removing ->
+                    original.filter {
+                        it.id !in removing
+                    }
+                }
                 .combine(observeAppliedFiltersUseCase.execute(), ::Pair)
                 .onEach { (_, predicates) ->
                     _state.update {
