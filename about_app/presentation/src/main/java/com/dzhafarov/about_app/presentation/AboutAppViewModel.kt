@@ -42,14 +42,12 @@ class AboutAppViewModel @Inject constructor(
     }
 
     private fun loadStrings() {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    title = stringProvider.title(),
-                    text = stringProvider.text(),
-                    confirm = stringProvider.confirm()
-                )
-            }
+        _state.update {
+            it.copy(
+                title = stringProvider.title,
+                text = stringProvider.text,
+                confirm = stringProvider.confirm
+            )
         }
     }
 }

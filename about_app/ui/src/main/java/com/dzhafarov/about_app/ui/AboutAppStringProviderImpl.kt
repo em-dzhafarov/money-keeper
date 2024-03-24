@@ -9,15 +9,12 @@ class AboutAppStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AboutAppStringProvider {
 
-    override suspend fun title(): String {
-        return context.getString(R.string.dialog_about_app_title)
-    }
+    override val title: String
+        get() = context.getString(R.string.dialog_about_app_title)
 
-    override suspend fun text(): String {
-        return context.getString(R.string.dialog_about_app_text)
-    }
+    override val text: String
+        get() = context.getString(R.string.dialog_about_app_text)
 
-    override suspend fun confirm(): String {
-        return context.getString(R.string.dialog_about_app_confirm_button)
-    }
+    override val confirm: String
+        get() = context.getString(R.string.dialog_about_app_text)
 }
