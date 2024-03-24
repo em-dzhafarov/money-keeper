@@ -3,6 +3,7 @@ package com.dzhafarov.filters.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
+import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.expense.domain.use_case.GetCurrenciesUseCase
 import com.dzhafarov.expense.domain.use_case.GetPaymentMethodsUseCase
 import com.dzhafarov.expense.domain.use_case.GetPaymentReasonsUseCase
@@ -12,6 +13,7 @@ import com.dzhafarov.expense.presentation.PaymentReasonItem
 import com.dzhafarov.expense.presentation.mapper.CurrencyMapper
 import com.dzhafarov.expense.presentation.mapper.PaymentMethodMapper
 import com.dzhafarov.expense.presentation.mapper.PaymentReasonMapper
+import com.dzhafarov.filters.domain.FilterData
 import com.dzhafarov.filters.domain.GetCurrentFiltersUseCase
 import com.dzhafarov.filters.domain.GetMinAndMaxAmountUseCase
 import com.dzhafarov.filters.domain.SaveCurrentFiltersUseCase
@@ -39,13 +41,13 @@ class FilterViewModel @Inject constructor(
     private val getPaymentReasonsUseCase: GetPaymentReasonsUseCase,
     private val paymentReasonMapper: PaymentReasonMapper,
     private val stringProvider: FilterStringProvider
-) : ViewModel() {
+) : ViewModel(), ViewModelContract<FilterUiState, FilterEvent, FilterUiAction> {
 
     private val _state = MutableStateFlow(FilterUiState())
-    val state: StateFlow<FilterUiState> = _state.asStateFlow()
+    override val state: StateFlow<FilterUiState> = _state.asStateFlow()
 
     private val _events = Channel<FilterEvent>()
-    val events: Flow<FilterEvent> = _events.receiveAsFlow()
+    override val events: Flow<FilterEvent> = _events.receiveAsFlow()
 
     private var defaultFilterData = buildFilterData()
 
@@ -53,13 +55,32 @@ class FilterViewModel @Inject constructor(
         initialize()
     }
 
-    fun onDismiss() {
+    override fun reduce(action: FilterUiAction) {
+        when (action) {
+            is FilterUiAction.OnDismiss -> onDismiss()
+            is FilterUiAction.OnApplyFiltersClicked -> onApplyFiltersClicked()
+            is FilterUiAction.OnCancelClicked -> onCancelClicked()
+            is FilterUiAction.OnClearFiltersClicked -> onClearFiltersClicked()
+            is FilterUiAction.OnCurrencyClicked -> onCurrencyClicked()
+            is FilterUiAction.OnCurrencySelected -> onCurrencySelected(action.item)
+            is FilterUiAction.OnDescriptionClicked -> onDescriptionClicked()
+            is FilterUiAction.OnDescriptionValueChanged -> onDescriptionValueChanged(action.value)
+            is FilterUiAction.OnPaymentMethodClicked -> onPaymentMethodClicked()
+            is FilterUiAction.OnPaymentMethodSelected -> onPaymentMethodSelected(action.item)
+            is FilterUiAction.OnPaymentReasonClicked -> onPaymentReasonClicked()
+            is FilterUiAction.OnPaymentReasonSelected -> onPaymentReasonSelected(action.item)
+            is FilterUiAction.OnPriceRangeChanged -> onPriceRangeChanged(action.value)
+            is FilterUiAction.OnPriceRangeClicked -> onPriceRangeClicked()
+        }
+    }
+
+    private fun onDismiss() {
         viewModelScope.launch {
             _events.send(FilterEvent.Dismiss)
         }
     }
 
-    fun onPriceRangeChanged(value: ClosedFloatingPointRange<Float>) {
+    private fun onPriceRangeChanged(value: ClosedFloatingPointRange<Float>) {
         _state.update {
             it.copy(
                 priceRange = it.priceRange.copy(
@@ -72,7 +93,7 @@ class FilterViewModel @Inject constructor(
         invalidateSummary()
     }
 
-    fun onPriceRangeClicked() {
+    private fun onPriceRangeClicked() {
         _state.update {
             it.copy(
                 priceRange = it.priceRange.copy(
@@ -82,7 +103,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun onCurrencyClicked() {
+    private fun onCurrencyClicked() {
         _state.update {
             it.copy(
                 currency = it.currency.copy(
@@ -92,7 +113,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun onCurrencySelected(item: CurrencyItem) {
+    private fun onCurrencySelected(item: CurrencyItem) {
         _state.update {
             it.copy(
                 currency = it.currency.copy(
@@ -110,7 +131,7 @@ class FilterViewModel @Inject constructor(
         invalidateSummary()
     }
 
-    fun onPaymentMethodClicked() {
+    private fun onPaymentMethodClicked() {
         _state.update {
             it.copy(
                 method = it.method.copy(
@@ -120,7 +141,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun onPaymentMethodSelected(item: PaymentMethodItem) {
+    private fun onPaymentMethodSelected(item: PaymentMethodItem) {
         _state.update {
             it.copy(
                 method = it.method.copy(
@@ -138,7 +159,7 @@ class FilterViewModel @Inject constructor(
         invalidateSummary()
     }
 
-    fun onPaymentReasonClicked() {
+    private fun onPaymentReasonClicked() {
         _state.update {
             it.copy(
                 reason = it.reason.copy(
@@ -148,7 +169,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun onPaymentReasonSelected(item: PaymentReasonItem) {
+    private fun onPaymentReasonSelected(item: PaymentReasonItem) {
         _state.update {
             it.copy(
                 reason = it.reason.copy(
@@ -166,7 +187,7 @@ class FilterViewModel @Inject constructor(
         invalidateSummary()
     }
 
-    fun onDescriptionClicked() {
+    private fun onDescriptionClicked() {
         _state.update {
             it.copy(
                 description = it.description.copy(
@@ -176,7 +197,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun onDescriptionValueChanged(value: String) {
+    private fun onDescriptionValueChanged(value: String) {
         _state.update {
             it.copy(
                 description = it.description.copy(
@@ -188,35 +209,35 @@ class FilterViewModel @Inject constructor(
         invalidateSummary()
     }
 
-    fun onApplyFiltersClicked() {
+    private fun onApplyFiltersClicked() {
         viewModelScope.launch {
             val filters = buildFilterData()
 
             if (filters != defaultFilterData) {
                 saveCurrentFiltersUseCase.execute(filters)
             } else {
-                saveCurrentFiltersUseCase.execute(com.dzhafarov.filters.domain.FilterData())
+                saveCurrentFiltersUseCase.execute(FilterData())
             }
 
             _events.send(FilterEvent.Dismiss)
         }
     }
 
-    fun onClearFiltersClicked() {
+    private fun onClearFiltersClicked() {
         viewModelScope.launch {
-            initialize(com.dzhafarov.filters.domain.FilterData())
+            initialize(FilterData())
         }
     }
 
-    fun onCancelClicked() {
+    private fun onCancelClicked() {
         viewModelScope.launch {
             _events.send(FilterEvent.Dismiss)
         }
     }
 
-    private fun buildFilterData(): com.dzhafarov.filters.domain.FilterData {
+    private fun buildFilterData(): FilterData {
         return _state.value.let {
-            com.dzhafarov.filters.domain.FilterData(
+            FilterData(
                 minPrice = it.priceRange.minAmount ?: it.priceRange.initialMinAmount,
                 maxPrice = it.priceRange.maxAmount ?: it.priceRange.initialMaxAmount,
                 currencyCodes = it.currency.selected.map { it.code }.toSet(),
@@ -229,7 +250,7 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    private fun initialize(seed: com.dzhafarov.filters.domain.FilterData? = null) {
+    private fun initialize(seed: FilterData? = null) {
         viewModelScope.launch {
             val current = seed ?: getCurrentFiltersUseCase.execute()
             val (min, max) = getMinAndMaxAmountUseCase.execute()

@@ -21,6 +21,7 @@ dependencies {
     implementProjects(
         AppProject.Core.UI,
         AppProject.Core.Navigation,
+        AppProject.Core.Presentation,
         AppProject.Filters.Presentation,
         AppProject.Expense.Presentation
     )
