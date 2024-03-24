@@ -16,5 +16,5 @@ class AboutAppStringProviderImpl @Inject constructor(
         get() = context.getString(R.string.dialog_about_app_text)
 
     override val confirm: String
-        get() = context.getString(R.string.dialog_about_app_text)
+        get() = context.getString(R.string.dialog_about_app_confirm_button)
 }
