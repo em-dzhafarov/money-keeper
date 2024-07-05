@@ -1,16 +1,11 @@
 package com.dzhafarov.settings.di
 
-import com.dzhafarov.settings.presentation.SettingsStringProvider
-import com.dzhafarov.settings.ui.SettingsStringProviderImpl
-import dagger.Binds
+import com.dzhafarov.settings.data.di.SettingsDataModule
+import com.dzhafarov.settings.ui.di.SettingsUiModule
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module
+@Module(includes = [SettingsDataModule::class, SettingsUiModule::class])
 @InstallIn(SingletonComponent::class)
-internal interface SettingsModule {
-
-    @Binds
-    fun bindSettingsStringProvider(actual: SettingsStringProviderImpl): SettingsStringProvider
-}
+interface SettingsModule

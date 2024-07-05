@@ -5,7 +5,7 @@ import com.dzhafarov.settings.presentation.SettingsStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class SettingsStringProviderImpl @Inject constructor(
+internal class SettingsStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SettingsStringProvider {
 

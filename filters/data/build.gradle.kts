@@ -10,7 +10,10 @@ android {
 }
 
 dependencies {
-    implementProject(AppProject.Core.Data)
+    implementProjects(
+        AppProject.Core.Data,
+        AppProject.Filters.Domain
+    )
 
     hilt()
 }

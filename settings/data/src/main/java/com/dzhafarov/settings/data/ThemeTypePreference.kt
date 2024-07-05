@@ -6,7 +6,7 @@ import com.dzhafarov.core.data.Key
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class ThemeTypePreference @Inject constructor(
+internal class ThemeTypePreference @Inject constructor(
     @ApplicationContext context: Context
 ) : DataStorePreference<Int>(context) {
 

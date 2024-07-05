@@ -1,6 +1,6 @@
 package com.dzhafarov.expense.presentation.mapper
 
-import com.dzhafarov.core.domain.mapper.OneWayMapper
+import com.dzhafarov.core.presentation.UIMapper
 import com.dzhafarov.expense.domain.model.PaymentMethod
 import com.dzhafarov.expense.presentation.DrawableResourceProvider
 import com.dzhafarov.expense.presentation.ExpenseStringProvider
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class PaymentMethodMapper @Inject constructor(
     private val stringProvider: ExpenseStringProvider,
     private val drawableResourceProvider: DrawableResourceProvider
-) : OneWayMapper<PaymentMethod, PaymentMethodItem> {
+) : UIMapper<PaymentMethod, PaymentMethodItem> {
 
     override suspend fun map(input: PaymentMethod): PaymentMethodItem {
         return when (input) {

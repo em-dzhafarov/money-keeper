@@ -5,7 +5,7 @@ import com.dzhafarov.home.presentation.HomeStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class HomeStringProviderImpl @Inject constructor(
+internal class HomeStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : HomeStringProvider {
 

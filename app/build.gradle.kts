@@ -99,7 +99,6 @@ dependencies {
     navigation()
     accompanistNavigation()
     hilt()
-    room()
 }
 
 kapt {

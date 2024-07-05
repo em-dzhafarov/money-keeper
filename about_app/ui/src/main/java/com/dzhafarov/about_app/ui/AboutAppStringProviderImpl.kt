@@ -5,7 +5,7 @@ import com.dzhafarov.about_app.presentation.AboutAppStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class AboutAppStringProviderImpl @Inject constructor(
+internal class AboutAppStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AboutAppStringProvider {
 

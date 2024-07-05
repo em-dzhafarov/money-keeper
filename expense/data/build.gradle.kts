@@ -11,7 +11,11 @@ android {
 }
 
 dependencies {
-    implementProject(AppProject.Core.Data)
+    implementProjects(
+        AppProject.Core.Data,
+        AppProject.Expense.Domain,
+        AppProject.DateTime.Domain
+    )
 
     room()
     hilt()

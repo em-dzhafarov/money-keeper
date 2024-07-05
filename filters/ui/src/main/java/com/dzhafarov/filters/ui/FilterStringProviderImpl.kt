@@ -5,7 +5,7 @@ import com.dzhafarov.filters.presentation.FilterStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class FilterStringProviderImpl @Inject constructor(
+internal class FilterStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : FilterStringProvider {
 

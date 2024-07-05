@@ -3,7 +3,7 @@ package com.dzhafarov.expense.ui
 import com.dzhafarov.expense.presentation.DrawableResourceProvider
 import javax.inject.Inject
 
-class DrawableResourceProviderImpl @Inject constructor() : DrawableResourceProvider {
+internal class DrawableResourceProviderImpl @Inject constructor() : DrawableResourceProvider {
     override val currencyPln: Int = R.drawable.currency_zloty
     override val currencyUsd: Int = R.drawable.currency_dollar
     override val currencyEur: Int = R.drawable.currency_euro

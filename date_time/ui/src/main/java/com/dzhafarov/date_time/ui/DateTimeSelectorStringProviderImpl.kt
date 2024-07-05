@@ -5,7 +5,7 @@ import com.dzhafarov.date_time.presentation.DateTimeSelectorStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class DateTimeSelectorStringProviderImpl @Inject constructor(
+internal class DateTimeSelectorStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : DateTimeSelectorStringProvider {
 

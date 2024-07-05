@@ -6,7 +6,7 @@ import com.dzhafarov.core.data.Key
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class IsDynamicThemePreference @Inject constructor(
+internal class IsDynamicThemePreference @Inject constructor(
     @ApplicationContext context: Context
 ) : DataStorePreference<Boolean>(context) {
 

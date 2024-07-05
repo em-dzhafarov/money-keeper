@@ -11,10 +11,8 @@ android {
 
 dependencies {
     implementProjects(
-        AppProject.Core.Data,
         AppProject.Core.Domain,
         AppProject.DateTime.Domain,
-        AppProject.Expense.Data
     )
 
     hilt()

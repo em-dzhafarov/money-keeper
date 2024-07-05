@@ -5,7 +5,7 @@ import com.dzhafarov.expense.presentation.ExpenseStringProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class ExpenseStringProviderImpl @Inject constructor(
+internal class ExpenseStringProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ExpenseStringProvider {
 
