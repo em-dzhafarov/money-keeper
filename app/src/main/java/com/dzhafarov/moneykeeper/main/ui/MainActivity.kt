@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.state.collectAsState()
 
             AppTheme(
-                useDarkTheme = state.isDarkTheme,
+                darkTheme = state.isDarkTheme,
                 dynamicColor = state.isDynamicTheme,
                 content = { NavigationGraph() }
             )

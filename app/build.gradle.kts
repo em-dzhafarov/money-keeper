@@ -99,6 +99,7 @@ dependencies {
     navigation()
     accompanistNavigation()
     hilt()
+    fonts()
 }
 
 kapt {

@@ -21,4 +21,5 @@ object Versions {
     internal const val lifecycle = "2.7.0"
     internal const val compose = "2023.10.01"
     internal const val accompanist = "0.32.0"
+    internal const val fonts = "1.6.8"
 }

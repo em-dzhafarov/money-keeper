@@ -24,6 +24,7 @@ internal object Dependency {
     internal const val composeGraphics = "androidx.compose.ui:ui-graphics"
     internal const val composeTooling = "androidx.compose.ui:ui-tooling-preview"
     internal const val composeMaterial3 = "androidx.compose.material3:material3"
+    internal const val composeFonts = "androidx.compose.ui:ui-text-google-fonts:${Versions.fonts}"
 
     internal const val accompanistSystemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
     internal const val accompanistNavigation = "com.google.accompanist:accompanist-navigation-material:${Versions.accompanist}"

@@ -55,3 +55,7 @@ fun DependencyHandler.viewModel() {
 fun DependencyHandler.coroutines() {
     impl(Dependency.coroutines)
 }
+
+fun DependencyHandler.fonts() {
+    impl(Dependency.composeFonts)
+}
