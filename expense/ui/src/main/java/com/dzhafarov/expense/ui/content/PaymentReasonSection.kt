@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dzhafarov.expense.presentation.PaymentReasonItem
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun PaymentReasonSection(
@@ -50,13 +51,14 @@ internal fun PaymentReasonSection(
 
         val state = rememberLazyListState()
 
-        selected?.let { items.indexOf(it) }
-            ?.takeIf { it != -1 }
-            ?.let { position ->
-                LaunchedEffect(selected) {
+        LaunchedEffect(selected) {
+            selected?.let { items.indexOf(it) }
+                ?.takeIf { it != -1 }
+                ?.let { position ->
+                    delay(100)
                     state.animateScrollToItem(position)
                 }
-            }
+        }
 
         LazyRow(
             state = state,
