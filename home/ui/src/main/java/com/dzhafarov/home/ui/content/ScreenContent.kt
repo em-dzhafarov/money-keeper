@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.dzhafarov.core.ui.utils.isScrollingUp
 import com.dzhafarov.home.presentation.HomeUiAction
 import kotlinx.coroutines.flow.StateFlow
 
@@ -40,17 +39,6 @@ internal fun ScreenContent(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButtonPosition = FabPosition.End,
-        floatingActionButton = {
-            FabContent(
-                isScrollingUp = if (isGrid) {
-                    lazyStaggeredGridState.isScrollingUp()
-                } else {
-                    lazyListState.isScrollingUp()
-                },
-                onClick = { onAction(HomeUiAction.OnAddExpenseClick) },
-                title = uiState.addExpenseMessage
-            )
-        },
         topBar = {
             ToolbarContent(
                 title = uiState.title,

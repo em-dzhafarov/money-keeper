@@ -9,10 +9,10 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -20,11 +20,14 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,36 +109,47 @@ private fun BottomNavContainer(navController: NavHostController) {
     }
 
     if (shouldShowBottomNavigation) {
-        NavigationBar {
-            NavHostItem(
-                navController = navController,
-                screen = Destination.Screen.Root.Home,
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home,
-                label = stringResource(R.string.home_screen)
-            )
-            NavHostItem(
-                navController = navController,
-                screen = Destination.Screen.Root.Dashboard,
-                selectedIcon = Icons.Filled.DateRange,
-                unselectedIcon = Icons.Outlined.DateRange,
-                label = stringResource(R.string.dashboard_screen)
-            )
-            NavHostItem(
-                navController = navController,
-                screen = Destination.Screen.Root.Profile,
-                selectedIcon = Icons.Filled.AccountCircle,
-                unselectedIcon = Icons.Outlined.AccountCircle,
-                label = stringResource(R.string.profile_screen)
-            )
-            NavHostItem(
-                navController = navController,
-                screen = Destination.Screen.Root.Settings,
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings,
-                label = stringResource(R.string.settings_screen)
-            )
-        }
+        BottomAppBar(
+            actions = {
+                BottomAppBarItem(
+                    navController = navController,
+                    screen = Destination.Screen.Root.Home,
+                    selectedIcon = Icons.Filled.Home,
+                    unselectedIcon = Icons.Outlined.Home,
+                    label = stringResource(R.string.home_screen)
+                )
+                BottomAppBarItem(
+                    navController = navController,
+                    screen = Destination.Screen.Root.Dashboard,
+                    selectedIcon = Icons.Filled.DateRange,
+                    unselectedIcon = Icons.Outlined.DateRange,
+                    label = stringResource(R.string.dashboard_screen)
+                )
+                BottomAppBarItem(
+                    navController = navController,
+                    screen = Destination.Screen.Root.Profile,
+                    selectedIcon = Icons.Filled.AccountCircle,
+                    unselectedIcon = Icons.Outlined.AccountCircle,
+                    label = stringResource(R.string.profile_screen)
+                )
+                BottomAppBarItem(
+                    navController = navController,
+                    screen = Destination.Screen.Root.Settings,
+                    selectedIcon = Icons.Filled.Settings,
+                    unselectedIcon = Icons.Outlined.Settings,
+                    label = stringResource(R.string.settings_screen)
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { navController.navigateTo(Destination.Screen.Expense, listOf(0L)) },
+                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                ) {
+                    Icon(Icons.Filled.Add, stringResource(id = R.string.add_expense_fab))
+                }
+            }
+        )
     }
 }
 
@@ -277,7 +291,7 @@ private fun ContentNavContainer(
 }
 
 @Composable
-private fun RowScope.NavHostItem(
+private fun BottomAppBarItem(
     navController: NavController,
     screen: Destination.Screen.Root,
     label: String,
@@ -291,18 +305,23 @@ private fun RowScope.NavHostItem(
         ?.hierarchy
         ?.any { it.route == screen.route } == true
 
-    NavigationBarItem(
-        icon = {
-            val vector = if (isSelected) {
-                selectedIcon
-            } else {
-                unselectedIcon
-            }
+    IconButton(
+        onClick = { navController.navigateTo(screen, isRoot = true) },
+    ) {
+        val vector = if (isSelected) {
+            selectedIcon
+        } else {
+            unselectedIcon
+        }
 
-            Icon(vector, contentDescription = label)
-        },
-        label = { Text(label) },
-        selected = isSelected,
-        onClick = { navController.navigateTo(screen, isRoot = true) }
-    )
+        Icon(
+            imageVector = vector,
+            contentDescription = label,
+            tint = if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            }
+        )
+    }
 }
