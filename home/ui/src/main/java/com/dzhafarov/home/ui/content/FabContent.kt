@@ -57,10 +57,10 @@ private fun SmallAddFab(
         onClick = onClick,
         containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            focusedElevation = 0.dp,
-            hoveredElevation = 0.dp
+            defaultElevation = 2.dp,
+            pressedElevation = 2.dp,
+            focusedElevation = 2.dp,
+            hoveredElevation = 2.dp
         ),
         content = { AddIcon() }
     )
@@ -77,10 +77,10 @@ private fun ExtendedAddFab(
         onClick = onClick,
         containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            focusedElevation = 0.dp,
-            hoveredElevation = 0.dp
+            defaultElevation = 2.dp,
+            pressedElevation = 2.dp,
+            focusedElevation = 2.dp,
+            hoveredElevation = 2.dp
         ),
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {

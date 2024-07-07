@@ -1,41 +1,50 @@
 package com.dzhafarov.home.ui.content.general
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.dzhafarov.expense.presentation.CurrencyItem
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun AmountSection(
     amount: String,
     currency: CurrencyItem,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            modifier = Modifier.size(16.dp),
-            painter = painterResource(id = currency.iconRes),
-            contentDescription = currency.code,
-            tint = MaterialTheme.colorScheme.tertiary
-        )
+    Text(
+        modifier = modifier.basicMarquee(),
+        maxLines = 1,
+        text = buildAnnotatedString {
+            append(amount)
 
-        Text(
-            text = amount,
-            style = MaterialTheme.typography.titleLarge.copy(
-                color = MaterialTheme.colorScheme.tertiary,
-                fontWeight = FontWeight.Medium
+            addStyle(
+                SpanStyle(
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontWeight = FontWeight.Bold
+                ),
+                0,
+                amount.length
             )
-        )
-    }
+
+            append(" [${currency.code}]")
+
+            addStyle(
+                SpanStyle(
+                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontWeight = FontWeight.Medium
+                ),
+                amount.length,
+                length
+            )
+        }
+    )
 }

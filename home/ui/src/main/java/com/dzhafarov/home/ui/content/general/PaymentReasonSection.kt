@@ -24,7 +24,7 @@ internal fun PaymentReasonSection(
         modifier = modifier.basicMarquee(),
         text = reason.title,
         style = MaterialTheme.typography.titleMedium.copy(
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.Medium
         ),
         maxLines = 1
@@ -40,6 +40,6 @@ internal fun PaymentReasonIcon(
         modifier = modifier.size(40.dp),
         painter = painterResource(id = reason.resourceId),
         contentDescription = reason.title,
-        tint = MaterialTheme.colorScheme.primary
+        tint = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
