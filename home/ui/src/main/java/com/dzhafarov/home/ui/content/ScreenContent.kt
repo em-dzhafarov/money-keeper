@@ -22,15 +22,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.dzhafarov.home.presentation.HomeUiAction
+import com.dzhafarov.home.presentation.HomeUiState
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 internal fun ScreenContent(
-    state: StateFlow<com.dzhafarov.home.presentation.HomeUiState>,
+    state: StateFlow<HomeUiState>,
     snackbarHostState: SnackbarHostState,
     onAction: (HomeUiAction) -> Unit
 ) {
-    val uiState: com.dzhafarov.home.presentation.HomeUiState by state.collectAsState()
+    val uiState: HomeUiState by state.collectAsState()
     val lazyListState = rememberLazyListState()
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
     val isGrid by remember(uiState.displayMode) { mutableStateOf(uiState.displayMode.isGrid()) }

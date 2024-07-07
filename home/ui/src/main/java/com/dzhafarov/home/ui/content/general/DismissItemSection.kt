@@ -17,6 +17,7 @@ import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
@@ -81,8 +82,8 @@ private fun SwipeToDismissBackground(isFromEndToStart: Boolean, state: DismissSt
 
     val backgroundColor by animateColorAsState(
         targetValue = when (state.targetValue) {
-            dismissValue -> Color.Red.copy(alpha = 0.8f)
-            else -> Color.White
+            dismissValue -> MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+            else -> MaterialTheme.colorScheme.background
         },
         label = "backgroundColorAnimation"
     )
@@ -108,7 +109,7 @@ private fun SwipeToDismissBackground(isFromEndToStart: Boolean, state: DismissSt
             modifier = Modifier.scale(iconScale),
             imageVector = Icons.Outlined.Delete,
             contentDescription = null,
-            tint = Color.White
+            tint = MaterialTheme.colorScheme.onError
         )
     }
 }

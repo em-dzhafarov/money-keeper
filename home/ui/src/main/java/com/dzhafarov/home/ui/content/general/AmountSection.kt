@@ -27,7 +27,7 @@ internal fun AmountSection(
             addStyle(
                 SpanStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold
                 ),
                 0,
@@ -39,7 +39,7 @@ internal fun AmountSection(
             addStyle(
                 SpanStyle(
                     fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Medium
                 ),
                 amount.length,

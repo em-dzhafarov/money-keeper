@@ -40,7 +40,7 @@ import com.dzhafarov.home.ui.content.general.PaymentReasonIcon
 internal fun GridContent(
     expenses: List<ExpenseItem>,
     scrollState: LazyStaggeredGridState,
-    onAction: (com.dzhafarov.home.presentation.HomeUiAction) -> Unit,
+    onAction: (HomeUiAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalStaggeredGrid(
