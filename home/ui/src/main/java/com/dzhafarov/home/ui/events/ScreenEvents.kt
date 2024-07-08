@@ -6,8 +6,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.dzhafarov.core.ui.utils.collectAsEffect
+import com.dzhafarov.core.navigation.Destination
 import com.dzhafarov.core.navigation.navigateTo
+import com.dzhafarov.core.ui.utils.collectAsEffect
 import com.dzhafarov.home.presentation.HomeEvent
 import kotlinx.coroutines.flow.Flow
 
@@ -21,9 +22,10 @@ internal fun ScreenEvents(
         when (event) {
             is HomeEvent.AddExpense -> navController.openAddExpense()
             is HomeEvent.EditExpense -> navController.openEditExpense(event)
-            is HomeEvent.OpenAboutAppInfo -> navController.openAboutApp()
-            is HomeEvent.OpenFilter -> navController.openFilter(event)
+            is HomeEvent.OpenSettings -> navController.openSettings()
             is HomeEvent.OpenSearch -> navController.openSearch()
+            is HomeEvent.OpenFilter -> navController.openFilter(event)
+            is HomeEvent.OpenDashboard -> navController.openDashboard()
             is HomeEvent.DeleteExpense -> snackbarHostState.deleteExpense(event)
         }
     }
@@ -31,14 +33,14 @@ internal fun ScreenEvents(
 
 private fun NavController.openAddExpense() {
     navigateTo(
-        destination = com.dzhafarov.core.navigation.Destination.Screen.Expense,
+        destination = Destination.Screen.Expense,
         args = listOf(0L)
     )
 }
 
 private fun NavController.openEditExpense(event: HomeEvent.EditExpense) {
    navigateTo(
-        destination = com.dzhafarov.core.navigation.Destination.Screen.Expense,
+        destination = Destination.Screen.Expense,
         args = listOf(event.id)
     )
 }
@@ -57,18 +59,22 @@ private suspend fun SnackbarHostState.deleteExpense(event: HomeEvent.DeleteExpen
     }
 }
 
-private fun NavController.openAboutApp() {
-    navigateTo(com.dzhafarov.core.navigation.Destination.Dialog.AboutApp)
+private fun NavController.openSettings() {
+    navigateTo(Destination.Screen.Settings)
+}
+
+private fun NavController.openSearch() {
+    navigateTo(Destination.BottomSheet.Search)
+}
+
+private fun NavController.openDashboard() {
+    navigateTo(Destination.Screen.Dashboard)
 }
 
 private fun NavController.openFilter(event: HomeEvent.OpenFilter) {
     if (event.hasExpenses) {
-        navigateTo(com.dzhafarov.core.navigation.Destination.BottomSheet.Filter)
+        navigateTo(Destination.BottomSheet.Filter)
     } else {
         Toast.makeText(context, event.emptyExpenses, Toast.LENGTH_SHORT).show()
     }
-}
-
-private fun NavController.openSearch() {
-    navigateTo(com.dzhafarov.core.navigation.Destination.BottomSheet.Search)
 }

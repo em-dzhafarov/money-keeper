@@ -24,7 +24,7 @@ fun BaseTopBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     onNavigationIconPressed: () -> Unit = {},
-    navigationIcon: ImageVector = Icons.Default.ArrowBack,
+    navigationIcon: ImageVector? = Icons.Default.ArrowBack,
     navigationIconContentDescription: String? = null,
     actions: @Composable RowScope.() -> Unit = {},
     scrollingBehavior: TopAppBarScrollBehavior? = null,
@@ -41,11 +41,13 @@ fun BaseTopBar(
                     scrolledContainerColor = MaterialTheme.colorScheme.background
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onNavigationIconPressed) {
-                        Icon(
-                            imageVector = navigationIcon,
-                            contentDescription = navigationIconContentDescription
-                        )
+                    if (navigationIcon != null) {
+                        IconButton(onClick = onNavigationIconPressed) {
+                            Icon(
+                                imageVector = navigationIcon,
+                                contentDescription = navigationIconContentDescription
+                            )
+                        }
                     }
                 }
             )
@@ -55,11 +57,13 @@ fun BaseTopBar(
                 actions = actions,
                 scrollBehavior = scrollingBehavior,
                 navigationIcon = {
-                    IconButton(onClick = onNavigationIconPressed) {
-                        Icon(
-                            imageVector = navigationIcon,
-                            contentDescription = navigationIconContentDescription
-                        )
+                    if (navigationIcon != null) {
+                        IconButton(onClick = onNavigationIconPressed) {
+                            Icon(
+                                imageVector = navigationIcon,
+                                contentDescription = navigationIconContentDescription
+                            )
+                        }
                     }
                 }
             )

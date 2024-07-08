@@ -10,7 +10,7 @@ internal class HomeStringProviderImpl @Inject constructor(
 ) : HomeStringProvider {
 
     override val title: String
-        get() = context.getString(R.string.home_screen)
+        get() = context.getString(R.string.app_name)
 
     override val noExpensesYet: String
         get() = context.getString(R.string.home_screen_no_expenses_yet)

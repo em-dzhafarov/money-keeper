@@ -23,6 +23,7 @@ fun HomeScreen(navController: NavController) {
     ScreenContent(
         state = viewModel.state,
         snackbarHostState = snackbarHostState,
+        navController = navController,
         onAction = viewModel::reduce
     )
 }

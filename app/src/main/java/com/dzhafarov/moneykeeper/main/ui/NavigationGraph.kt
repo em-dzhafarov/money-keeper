@@ -2,7 +2,6 @@
 
 package com.dzhafarov.moneykeeper.main.ui
 
-import com.dzhafarov.core.navigation.Destination
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -10,38 +9,14 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -51,19 +26,18 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dzhafarov.about_app.ui.AboutAppDialog
+import com.dzhafarov.core.navigation.Destination
 import com.dzhafarov.core.navigation.Keys
-import com.dzhafarov.expense.ui.ExpenseScreen
-import com.dzhafarov.home.ui.HomeScreen
-import com.dzhafarov.settings.ui.SettingsScreen
-import com.dzhafarov.core.navigation.navigateTo
 import com.dzhafarov.dashboard.ui.DashboardScreen
 import com.dzhafarov.date_time.ui.date.DateSelectorDialog
 import com.dzhafarov.date_time.ui.time.TimeSelectorDialog
+import com.dzhafarov.expense.ui.ExpenseScreen
 import com.dzhafarov.filters.ui.FilterScreen
-import com.dzhafarov.moneykeeper.R
+import com.dzhafarov.home.ui.HomeScreen
 import com.dzhafarov.notifications.ui.NotificationsScreen
 import com.dzhafarov.profile.ui.ProfileScreen
 import com.dzhafarov.search.ui.SearchScreen
+import com.dzhafarov.settings.ui.SettingsScreen
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -80,75 +54,11 @@ fun NavigationGraph() {
 
     Scaffold(
         modifier = Modifier.blur(if (shouldBlur) 2.dp else 0.dp),
-        bottomBar = {
-            BottomNavContainer(navController)
-        }
     ) { padding ->
         ContentNavContainer(
             navController,
             bottomSheetNavigator,
             Modifier.padding(padding)
-        )
-    }
-}
-
-@Composable
-private fun BottomNavContainer(navController: NavHostController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val route = navBackStackEntry?.destination?.route
-    var shouldShowBottomNavigation by remember { mutableStateOf(false) }
-
-    when {
-        Destination.isRootScreen(route) -> {
-            shouldShowBottomNavigation = true
-        }
-
-        Destination.isDialog(route).not() && Destination.isBottomSheet(route).not() -> {
-            shouldShowBottomNavigation = false
-        }
-    }
-
-    if (shouldShowBottomNavigation) {
-        BottomAppBar(
-            actions = {
-                BottomAppBarItem(
-                    navController = navController,
-                    screen = Destination.Screen.Root.Home,
-                    selectedIcon = Icons.Filled.Home,
-                    unselectedIcon = Icons.Outlined.Home,
-                    label = stringResource(R.string.home_screen)
-                )
-                BottomAppBarItem(
-                    navController = navController,
-                    screen = Destination.Screen.Root.Dashboard,
-                    selectedIcon = Icons.Filled.DateRange,
-                    unselectedIcon = Icons.Outlined.DateRange,
-                    label = stringResource(R.string.dashboard_screen)
-                )
-                BottomAppBarItem(
-                    navController = navController,
-                    screen = Destination.Screen.Root.Profile,
-                    selectedIcon = Icons.Filled.AccountCircle,
-                    unselectedIcon = Icons.Outlined.AccountCircle,
-                    label = stringResource(R.string.profile_screen)
-                )
-                BottomAppBarItem(
-                    navController = navController,
-                    screen = Destination.Screen.Root.Settings,
-                    selectedIcon = Icons.Filled.Settings,
-                    unselectedIcon = Icons.Outlined.Settings,
-                    label = stringResource(R.string.settings_screen)
-                )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navController.navigateTo(Destination.Screen.Expense, listOf(0L)) },
-                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-                ) {
-                    Icon(Icons.Filled.Add, stringResource(id = R.string.add_expense_fab))
-                }
-            }
         )
     }
 }
@@ -169,25 +79,25 @@ private fun ContentNavContainer(
             modifier = modifier
         ) {
             composable(
-                route = Destination.Screen.Root.Home.route,
+                route = Destination.Screen.Home.route,
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() },
                 content = { HomeScreen(navController) }
             )
             composable(
-                route = Destination.Screen.Root.Dashboard.route,
+                route = Destination.Screen.Dashboard.route,
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() },
                 content = { DashboardScreen(navController) }
             )
             composable(
-                route = Destination.Screen.Root.Profile.route,
+                route = Destination.Screen.Profile.route,
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() },
                 content = { ProfileScreen(navController) }
             )
             composable(
-                route = Destination.Screen.Root.Settings.route,
+                route = Destination.Screen.Settings.route,
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() },
                 content = { SettingsScreen(navController) }
@@ -287,41 +197,5 @@ private fun ContentNavContainer(
                 }
             )
         }
-    }
-}
-
-@Composable
-private fun BottomAppBarItem(
-    navController: NavController,
-    screen: Destination.Screen.Root,
-    label: String,
-    selectedIcon: ImageVector,
-    unselectedIcon: ImageVector
-) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-    val isSelected = navBackStackEntry
-        ?.destination
-        ?.hierarchy
-        ?.any { it.route == screen.route } == true
-
-    IconButton(
-        onClick = { navController.navigateTo(screen, isRoot = true) },
-    ) {
-        val vector = if (isSelected) {
-            selectedIcon
-        } else {
-            unselectedIcon
-        }
-
-        Icon(
-            imageVector = vector,
-            contentDescription = label,
-            tint = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            }
-        )
     }
 }

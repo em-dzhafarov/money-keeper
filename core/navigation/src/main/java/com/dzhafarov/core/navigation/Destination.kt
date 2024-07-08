@@ -3,13 +3,13 @@ package com.dzhafarov.core.navigation
 sealed class Destination(val route: String) {
 
     companion object {
-        val initial = Screen.Root.Home
+        val initial = Screen.Home
 
         private val allDestinations: List<Destination> = listOf(
-            Screen.Root.Home,
-            Screen.Root.Dashboard,
-            Screen.Root.Profile,
-            Screen.Root.Settings,
+            Screen.Home,
+            Screen.Dashboard,
+            Screen.Profile,
+            Screen.Settings,
             Screen.Expense,
             Screen.Notifications,
             Dialog.AboutApp,
@@ -27,10 +27,6 @@ sealed class Destination(val route: String) {
             return of(route) is BottomSheet
         }
 
-        fun isRootScreen(route: String?): Boolean {
-            return of(route) is Screen.Root
-        }
-
         fun of(route: String?): Destination? {
             return allDestinations.find { route?.startsWith(it.route) ?: false }
         }
@@ -38,28 +34,21 @@ sealed class Destination(val route: String) {
 
     sealed class Dialog(route: String) : Destination(route) {
         data object AboutApp : Dialog("about_app")
-
         data object DateSelector : Dialog("date_selector")
-
         data object TimeSelector : Dialog("time_selector")
     }
 
     sealed class BottomSheet(route: String) : Destination(route) {
         data object Search : BottomSheet(route = "search")
-
         data object Filter : BottomSheet(route = "filter")
     }
 
     sealed class Screen(route: String) : Destination(route) {
-
-        sealed class Root(route: String) : Screen(route) {
-            data object Home : Root(route = "home")
-            data object Dashboard : Root(route = "dashboard")
-            data object Profile : Root(route = "profile")
-            data object Settings : Root(route = "settings")
-        }
-
-        data object Expense : Screen(route = "expense")
-        data object Notifications : Screen(route = "notifications")
+        data object Home : Screen("home")
+        data object Dashboard : Screen("dashboard")
+        data object Profile : Screen("profile")
+        data object Settings : Screen("settings")
+        data object Expense : Screen("expense")
+        data object Notifications : Screen("notifications")
     }
 }

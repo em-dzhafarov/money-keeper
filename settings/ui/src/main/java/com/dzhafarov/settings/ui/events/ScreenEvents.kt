@@ -22,7 +22,7 @@ internal fun ScreenEvents(
 
 private fun NavController.navigateHome() {
     popBackStack(
-        route = Destination.Screen.Root.Home.route,
+        route = Destination.Screen.Home.route,
         inclusive = false
     )
 }

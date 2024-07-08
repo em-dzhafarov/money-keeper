@@ -51,9 +51,16 @@ class HomeViewModel @Inject constructor(
             is HomeUiAction.OnExpenseEditClick -> onExpenseEditClicked(action.id)
             is HomeUiAction.OnExpenseDeleteSwipe -> onExpenseDeleteSwiped(action.id)
             is HomeUiAction.OnViewLookingClick -> onViewLookingClick()
+            is HomeUiAction.OnSettingsClick -> onOpenSettings()
             is HomeUiAction.OnFilterClick -> onFilterClick()
             is HomeUiAction.OnSearchClick -> onSearchClick()
-            is HomeUiAction.OnHomeClick -> onHomeClick()
+            is HomeUiAction.OnDashboardClick -> onDashboardClick()
+        }
+    }
+
+    private fun onOpenSettings() {
+        viewModelScope.launch {
+            _events.send(HomeEvent.OpenSettings)
         }
     }
 
@@ -99,6 +106,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun onDashboardClick() {
+        viewModelScope.launch {
+            _events.send(HomeEvent.OpenDashboard)
+        }
+    }
+
     private fun onExpenseDeleteSwiped(id: Long) {
         val item = _state.value.expenses.find { it.id == id } ?: return
         _itemsBeingRemoved.update { it + setOf(id) }
@@ -116,12 +129,6 @@ class HomeViewModel @Inject constructor(
                     }
                 )
             )
-        }
-    }
-
-    private fun onHomeClick() {
-        viewModelScope.launch {
-            _events.send(HomeEvent.OpenAboutAppInfo)
         }
     }
 
