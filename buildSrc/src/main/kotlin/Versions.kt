@@ -14,7 +14,7 @@ object Versions {
     internal const val splash = "1.0.1"
     internal const val dataStore = "1.0.0"
     internal const val gson = "2.10.1"
-    internal const val navKtx = "2.7.7"
+    internal const val navKtx = "2.8.0-beta04"
     internal const val navHilt = "1.2.0"
     internal const val viewModel = "2.7.0"
     internal const val coroutines = "1.7.1"
