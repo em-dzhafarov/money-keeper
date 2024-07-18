@@ -1,20 +1,20 @@
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
-    id(Plugins.androidApp)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.kapt)
-    id(Plugins.hilt)
-    id(Plugins.ksp)
+    alias(libs.plugins.android.app)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.kapt)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "${Config.namespace}.moneykeeper"
+    namespace = "${AppProject.namespace}.moneykeeper"
 
     defaultConfig {
-        applicationId = "${Config.namespace}.moneykeeper"
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "${AppProject.namespace}.moneykeeper"
+        versionCode = AppProject.versionCode
+        versionName = AppProject.versionName
 
         vectorDrawables {
             useSupportLibrary = true
@@ -69,7 +69,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     packaging {
@@ -82,9 +82,9 @@ android {
 dependencies {
     implementProjects(
         AppProject.Core,
+        AppProject.Settings,
         AppProject.AboutApp,
         AppProject.DateTime,
-        AppProject.Settings,
         AppProject.Expense,
         AppProject.Home,
         AppProject.Filters,
@@ -94,12 +94,12 @@ dependencies {
         AppProject.Profile
     )
 
-    splash()
-    compose()
-    navigation()
-    accompanistNavigation()
-    hilt()
-    fonts()
+    implementation(platform(libs.compose))
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.navigation)
+    implementation(libs.core.splash)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.kapt)
 }
 
 kapt {

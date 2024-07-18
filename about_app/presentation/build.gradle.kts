@@ -1,17 +1,18 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.kapt)
-    id(Plugins.hilt)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.kapt)
 }
 
 android {
-    namespace = "${Config.namespace}.about_app.presentation"
+    namespace = "${AppProject.AboutApp.Presentation}"
 }
 
 dependencies {
     implementProject(AppProject.Core.Presentation)
 
-    hilt()
-    viewModel()
+    implementation(libs.viewmodel)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.kapt)
 }

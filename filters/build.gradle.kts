@@ -1,10 +1,10 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.filters"
+    namespace = "${AppProject.Filters}"
 }
 
 dependencies {

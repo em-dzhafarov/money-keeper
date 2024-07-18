@@ -6,31 +6,33 @@ import com.android.build.gradle.LibraryPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id(Plugins.androidApp) version Versions.androidAppPlugin apply false
-    id(Plugins.androidLibrary) version Versions.androidLibraryPlugin apply false
-    id(Plugins.kotlinAndroid) version Versions.androidKotlinPlugin apply false
-    id(Plugins.hilt) version Versions.hiltKapt apply false
-    id(Plugins.ksp) version Versions.ksp apply false
+    alias(libs.plugins.android.app) apply false
+    alias(libs.plugins.android.lib) apply false
+    alias(libs.plugins.android.kotlin) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.hilt.kapt) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 fun BaseExtension.baseConfig() {
 
-    compileSdkVersion(Config.compileSdk)
+    compileSdkVersion(AppProject.compileSdk)
 
     defaultConfig.apply {
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        testInstrumentationRunner = Config.testRunner
+        namespace = AppProject.namespace
+        minSdk = AppProject.minSdk
+        targetSdk = AppProject.targetSdk
+        testInstrumentationRunner = AppProject.testRunner
     }
 
     compileOptions.apply {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = AppProject.java
+        targetCompatibility = AppProject.java
     }
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = Versions.java.toString()
+            jvmTarget = AppProject.java.toString()
         }
     }
 }

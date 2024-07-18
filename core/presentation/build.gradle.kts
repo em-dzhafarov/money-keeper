@@ -1,13 +1,13 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.core.presentation"
+    namespace = "${AppProject.Core.Presentation}"
 }
 
 dependencies {
-    coroutines()
-    viewModel()
+    implementation(libs.coroutines)
+    implementation(libs.viewmodel)
 }

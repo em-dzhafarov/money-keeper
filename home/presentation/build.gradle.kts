@@ -1,12 +1,12 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.kapt)
-    id(Plugins.hilt)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.kapt)
 }
 
 android {
-    namespace = "${Config.namespace}.home.presentation"
+    namespace = "${AppProject.Home.Presentation}"
 }
 
 dependencies {
@@ -20,6 +20,7 @@ dependencies {
         AppProject.Home.Domain
     )
 
-    viewModel()
-    hilt()
+    implementation(libs.viewmodel)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.kapt)
 }

@@ -1,12 +1,12 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.kapt)
-    id(Plugins.hilt)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.kapt)
 }
 
 android {
-    namespace = "${Config.namespace}.settings.di"
+    namespace = "${AppProject.Settings.DI}"
 }
 
 dependencies {
@@ -17,5 +17,6 @@ dependencies {
         AppProject.Settings.Domain
     )
 
-    hilt()
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.kapt)
 }

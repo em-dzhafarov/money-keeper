@@ -1,23 +1,24 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.core.ui"
+    namespace = "${AppProject.Core.UI}"
 
     buildFeatures {
         compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
 dependencies {
-    lifecycle()
-    compose()
-    accompanistNavigation()
-    accompanistSystemUiController()
+    implementation(libs.lifecycle)
+    implementation(platform(libs.compose))
+    implementation(libs.bundles.compose)
+    implementation(libs.accompanist.ui)
+    implementation(libs.accompanist.nav)
 }

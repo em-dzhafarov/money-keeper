@@ -1,13 +1,15 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.about_app"
+    namespace = "${AppProject.AboutApp}"
 }
 
 dependencies {
-    apiProject(AppProject.AboutApp.UI)
-    apiProject(AppProject.AboutApp.DI)
+    apiProjects(
+        AppProject.AboutApp.UI,
+        AppProject.AboutApp.DI
+    )
 }

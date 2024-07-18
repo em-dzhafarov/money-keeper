@@ -1,13 +1,13 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.core.data"
+    namespace = "${AppProject.Core.Data}"
 }
 
 dependencies {
-    dataStore()
-    gson()
+    implementation(libs.datastore.preferences)
+    implementation(libs.gson)
 }

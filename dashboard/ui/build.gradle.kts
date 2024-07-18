@@ -1,17 +1,17 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.dashboard.ui"
+    namespace = "${AppProject.Dashboard.UI}"
 
     buildFeatures {
         compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
@@ -20,6 +20,8 @@ dependencies {
         AppProject.Core.UI,
         AppProject.Core.Navigation
     )
-    compose()
-    navigation()
+
+    implementation(platform(libs.compose))
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.navigation)
 }

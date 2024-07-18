@@ -1,4 +1,19 @@
+import org.gradle.api.JavaVersion
+
 sealed class AppProject(val name: String) {
+
+    override fun toString(): String = namespace + name.replace(":", ".")
+
+    companion object {
+        const val versionCode = 1
+        const val versionName = "1.0"
+        const val namespace = "com.dzhafarov"
+        const val minSdk = 27
+        const val compileSdk = 34
+        const val targetSdk = compileSdk
+        const val testRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val java = JavaVersion.VERSION_17
+    }
 
     object Core : AppProject(":core") {
         object Data : AppProject("$name:data")

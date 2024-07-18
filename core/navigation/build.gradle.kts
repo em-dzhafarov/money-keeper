@@ -1,12 +1,12 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
-    namespace = "${Config.namespace}.core.navigation"
+    namespace = "${AppProject.Core.Navigation}"
 }
 
 dependencies {
-    navigation()
+    implementation(libs.bundles.navigation)
 }

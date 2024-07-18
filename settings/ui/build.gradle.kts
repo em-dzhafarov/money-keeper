@@ -1,19 +1,19 @@
 plugins {
-    id(Plugins.androidLibrary)
-    id(Plugins.kotlinAndroid)
-    id(Plugins.kapt)
-    id(Plugins.hilt)
+    alias(libs.plugins.android.lib)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.kapt)
 }
 
 android {
-    namespace = "${Config.namespace}.settings.ui"
+    namespace = "${AppProject.Settings.UI}"
 
     buildFeatures {
         compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.kotlinCompiler
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
@@ -25,7 +25,9 @@ dependencies {
         AppProject.Core.Presentation
     )
 
-    compose()
-    navigation()
-    hilt()
+    implementation(platform(libs.compose))
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.navigation)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.kapt)
 }
