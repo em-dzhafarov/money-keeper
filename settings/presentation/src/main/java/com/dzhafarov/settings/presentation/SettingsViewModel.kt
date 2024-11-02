@@ -1,7 +1,5 @@
 package com.dzhafarov.settings.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.settings.domain.model.ThemeType
@@ -25,7 +23,7 @@ class SettingsViewModel @Inject constructor(
     private val getSelectedThemeUseCase: GetSelectedThemeUseCase,
     private val updateSelectedThemeUseCase: UpdateSelectedThemeUseCase,
     private val isDynamicColorsSupportedUseCase: IsDynamicColorsSupportedUseCase
-) : ViewModel(), ViewModelContract<SettingsUiState, SettingsEvent, SettingsUiAction> {
+) : ViewModelContract<SettingsUiState, SettingsEvent, SettingsUiAction>() {
 
     private val _state = MutableStateFlow(SettingsUiState())
     override val state: StateFlow<SettingsUiState> = _state.asStateFlow()
@@ -50,7 +48,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun onNavigateBack() {
-        viewModelScope.launch {
+        launch {
             _events.send(SettingsEvent.NavigateBack)
         }
     }
@@ -70,7 +68,7 @@ class SettingsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
+        launch {
             updateSelectedThemeUseCase.execute(
                 getSelectedThemeUseCase.execute().copy(
                     isDynamic = isChecked
@@ -96,7 +94,7 @@ class SettingsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
+        launch {
             updateSelectedThemeUseCase.execute(
                 getSelectedThemeUseCase.execute().copy(
                     type = ThemeType.LIGHT,
@@ -114,7 +112,7 @@ class SettingsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
+        launch {
             updateSelectedThemeUseCase.execute(
                 getSelectedThemeUseCase.execute().copy(
                     type = ThemeType.DARK,
@@ -132,7 +130,7 @@ class SettingsViewModel @Inject constructor(
             )
         }
 
-        viewModelScope.launch {
+        launch {
             updateSelectedThemeUseCase.execute(
                 getSelectedThemeUseCase.execute().copy(
                     type = ThemeType.SYSTEM,
@@ -142,7 +140,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun initialize() {
-        viewModelScope.launch {
+        launch {
             val theme = getSelectedThemeUseCase.execute()
 
             _state.update {

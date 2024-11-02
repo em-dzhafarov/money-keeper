@@ -1,7 +1,5 @@
 package com.dzhafarov.date_time.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.date_time.domain.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DateViewModel @Inject constructor(
     private val stringProvider: DateTimeSelectorStringProvider
-) : ViewModel(), ViewModelContract<DateUiState, DateEvent, DateUiAction> {
+) : ViewModelContract<DateUiState, DateEvent, DateUiAction>() {
 
     private val _state = MutableStateFlow(DateUiState())
     override val state: StateFlow<DateUiState> = _state.asStateFlow()
@@ -46,13 +44,13 @@ class DateViewModel @Inject constructor(
     }
 
     private fun onBackPressed() {
-        viewModelScope.launch {
+        launch {
             _events.send(DateEvent.NavigateBack)
         }
     }
 
     private fun onDateSelected(millis: Long) {
-        viewModelScope.launch {
+        launch {
             _events.send(DateEvent.Result(millis))
         }
     }

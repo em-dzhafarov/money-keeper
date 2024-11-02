@@ -1,7 +1,5 @@
 package com.dzhafarov.filters.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.expense.domain.use_case.GetCurrenciesUseCase
@@ -41,7 +39,7 @@ class FilterViewModel @Inject constructor(
     private val getPaymentReasonsUseCase: GetPaymentReasonsUseCase,
     private val paymentReasonMapper: PaymentReasonMapper,
     private val stringProvider: FilterStringProvider
-) : ViewModel(), ViewModelContract<FilterUiState, FilterEvent, FilterUiAction> {
+) : ViewModelContract<FilterUiState, FilterEvent, FilterUiAction>() {
 
     private val _state = MutableStateFlow(FilterUiState())
     override val state: StateFlow<FilterUiState> = _state.asStateFlow()
@@ -75,7 +73,7 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun onDismiss() {
-        viewModelScope.launch {
+        launch {
             _events.send(FilterEvent.Dismiss)
         }
     }
@@ -210,7 +208,7 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun onApplyFiltersClicked() {
-        viewModelScope.launch {
+        launch {
             val filters = buildFilterData()
 
             if (filters != defaultFilterData) {
@@ -224,13 +222,13 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun onClearFiltersClicked() {
-        viewModelScope.launch {
+        launch {
             initialize(FilterData())
         }
     }
 
     private fun onCancelClicked() {
-        viewModelScope.launch {
+        launch {
             _events.send(FilterEvent.Dismiss)
         }
     }
@@ -251,7 +249,7 @@ class FilterViewModel @Inject constructor(
     }
 
     private fun initialize(seed: FilterData? = null) {
-        viewModelScope.launch {
+        launch {
             val current = seed ?: getCurrentFiltersUseCase.execute()
             val (min, max) = getMinAndMaxAmountUseCase.execute()
             val currencies = getCurrenciesUseCase.execute().map { currencyMapper.map(it) }

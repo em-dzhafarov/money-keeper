@@ -1,7 +1,5 @@
 package com.dzhafarov.expense.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.date_time.domain.Timestamp
@@ -42,7 +40,7 @@ class ExpenseViewModel @Inject constructor(
     private val paymentReasonMapper: PaymentReasonMapper,
     private val paymentMethodMapper: PaymentMethodMapper,
     private val currencyMapper: CurrencyMapper
-) : ViewModel(), ViewModelContract<ExpenseUiState, ExpenseEvent, ExpenseUiAction> {
+) : ViewModelContract<ExpenseUiState, ExpenseEvent, ExpenseUiAction>() {
 
     private val _state = MutableStateFlow(ExpenseUiState())
     override val state: StateFlow<ExpenseUiState> = _state.asStateFlow()
@@ -91,7 +89,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun prepopulateWithExistingExpense(id: Long) {
-        viewModelScope.launch {
+        launch {
             val expense = getExpenseByIdUseCase.execute(id)
 
             if (expense != null) {
@@ -114,7 +112,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun onBackPressed() {
-        viewModelScope.launch {
+        launch {
             _events.send(ExpenseEvent.NavigateBack)
         }
     }
@@ -217,14 +215,14 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun onDeleteClick() {
-        viewModelScope.launch {
+        launch {
             deleteExpenseByIdUseCase.execute(expenseId)
             _events.send(ExpenseEvent.ExpenseDeleted)
         }
     }
 
     private fun onSaveClick() {
-        viewModelScope.launch {
+        launch {
             validateAndBuildExpense()?.let { expense ->
                 if (isEditMode) {
                      updateExpenseUseCase.execute(expense)
@@ -238,7 +236,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun onSelectDate() {
-        viewModelScope.launch {
+        launch {
             _events.send(
                 ExpenseEvent.SelectDate(
                     millis = currentTimestamp.milliseconds
@@ -248,7 +246,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun onSelectTime() {
-        viewModelScope.launch {
+        launch {
             _events.send(
                 ExpenseEvent.SelectTime(
                     hour = currentTimestamp.hours,
@@ -289,7 +287,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun loadStrings() {
-        viewModelScope.launch {
+        launch {
             _state.update {
                 it.copy(
                     title = stringProvider.title(isEditMode),
@@ -308,7 +306,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun loadPaymentReasons() {
-        viewModelScope.launch {
+        launch {
             _state.update { state ->
                 state.copy(
                     paymentReasons = getPaymentReasonsUseCase.execute()
@@ -319,7 +317,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun loadPaymentMethods() {
-        viewModelScope.launch {
+        launch {
             _state.update { state ->
                 state.copy(
                     paymentMethods = getPaymentMethodsUseCase.execute()
@@ -330,7 +328,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun loadCurrencies() {
-        viewModelScope.launch {
+        launch {
             _state.update { state ->
                 state.copy(
                     selectedCurrency = getDefaultCurrencyUseCase.execute()

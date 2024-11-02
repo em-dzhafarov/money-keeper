@@ -1,7 +1,5 @@
 package com.dzhafarov.about_app.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.presentation.ViewModelContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutAppViewModel @Inject constructor(
     private val stringProvider: AboutAppStringProvider
-) : ViewModel(), ViewModelContract<AboutAppUiState, AboutAppEvent, AboutAppUiAction> {
+) : ViewModelContract<AboutAppUiState, AboutAppEvent, AboutAppUiAction>() {
 
     private val _state = MutableStateFlow(AboutAppUiState())
     override val state: StateFlow<AboutAppUiState> = _state.asStateFlow()
@@ -36,7 +34,7 @@ class AboutAppViewModel @Inject constructor(
     }
 
     private fun onDismiss() {
-        viewModelScope.launch {
+        launch {
             _events.send(AboutAppEvent.Close)
         }
     }

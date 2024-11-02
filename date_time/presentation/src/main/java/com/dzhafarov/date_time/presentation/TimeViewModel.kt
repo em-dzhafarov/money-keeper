@@ -1,7 +1,5 @@
 package com.dzhafarov.date_time.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.presentation.ViewModelContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TimeViewModel @Inject constructor(
     private val stringProvider: DateTimeSelectorStringProvider
-) : ViewModel(), ViewModelContract<TimeUiState, TimeEvent, TimeUiAction> {
+) : ViewModelContract<TimeUiState, TimeEvent, TimeUiAction>() {
 
     private val _state = MutableStateFlow(TimeUiState())
     override val state: StateFlow<TimeUiState> = _state.asStateFlow()
@@ -52,13 +50,13 @@ class TimeViewModel @Inject constructor(
     }
 
     private fun onBackPressed() {
-        viewModelScope.launch {
+        launch {
             _events.send(TimeEvent.NavigateBack)
         }
     }
 
     private fun onTimeSelected(hour: Int, minute: Int) {
-        viewModelScope.launch {
+        launch {
             _events.send(TimeEvent.Result(hour to minute))
         }
     }

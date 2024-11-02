@@ -1,7 +1,5 @@
 package com.dzhafarov.home.presentation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dzhafarov.core.domain.use_case.execute
 import com.dzhafarov.core.presentation.ViewModelContract
 import com.dzhafarov.expense.domain.use_case.DeleteExpenseByIdUseCase
@@ -30,7 +28,7 @@ class HomeViewModel @Inject constructor(
     private val observeAppliedFiltersUseCase: ObserveAppliedFiltersUseCase,
     private val deleteExpenseByIdUseCase: DeleteExpenseByIdUseCase,
     private val expenseMapper: ExpenseMapper
-) : ViewModel(), ViewModelContract<HomeUiState, HomeEvent, HomeUiAction> {
+) : ViewModelContract<HomeUiState, HomeEvent, HomeUiAction>() {
 
     private val _state = MutableStateFlow(HomeUiState())
     override val state: StateFlow<HomeUiState> = _state.asStateFlow()
@@ -59,19 +57,19 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onOpenSettings() {
-        viewModelScope.launch {
+        launch {
             _events.send(HomeEvent.OpenSettings)
         }
     }
 
     private fun onAddExpenseClick() {
-        viewModelScope.launch {
+        launch {
             _events.send(HomeEvent.AddExpense)
         }
     }
 
     private fun onExpenseEditClicked(id: Long) {
-        viewModelScope.launch {
+        launch {
             _events.send(HomeEvent.EditExpense(id))
         }
     }
@@ -88,7 +86,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onFilterClick() {
-        viewModelScope.launch {
+        launch {
             _events.send(
                 HomeEvent.OpenFilter(
                     hasExpenses = _state.value.let {
@@ -101,13 +99,13 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onSearchClick() {
-        viewModelScope.launch {
+        launch {
             _events.send(HomeEvent.OpenSearch)
         }
     }
 
     private fun onDashboardClick() {
-        viewModelScope.launch {
+        launch {
             _events.send(HomeEvent.OpenDashboard)
         }
     }
@@ -116,7 +114,7 @@ class HomeViewModel @Inject constructor(
         val item = _state.value.expenses.find { it.id == id } ?: return
         _itemsBeingRemoved.update { it + setOf(id) }
 
-        viewModelScope.launch {
+        launch {
             _events.send(
                 HomeEvent.DeleteExpense(
                     message = stringProvider.expenseDeletedMessage,
@@ -133,7 +131,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadStrings() {
-        viewModelScope.launch {
+        launch {
             _state.update {
                 it.copy(
                     title = stringProvider.title,
@@ -145,7 +143,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeExpenses() {
-        viewModelScope.launch {
+        launch {
             observeExpensesUseCase.execute()
                 .combine(_itemsBeingRemoved) { original, removing ->
                     original.filter {
